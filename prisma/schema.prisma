@@ -607,6 +607,10 @@ model Event {
   name        String
   type        EventType
 
+  featuredFields String[]
+
+  description String
+
   bannerKey   String?
 
   hidden      Boolean         @default(true)

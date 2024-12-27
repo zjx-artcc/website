@@ -91,14 +91,14 @@ export default async function AdminMenu() {
                             <ListItemText primary="Airports"/>
                         </ListItemButton>
                     </Link>
-                    <Link href="/admin/events" style={{textDecoration: 'none', color: 'inherit',}}>
-                        <ListItemButton>
+                    {/* <Link href="/admin/events" style={{textDecoration: 'none', color: 'inherit',}}> */}
+                        <ListItemButton disabled>
                             <ListItemIcon>
                                 <CalendarMonth/>
                             </ListItemIcon>
-                            <ListItemText primary="Events"/>
+                            <ListItemText primary="Events (coming soon)"/>
                         </ListItemButton>
-                    </Link>
+                    {/* </Link> */}
                     <Link href="/admin/staffing-requests" style={{textDecoration: 'none', color: 'inherit',}}>
                         <ListItemButton>
                             <ListItemIcon>

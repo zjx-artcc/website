@@ -71,7 +71,7 @@ model User {
   visitorApplication VisitorApplication?
   writtenFeedback    Feedback[]          @relation("FeedbackPilot")
   updatedAt          DateTime
-  eventSignups       EventPosition[]
+  // eventSignups       EventPosition[]
   staffingRequests   StaffingRequest[]
   loas               LOA[]
   receiveEmail       Boolean?            @default(true)
@@ -390,38 +390,38 @@ model RunwayInstruction {
   procedure String
 }
 
-model Event {
-  id              String          @id @default(cuid())
-  name            String
-  type            EventType
-  description     String
-  start           DateTime
-  end             DateTime
-  external        Boolean
-  host            String?
-  positionsLocked Boolean
-  bannerKey       String
-  featuredFields  String[]
-  positions       EventPosition[]
-}
+// model Event {
+//   id              String          @id @default(cuid())
+//   name            String
+//   type            EventType
+//   description     String
+//   start           DateTime
+//   end             DateTime
+//   external        Boolean
+//   host            String?
+//   positionsLocked Boolean
+//   bannerKey       String
+//   featuredFields  String[]
+//   positions       EventPosition[]
+// }
 
-enum EventType {
-  HOME
-  SUPPORT_REQUIRED
-  SUPPORT_OPTIONAL
-  GROUP_FLIGHT
-  TRAINING
-}
+// enum EventType {
+//   HOME
+//   SUPPORT_REQUIRED
+//   SUPPORT_OPTIONAL
+//   GROUP_FLIGHT
+//   TRAINING
+// }
 
-model EventPosition {
-  id          String @id @default(cuid())
-  event       Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId     String
-  position    String
-  minRating   Int?
-  signupCap   Int?
-  controllers User[]
-}
+// model EventPosition {
+//   id          String @id @default(cuid())
+//   event       Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+//   eventId     String
+//   position    String
+//   minRating   Int?
+//   signupCap   Int?
+//   controllers User[]
+// }
 
 model StaffingRequest {
   id          String @id @default(cuid())

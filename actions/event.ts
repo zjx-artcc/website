@@ -67,7 +67,7 @@ const getWhere = (filter?: GridFilterItem): Prisma.EventWhereInput => {
     }
 }
 
-export const upsertEvent = async (formData: FormData) => {
+export const validateEvent = async (input: { [key: string]: any }) => {
     
     const eventZ = z.object({
         id: z.string().optional(),
@@ -81,10 +81,10 @@ export const upsertEvent = async (formData: FormData) => {
             .optional()
             .or(
             z.any().refine((file) => {
-                return (formData.get('id') && (formData.get('bannerImage') as File).size === 0) || !file || file.size <= MAX_FILE_SIZE;
+                return (input.id && (input.bannerImage as File).size === 0) || !file || file.size <= MAX_FILE_SIZE;
             }, 'File size must be less than 4MB')
             .refine((file) => {
-                return (formData.get('id') && (formData.get('bannerImage') as File).size === 0) || ALLOWED_FILE_TYPES.includes(file?.type || '');
+                return (input.id && (input.bannerImage as File).size === 0) || ALLOWED_FILE_TYPES.includes(file?.type || '');
             }, 'File must be a PNG, JPEG, or GIF')
             ),
         bannerUrl: z.string().url().optional(),
@@ -97,7 +97,12 @@ export const upsertEvent = async (formData: FormData) => {
         path: ["bannerImage", "bannerUrl"],
     });
 
-    const result = eventZ.safeParse({
+    return eventZ.safeParse(input);
+}
+
+export const upsertEvent = async (formData: FormData) => {
+
+    const result = await validateEvent({
         id: formData.get('id'),
         name: formData.get('name'),
         start: new Date(formData.get('start') as string),
@@ -174,6 +179,9 @@ export const upsertEvent = async (formData: FormData) => {
         },
     });
 
+    if (data.id) {
+        revalidatePath(`/admin/events/${data.id}`);
+    }
 
     after(async () => {
         if (data.id) {
@@ -200,7 +208,8 @@ const bannerImageOrUrlExists = (data: any) => {
     if (data.id) {
         return true; // Skip validation if editing
     }
-    return data.bannerImage || data.bannerUrl;
+
+    return (data.bannerImage && (data.bannerImage as File).size > 0) || data.bannerUrl;
 };
 
 export const deleteEvent = async (id: string) => {

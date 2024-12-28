@@ -46,11 +46,9 @@ export default function EventTable() {
         },
         {
             field: 'bannerKey',
-            type: 'string',
+            type: 'actions',
             headerName: 'Banner',
             flex: 1,
-            sortable: false,
-            filterable: false,
             renderCell: (params) => {
                 return params.row.bannerKey ? <Link href={`https://utfs.io/f/${params.row.bannerKey}`} target="_blank" style={{ color: 'inherit', }}><OpenInNew /></Link> : 'N/A';
             },

@@ -1,23 +1,26 @@
 'use client';
 
 import { useTheme } from "@emotion/react";
-import { ExpandMore } from "@mui/icons-material";
-import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Chip, FormControl, FormControlLabel, FormLabel, Grid2, Radio, RadioGroup, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { CheckCircle, ExpandMore, Info, Pending } from "@mui/icons-material";
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Chip, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid2, Radio, RadioGroup, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Event, EventType } from "@prisma/client";
 import MarkdownEditor from "@uiw/react-markdown-editor";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import Form from "next/form";
-import { useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import FormSaveButton from "../Form/FormSaveButton";
-import { upsertEvent } from "@/actions/event";
+import { upsertEvent, validateEvent } from "@/actions/event";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { SafeParseReturnType, ZodIssue } from "zod";
 
 export default function EventForm({ event }: { event?: Event, }) {
     
+    dayjs.extend(utc);
+
     const theme = useTheme();
     const router = useRouter();
 
@@ -25,14 +28,47 @@ export default function EventForm({ event }: { event?: Event, }) {
     const [bannerUploadType, setBannerUploadType] = useState<'file' | 'url'>('file');
 
     const [name, setName] = useState<string>(event?.name || '');
+    const [start, setStart] = useState<Dayjs | null>(dayjs.utc(event?.start || new Date()));
+    const [end, setEnd] = useState<Dayjs | null>(dayjs.utc(event?.end || new Date()));
     const [type, setType] = useState<EventType | undefined>(event?.type);
     const [bannerUrl, setBannerUrl] = useState<string>('');
     const [description, setDescription] = useState<string>(event?.description || '');
     const [featuredFields, setFeaturedFields] = useState<string[]>(event?.featuredFields || []);
 
+    const [status, setStatus] = useState<ReactNode[]>([
+        <CircularProgress color="inherit" size={20} />,
+        <CircularProgress color="inherit" size={20} />,
+        <CircularProgress color="inherit" size={20} />,
+        <CircularProgress color="inherit" size={20} />,
+        <CircularProgress color="inherit" size={20} />,
+    ]);
+
+    const updateStatus = useCallback(async () => {
+
+        const res = await validateEvent({
+            id: event?.id,
+            name,
+            start: start?.toDate(),
+            end: end?.toDate(),
+            type: type?.toString() || '',
+            description,
+            bannerUrl,
+            featuredFields,
+        });
+
+        const firstStep = await getStepStatus(res, { name, start: start?.toDate(), end: end?.toDate(), });
+        const secondStep = await getStepStatus(res, { type: type?.toString() || '' });
+        const thirdStep = await getStepStatus(res, { description });
+        const fourthStep = await getStepStatus(res, { bannerUrl });
+        const fifthStep = await getStepStatus(res, { featuredFields });
+        setStatus([firstStep, secondStep, thirdStep, fourthStep, fifthStep]);
+    }, [name, start, end, type, description, bannerUrl, featuredFields]);
+
     const handleSubmit = async (formData: FormData) => {
 
         formData.set('name', name);
+        formData.set('start', start?.toISOString() || '');
+        formData.set('end', end?.toISOString() || '');
         formData.set('type', type || EventType.SINGLE);
         formData.set('bannerUrl', bannerUrl);
         formData.set('description', description);
@@ -57,18 +93,29 @@ export default function EventForm({ event }: { event?: Event, }) {
         }
     }
 
+    useEffect(() => {
+        updateStatus();
+    }, [open]);
+
     const handleOpen = (panel: number) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setOpen(isExpanded ? panel : -1);
     }
 
-    dayjs.extend(utc);
+    const back = () => {
+        setOpen((prev) => prev - 1);
+        updateStatus();
+    }
+
+    const forward = () => {
+        setOpen((prev) => prev + 1);
+        updateStatus();
+    }
 
     const NextButton = 
         <Stack direction="row" justifyContent="end" spacing={1}>
-            <Button type="button" color="inherit" onClick={() => setOpen((prev) => prev - 1)} disabled={open <= 0}>Back</Button>
-            <Button type="button" variant="contained" color="inherit" onClick={() => setOpen((prev) => prev + 1)}>Next</Button>
+            <Button type="button" color="inherit" onClick={back} disabled={open <= 0}>Back</Button>
+            <Button type="button" variant="contained" color="inherit" onClick={forward}>Next</Button>
         </Stack>
-    
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
@@ -77,7 +124,10 @@ export default function EventForm({ event }: { event?: Event, }) {
                 <Box sx={{ my: 2, }}>
                     <Accordion expanded={open === 0} onChange={handleOpen(0)}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography variant="h6">Basic Information</Typography>
+                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">Basic Information</Typography>
+                                {status[0]}
+                            </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Grid2 container columns={2} spacing={2}>
@@ -85,10 +135,10 @@ export default function EventForm({ event }: { event?: Event, }) {
                                     <TextField fullWidth variant="filled" name="name" label="Event Name" value={name} onChange={(e) => setName(e.target.value)} />
                                 </Grid2>
                                 <Grid2 size={1}>
-                                    <DateTimePicker sx={{ width: '100%', }} name="start" label="Start" defaultValue={dayjs.utc(event?.start || new Date())} />
+                                    <DateTimePicker sx={{ width: '100%', }} name="start" label="Start" value={start} onChange={setStart} />
                                 </Grid2>
                                 <Grid2 size={1}>
-                                    <DateTimePicker sx={{ width: '100%', }} name="end" label="End" defaultValue={dayjs.utc(event?.end || new Date())} />
+                                    <DateTimePicker sx={{ width: '100%', }} name="end" label="End" value={end} onChange={setEnd} />
                                 </Grid2>
                                 <Grid2 size={2}>
                                     {NextButton}
@@ -99,7 +149,10 @@ export default function EventForm({ event }: { event?: Event, }) {
 
                     <Accordion expanded={open === 1} onChange={handleOpen(1)}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography variant="h6">Event Type</Typography>
+                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">Event Type</Typography>
+                                {status[1]}
+                            </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <FormControl fullWidth>
@@ -120,7 +173,10 @@ export default function EventForm({ event }: { event?: Event, }) {
 
                     <Accordion expanded={open === 2} onChange={handleOpen(2)}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography variant="h6">Description</Typography>
+                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">Description</Typography>
+                                {status[2]}
+                            </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Box sx={{ mb: 2, }} data-color-mode={(theme as any).palette.mode}>
@@ -138,7 +194,10 @@ export default function EventForm({ event }: { event?: Event, }) {
 
                     <Accordion expanded={open === 3} onChange={handleOpen(3)}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography variant="h6">Banner Image or URL</Typography>
+                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">Banner Image or URL</Typography>
+                                {bannerUploadType === 'url' ? status[3] : <Chip label="UPLOAD" size="small" />}
+                            </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <ToggleButtonGroup
@@ -165,7 +224,10 @@ export default function EventForm({ event }: { event?: Event, }) {
 
                     <Accordion expanded={open === 4} onChange={handleOpen(4)}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography variant="h6">Featured Fields</Typography>
+                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">Featured Fields</Typography>
+                                {status[4]}
+                            </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Autocomplete
@@ -202,7 +264,10 @@ export default function EventForm({ event }: { event?: Event, }) {
 
                     <Accordion expanded={open === 5} onChange={handleOpen(5)}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography variant="h6">Important Event Information</Typography>
+                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">Important Event Information</Typography>
+                                <Info color="info" />
+                            </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <ul>
@@ -251,5 +316,21 @@ const getDescription = (type: EventType) => {
             return 'A training event or session involving one or more students.';
         default:
             return '';
+    }
+}
+
+const getStepStatus = async (parse: SafeParseReturnType<any, any>, input: { [key: string]: any }) => {
+
+    if (parse.success) {
+        return <CheckCircle color="success" />;
+    }
+
+    const error = parse.error as Error;
+    const errors = JSON.parse(error.message) as ZodIssue[];
+
+    if (errors.filter((error) => Object.keys(input).includes(error.path[0] + '')).length > 0) {
+        return <Info color="warning" />;
+    } else {
+        return <CheckCircle color="success" />;
     }
 }

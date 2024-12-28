@@ -1,6 +1,8 @@
 import React from 'react';
 import {Card, CardContent, Container, Stack, Typography} from "@mui/material";
 import {Metadata} from "next";
+import EventCalendar from '@/components/Events/EventCalendar';
+import prisma from '@/lib/db';
 
 export const metadata: Metadata = {
     title: 'Events | vZDC',
@@ -9,6 +11,15 @@ export const metadata: Metadata = {
 
 export default async function Page() {
 
+    const events = await prisma.event.findMany({
+        where: {
+            hidden: false,
+        },
+        orderBy: {
+            start: 'asc',
+        },
+    });
+    
     return (
         <Container maxWidth="lg">
             <Card sx={{mb: 2,}}>
@@ -27,7 +38,7 @@ export default async function Page() {
             </Card>
             <Card>
                 <CardContent>
-                    {/* <EventCalendar events={events}/> */}
+                    <EventCalendar events={events}/>
                 </CardContent>
             </Card>
         </Container>

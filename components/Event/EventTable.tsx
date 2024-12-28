@@ -9,6 +9,7 @@ import { Tooltip } from "@mui/material";
 import { useRouter } from "next/navigation";
 import DataTable, { containsOnlyFilterOperator, equalsOnlyFilterOperator } from "../DataTable/DataTable";
 import { fetchEvents } from "@/actions/event";
+import { formatZuluDate } from "@/lib/date";
 
 export default function EventTable() {
 
@@ -34,6 +35,7 @@ export default function EventTable() {
             field: 'start',
             type: 'dateTime',
             headerName: 'Start (GMT)',
+            valueFormatter: formatZuluDate,
             flex: 1,
             filterable: false,
         },
@@ -41,6 +43,7 @@ export default function EventTable() {
             field: 'end',
             type: 'dateTime',
             headerName: 'End (GMT)',
+            valueFormatter: formatZuluDate,
             flex: 1,
             filterable: false,
         },

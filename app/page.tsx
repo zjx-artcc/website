@@ -15,25 +15,23 @@ const headingFont = Roboto({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
 
-    // const upcomingEvents = await prisma.event.findMany({
-    //     where: {
-    //         start: {
-    //             gt: new Date(),
-    //         },
-    //     },
-    //     orderBy: {
-    //         start: 'asc',
-    //     },
-    //     take: 5,
-    // });
+    const upcomingEvents = await prisma.event.findMany({
+        where: {
+            start: {
+                gt: new Date(),
+            },
+            hidden: false,
+        },
+        orderBy: {
+            start: 'asc',
+        },
+        take: 5,
+    });
 
-    const upcomingEvents: never[] = [];
+    const imageUrls = Object.fromEntries(upcomingEvents.map((event) => {
+        return [event.id, event.bannerKey ? `https://utfs.io/f/${event.bannerKey}` : '/img/logo_large.png'];
+    }));
 
-    // const imageUrls = Object.fromEntries(upcomingEvents.map((event) => {
-    //     return [event.id, event.bannerKey ? `https://utfs.io/f/${event.bannerKey}` : '/img/logo_large.png'];
-    // }));
-
-    const imageUrls: { [key: string]: string } = {};
 
     const onlineAtc = await prisma.controllerPosition.findMany({
         where: {
@@ -74,8 +72,6 @@ export default async function Home() {
     });
 
     const top3Controllers = getTop3Controllers(top3Logs);
-
-    // return <Loading />
 
     return (
         (<Grid2 container columns={8} spacing={4}>

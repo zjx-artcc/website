@@ -69,33 +69,59 @@ const getWhere = (filter?: GridFilterItem): Prisma.EventWhereInput => {
 
 export const validateEvent = async (input: { [key: string]: any }) => {
     
+    const isAfterToday = (date: Date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date > today;
+    };
+    
+    const isBeforeEndDate = (start: Date, end: Date) => {
+        return start <= end;
+    };
+    
+    const bannerImageOrUrlExists = (data: any) => {
+        if (data.id) {
+            return true; // Skip validation if editing
+        }
+    
+        return (data.bannerImage && (data.bannerImage as File).size > 0) || data.bannerUrl;
+    };
+    
+    const isLongerThan30Minutes = (start: Date, end: Date) => {
+        const duration = (end.getTime() - start.getTime()) / (1000 * 60); // duration in minutes
+        return duration > 30;
+    };
+
     const eventZ = z.object({
         id: z.string().optional(),
         name: z.string().min(3, { message: "Name must be between 3 and 255 characters" }).max(255, { message: "Name must be between 3 and 255 characters" }),
-        start: z.date({required_error: 'Start date is required'}).refine(isAfterToday, { message: "Start date must be after today" }),
-        end: z.date({required_error: 'End date is required'}),
-        type: z.nativeEnum(EventType, {required_error: 'Type is required'}),
+        start: z.date({ required_error: 'Start date is required' }).refine(isAfterToday, { message: "Start date must be after today" }),
+        end: z.date({ required_error: 'End date is required' }),
+        type: z.nativeEnum(EventType, { required_error: 'Type is required' }),
         description: z.string().min(10, { message: "Description must be at least 10 characters." }),
         bannerImage: z
             .any()
             .optional()
             .or(
-            z.any().refine((file) => {
-                return (input.id && (input.bannerImage as File).size === 0) || !file || file.size <= MAX_FILE_SIZE;
-            }, 'File size must be less than 4MB')
-            .refine((file) => {
-                return (input.id && (input.bannerImage as File).size === 0) || ALLOWED_FILE_TYPES.includes(file?.type || '');
-            }, 'File must be a PNG, JPEG, or GIF')
+                z.any().refine((file) => {
+                    return (input.id && (input.bannerImage as File).size === 0) || !file || file.size <= MAX_FILE_SIZE;
+                }, 'File size must be less than 4MB')
+                .refine((file) => {
+                    return (input.id && (input.bannerImage as File).size === 0) || ALLOWED_FILE_TYPES.includes(file?.type || '');
+                }, 'File must be a PNG, JPEG, or GIF')
             ),
         bannerUrl: z.string().url().optional(),
         featuredFields: z.array(z.string()),
+    }).refine(data => isLongerThan30Minutes(data.start, data.end), {
+        message: "Event duration must be longer than 30 minutes.",
+        path: ["end"],
     }).refine(data => isBeforeEndDate(data.start, data.end), {
         message: "Start date must be before the end date.",
         path: ["start"],
     }).refine(bannerImageOrUrlExists, {
         message: "Either banner image or banner URL must exist.",
         path: ["bannerImage", "bannerUrl"],
-    });
+    })
 
     return eventZ.safeParse(input);
 }
@@ -127,8 +153,8 @@ export const upsertEvent = async (formData: FormData) => {
 
     let bannerKey = existingEvent?.bannerKey;
 
-    if (data.bannerImage || data.bannerUrl) {
-        if (data.bannerImage) {
+    if ((data.bannerImage as File).size > 0 || data.bannerUrl) {
+        if ((data.bannerImage as File).size > 0) {
             const res = await ut.uploadFiles(data.bannerImage as File);
 
             if (!res.data) {
@@ -193,24 +219,6 @@ export const upsertEvent = async (formData: FormData) => {
 
     return {event};
 }
-
-const isAfterToday = (date: Date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return date > today;
-};
-
-const isBeforeEndDate = (start: Date, end: Date) => {
-    return start <= end;
-};
-
-const bannerImageOrUrlExists = (data: any) => {
-    if (data.id) {
-        return true; // Skip validation if editing
-    }
-
-    return (data.bannerImage && (data.bannerImage as File).size > 0) || data.bannerUrl;
-};
 
 export const deleteEvent = async (id: string) => {
 

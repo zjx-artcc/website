@@ -141,6 +141,9 @@ export default function EventForm({ event }: { event?: Event, }) {
                                     <DateTimePicker sx={{ width: '100%', }} name="end" label="End" value={end} onChange={setEnd} />
                                 </Grid2>
                                 <Grid2 size={2}>
+                                    <Typography variant="caption" color="text.secondary">All times are in UTC.  Event must be at least 30 minutes long and cannot be before today.</Typography>
+                                </Grid2>
+                                <Grid2 size={2}>
                                     {NextButton}
                                 </Grid2>
                             </Grid2>
@@ -327,7 +330,7 @@ const getStepStatus = async (parse: SafeParseReturnType<any, any>, input: { [key
 
     const error = parse.error as Error;
     const errors = JSON.parse(error.message) as ZodIssue[];
-
+    
     if (errors.filter((error) => Object.keys(input).includes(error.path[0] + '')).length > 0) {
         return <Info color="warning" />;
     } else {

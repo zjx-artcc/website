@@ -53,7 +53,7 @@ const groupedPositions = [
             'BWI_GND',
             'ORF_GND',
             'RIC_GND',
-            'RDG_GND',
+            'RDU_GND',
         ]
     },
     {

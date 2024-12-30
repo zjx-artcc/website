@@ -18,7 +18,7 @@ export default function ArchiveToggleButton({ event }: { event: Event,}) {
     return (
         <Button 
         variant="outlined"
-        color={event.hidden ? 'error' : 'warning'} 
+        color={event.archived ? 'info' : 'warning'} 
         onClick={handleClick}>
             {event.archived ? 'Un-Archive' : 'Archive' } 
         </Button>

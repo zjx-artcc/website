@@ -8,9 +8,10 @@ export const eventPositionAssigned = (controller: User, eventPosition: EventPosi
     return renderReactToMjml(
         <SingleRecipientEmailWrapper recipient={controller} headerText="Event Position Notification">
             <p>We are pleased to inform you that you have been selected to
-                control <strong>{eventPosition.position}</strong> for the following event: <strong>{event.name}</strong>.
+                control <strong>{eventPosition.finalPosition}</strong> for the following event: <strong>{event.name}</strong>.
             </p>
-            <p>The event is scheduled to start at/on <strong>{formatZuluDate(event.start)}</strong>.</p>
+            <p>You are required to control from <strong>{formatZuluDate(eventPosition.finalStartTime || event.start)}</strong> to <strong>{formatZuluDate(eventPosition.finalEndTime || event.end)}</strong>.</p>
+            <p>The event start at <strong>{formatZuluDate(event.start)}</strong></p>
             <br/>
             <p>Important event reminders:</p>
             <p>Please be ready to control at least <strong>10</strong> minutes before the start time.</p>

@@ -14,6 +14,8 @@ export const toggleEventHidden = async (event: Event) => {
         },
         data: {
             hidden: !event.hidden,
+            positionsLocked: true,
+            manualPositionsOpen: false,
         }
     });
 
@@ -33,6 +35,8 @@ export const toggleEventArchived = async (event: Event) => {
             data: {
                 archived: event.archived ? null : new Date(),
                 hidden: true,
+                positionsLocked: true,
+                manualPositionsOpen: false,
             },
         });
     

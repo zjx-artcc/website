@@ -12,10 +12,12 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import {UTApi} from "uploadthing/server";
-import {format} from "date-fns";
 import Markdown from "react-markdown";
 import Placeholder from "@/public/img/logo_large.png";
 import { formatZuluDate } from '@/lib/date';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth/auth';
+import EventPositionRequestForm from '@/components/EventPosition/EventPositionRequestForm';
 
 const ut = new UTApi();
 
@@ -35,7 +37,18 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         notFound();
     }
 
+    const session = await getServerSession(authOptions);
+
     const imageUrl = `https://utfs.io/f/${event.bannerKey}`;
+
+    const eventPosition = await prisma.eventPosition.findUnique({
+        where: {
+            eventId_userId: {
+                eventId: event.id,
+                userId: session?.user.id || '',
+            },
+        },
+    });
 
     return (
         <Container maxWidth="md">
@@ -65,6 +78,21 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                         </Grid2>
                     </CardContent>
                 </Card>
+                { session?.user && session.user.controllerStatus !== 'NONE' && !session.user.noEventSignup && !eventPosition?.published && <Card>
+                    <CardContent>
+                        <Typography variant="h6" gutterBottom>Request Position</Typography>
+                        <EventPositionRequestForm event={event} eventPosition={eventPosition} />
+                    </CardContent>
+                </Card> }
+                { session?.user && session.user.controllerStatus !== 'NONE' && !session.user.noEventSignup && eventPosition?.published && <Card>
+                    <CardContent>
+                        <Typography variant="h6" gutterBottom>Your Position Assignment</Typography>
+                        <Typography variant="h5" textAlign="center">{eventPosition.finalPosition}</Typography>
+                        <Typography variant="subtitle2" textAlign="center" gutterBottom>{formatZuluDate(eventPosition.finalStartTime || event.start)} - {formatZuluDate(eventPosition.finalEndTime || event.end)}</Typography>
+                        <Typography textAlign="center" sx={{ mb: 4 }}>{eventPosition.finalNotes}</Typography>
+                        <Typography variant="caption">Contact the events team if you have any questions.</Typography>
+                    </CardContent>
+                </Card>}
             </Stack>
         </Container>
     );

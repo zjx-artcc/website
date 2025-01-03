@@ -48,6 +48,7 @@ export default function PurgeAssistantTable({controllers, user}: {
     const columns: GridColDef[] = [
         {field: 'controller', headerName: 'Controller', flex: 1},
         {field: 'cid', headerName: 'CID', flex: 1},
+        {field: 'email', headerName: 'Email', flex:1},
         {field: 'rating', headerName: 'Rating', flex: 1},
         {field: 'totalHours', headerName: 'Total Hours', flex: 1},
         {field: 'totalTrainingHours', headerName: 'Total Training Hours', flex: 1},
@@ -57,6 +58,7 @@ export default function PurgeAssistantTable({controllers, user}: {
         id: controller.id,
         controller: `${controller.firstName} ${controller.lastName}`,
         cid: controller.cid,
+        email: controller.email,
         rating: getRating(controller.rating),
         totalHours: totalHours.toPrecision(3),
         totalTrainingHours: totalTrainingHours,

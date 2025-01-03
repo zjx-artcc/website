@@ -64,7 +64,7 @@ export default function TrainingAssignmentTable({manageMode}: { manageMode: bool
                 const now = new Date();
                 const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
                 const twoWeeksInMs = 2 * oneWeekInMs;
-                let chipColor = 'success';
+                let chipColor: 'success' | 'warning' | 'error' = 'success';
 
                 if ((now.getTime() - lastSessionDate.getTime()) > twoWeeksInMs) {
                     chipColor = 'error';

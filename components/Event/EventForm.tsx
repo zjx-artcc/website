@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from "@emotion/react";
-import { CheckCircle, ExpandMore, Info, Pending } from "@mui/icons-material";
+import { CheckCircle, ExpandMore, Info, Pending, Visibility } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, Chip, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid2, Radio, RadioGroup, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -16,6 +16,7 @@ import { upsertEvent, validateEvent } from "@/actions/event";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { SafeParseReturnType, ZodIssue } from "zod";
+import Markdown from "react-markdown";
 
 export default function EventForm({ event }: { event?: Event, }) {
     
@@ -57,6 +58,12 @@ export default function EventForm({ event }: { event?: Event, }) {
         });
 
         const firstStep = await getStepStatus(res, { name, start: start?.toDate(), end: end?.toDate(), });
+
+        if (event?.archived) {
+            setStatus([<CheckCircle color="success" />, <CheckCircle color="success" />, <CheckCircle color="success" />, <CheckCircle color="success" />, <CheckCircle color="success" />]);
+            return;
+        }
+        
         const secondStep = await getStepStatus(res, { type: type?.toString() || '' });
         const thirdStep = await getStepStatus(res, { description });
         const fourthStep = await getStepStatus(res, { bannerUrl });
@@ -132,13 +139,13 @@ export default function EventForm({ event }: { event?: Event, }) {
                         <AccordionDetails>
                             <Grid2 container columns={2} spacing={2}>
                                 <Grid2 size={2}>
-                                    <TextField fullWidth variant="filled" name="name" label="Event Name" value={name} onChange={(e) => setName(e.target.value)} />
+                                    <TextField fullWidth variant="filled" name="name" label="Event Name" value={name} onChange={(e) => setName(e.target.value)} disabled={!!event?.archived} />
                                 </Grid2>
                                 <Grid2 size={1}>
-                                    <DateTimePicker sx={{ width: '100%', }} name="start" label="Start" value={start} onChange={setStart} />
+                                    <DateTimePicker sx={{ width: '100%', }} name="start" label="Start" value={start} disablePast ampm={false} onChange={setStart} />
                                 </Grid2>
                                 <Grid2 size={1}>
-                                    <DateTimePicker sx={{ width: '100%', }} name="end" label="End" value={end} onChange={setEnd} />
+                                    <DateTimePicker sx={{ width: '100%', }} name="end" label="End" value={end} disablePast ampm={false} onChange={setEnd} />
                                 </Grid2>
                                 <Grid2 size={2}>
                                     <Typography variant="caption" color="text.secondary">All times are in UTC.  Event must be at least 30 minutes long and cannot be before today.</Typography>
@@ -158,7 +165,7 @@ export default function EventForm({ event }: { event?: Event, }) {
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <FormControl fullWidth>
+                            <FormControl fullWidth disabled={!!event?.archived}>
                                 <RadioGroup value={type} onChange={(e, v) => setType(v as EventType)}>
                                     {Object.keys(EventType).map((type) => (
                                         <FormControlLabel sx={{ mb: 2, }} key={type} value={type} control={<Radio />} label={(
@@ -182,15 +189,15 @@ export default function EventForm({ event }: { event?: Event, }) {
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Box sx={{ mb: 2, }} data-color-mode={(theme as any).palette.mode}>
+                            { event?.archived && <Box sx={{ mb: 2, }}><Markdown>{event.description}</Markdown></Box> }
+                            { !event?.archived && <Box sx={{ mb: 2, }} data-color-mode={(theme as any).palette.mode}>
                                 <MarkdownEditor
                                     enableScroll={false}
-                                    
                                     minHeight="400px"
                                     value={description}
                                     onChange={(d) => setDescription(d)}
                                 />
-                            </Box>
+                            </Box> }
                             {NextButton}
                         </AccordionDetails>
                     </Accordion>
@@ -199,12 +206,13 @@ export default function EventForm({ event }: { event?: Event, }) {
                         <AccordionSummary expandIcon={<ExpandMore />}>
                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
                                 <Typography variant="h6">Banner Image or URL</Typography>
-                                {bannerUploadType === 'url' ? status[3] : <Chip label="UPLOAD" size="small" />}
+                                {!!event?.archived ? <CheckCircle color="success" /> : bannerUploadType === 'url' ? status[3] : <Chip label="UPLOAD" size="small" />}
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <ToggleButtonGroup
                                     fullWidth
+                                    disabled={!!event?.archived}
                                     color="primary"
                                     value={bannerUploadType}
                                     exclusive
@@ -216,10 +224,11 @@ export default function EventForm({ event }: { event?: Event, }) {
                             </ToggleButtonGroup>
                             <Box sx={{ height: 100, mb: 2, }}>
                                 {bannerUploadType === "file" ?
-                                    <input type="file"                                 
+                                    <input type="file"            
+                                    disabled={!!event?.archived}                     
                                     accept="image/*" 
                                     name="bannerImage" /> :
-                                    <TextField variant="filled" type="url" fullWidth value={bannerUrl} label="Image URL" onChange={(e) => setBannerUrl(e.target.value)}/>}
+                                    <TextField variant="filled" type="url" fullWidth value={bannerUrl} label="Image URL" onChange={(e) => setBannerUrl(e.target.value)} disabled={!!event?.archived} />}
                             </Box>
                             {NextButton}                        
                         </AccordionDetails>
@@ -235,6 +244,7 @@ export default function EventForm({ event }: { event?: Event, }) {
                         <AccordionDetails>
                             <Autocomplete
                                 sx={{mb: 2,}}
+                                disabled={!!event?.archived}
                                 multiple
                                 options={[]}
                                 value={featuredFields}
@@ -269,7 +279,7 @@ export default function EventForm({ event }: { event?: Event, }) {
                         <AccordionSummary expandIcon={<ExpandMore />}>
                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
                                 <Typography variant="h6">Important Event Information</Typography>
-                                <Info color="info" />
+                                {event?.archived ? <CheckCircle color="success" /> : <Info color="info" /> }
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
@@ -305,16 +315,18 @@ export default function EventForm({ event }: { event?: Event, }) {
 
 const getDescription = (type: EventType) => {
     switch (type) {
-        case EventType.SINGLE:
-            return 'An event consisting of only one primary ARTCC: this one.';
-        case EventType.SINGLE_SUPPORT:
-            return 'An event consisting of only one primary ARTCC, which this ARTCC is supporting';
-        case EventType.MULTIPLE:
-            return 'An event consisting of multiple primary ARTCCs.  This ARTCC is one of the primary ARTCCs.';
-        case EventType.MULTIPLE_SUPPORT:
-            return 'An event consisting of multiple primary ARTCCs.  This ARTCC is supporting one or more of the primary ARTCCs.';
+        case EventType.HOME:
+            return 'Events that are planned and executed by the ARTCC with a the ARTCC facility being the primary event airport(s). These events have assigned positions based on pre-event signups.';
+        case EventType.SUPPORT_REQUIRED:
+            return 'Events that the ARTCC is expected to provide supporting staffing for are classed as required support events. These events are coordinated with adjacent facilities and VATUSA. These events have assigned positions based on pre-event signups.';
+        case EventType.SUPPORT_OPTIONAL:
+            return 'Events that the ARTCC has been requested to support, or that the events team is aware of, that are tracked but not coordinated by the events team. These events may have assigned positions or be staffed first come first serve at the discretion of the Events Coordinator.';
         case EventType.GROUP_FLIGHT:
-            return 'A group flight event requested by a third party.';
+            return 'Organizations that have requested, or notified the ARTCC, staffing may be posted. Controllers may staff during these requested periods but the ARTCC has made no commitment to making staffing available for the activity.';
+        case EventType.FRIDAY_NIGHT_OPERATIONS:
+            return 'Any event between 2100z and 0600z on a Friday. FNOsare “owned” by VATUSA but may be delegated to subdivisions for planning, coordination, and execution.';
+        case EventType.SATURDAY_NIGHT_OPERATIONS:
+            return 'Any event between the hours of 2100z and 0600z on a Saturday. SNOs must receive approval from VATUSA prior to being publicly advertised.';
         case EventType.TRAINING:
             return 'A training event or session involving one or more students.';
         default:

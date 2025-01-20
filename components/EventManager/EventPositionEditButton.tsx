@@ -70,15 +70,16 @@ export default function EventPositionEditButton({ event, position, }: { event: E
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogTitle>Position -  {position.user?.firstName} {position.user?.lastName}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>REQUESTED '{position.requestedPosition}' FROM {eventStart.isSame(reqStart) && eventEnd.isSame(reqEnd) ? 'ALL' : `${formatZuluDate(position.requestedStartTime)} - ${formatZuluDate(position.requestedEndTime)}`}</DialogContentText>
+                    <DialogContentText>REQUESTED '{position.requestedPosition}'</DialogContentText>
+                    <DialogContentText>{eventStart.isSame(reqStart) && eventEnd.isSame(reqEnd) ? 'FULL EVENT' : `${formatZuluDate(position.requestedStartTime)} - ${formatZuluDate(position.requestedEndTime)}`}</DialogContentText>
                     <br />
                     <DialogContentText>Notes:</DialogContentText>
                     <DialogContentText>{position.notes}</DialogContentText>
                     <br />
                     <Stack direction="column" spacing={2}>
                         <TextField fullWidth variant="filled" label="Final Position" value={finalPosition} onChange={(e) => setFinalPosition(e.target.value)} />
-                        <DateTimePicker sx={{ width: '100%', }} disablePast minDateTime={eventStart} maxDateTime={eventEnd} name="start" label="Final Start" value={finalStartTime} onChange={setFinalStartTime} />
-                        <DateTimePicker sx={{ width: '100%', }} disablePast minDateTime={eventStart} maxDateTime={eventEnd} name="end" label="Final End" value={finalEndTime} onChange={setFinalEndTime} />
+                        <DateTimePicker sx={{ width: '100%', }} disablePast ampm={false} minDateTime={eventStart} maxDateTime={eventEnd} name="start" label="Final Start" value={finalStartTime} onChange={setFinalStartTime} />
+                        <DateTimePicker sx={{ width: '100%', }} disablePast ampm={false} minDateTime={eventStart} maxDateTime={eventEnd} name="end" label="Final End" value={finalEndTime} onChange={setFinalEndTime} />
                         <TextField fullWidth variant="filled" multiline rows={4} name="finalNotes" label="Final Notes (optional)" value={finalNotes} onChange={(e) => setFinalNotes(e.target.value)} />
                     </Stack>
                 </DialogContent>

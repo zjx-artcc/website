@@ -54,12 +54,12 @@ export const saveEventPosition = async (event: Event, formData: FormData, admin?
         return { errors: [{ message: 'You do not have permission to perform this action' }] };
     }
 
-    if ((await prisma.event.findUnique({ where: { id: event.id } }))?.positionsLocked) {
+    if (!admin && (await prisma.event.findUnique({ where: { id: event.id } }))?.positionsLocked) {
         return { errors: [{ message: 'Positions are locked for this event' }] };
     }
 
     if ((await prisma.eventPosition.count({ where: { eventId: event.id, userId: session.user.id } })) > 0) {
-        return { errors: [{ message: 'You have already requested a position for this event' }] };
+        return { errors: [{ message: admin ? 'This controller already has a position request' : 'You have already requested a position for this event' }] };
     }
 
     const eventPositionZ = z.object({
@@ -71,7 +71,7 @@ export const saveEventPosition = async (event: Event, formData: FormData, admin?
     });
 
     const result = eventPositionZ.safeParse({
-        controllerId: admin ? formData.get('controllerId') : session.user.id,
+        controllerId: admin ? formData.get('userId') : session.user.id,
         requestedPosition: formData.get('requestedPosition'),
         requestedStartTime: new Date(formData.get('requestedStartTime') as string),
         requestedEndTime: new Date(formData.get('requestedEndTime') as string),
@@ -89,12 +89,29 @@ export const saveEventPosition = async (event: Event, formData: FormData, admin?
             requestedPosition: result.data.requestedPosition,
             requestedStartTime: result.data.requestedStartTime,
             requestedEndTime: result.data.requestedEndTime,
-            notes: result.data.notes,
+            notes: `${result.data.notes}${admin ? `\n(MAN ASSIGN)` : ''}`,
         },
         include: {
             user: true,
         },
     });
+
+    if (admin) {
+        await prisma.eventPosition.update({
+            where: {
+                id: eventPosition.id,
+            },
+            data: {
+                finalPosition: result.data.requestedPosition,
+                finalStartTime: result.data.requestedStartTime,
+                finalEndTime: result.data.requestedEndTime,
+                finalNotes: result.data.notes,
+            },
+            include: {
+                user: true,
+            },
+        });
+    }
     
     after(async () => {
         if (admin && eventPosition) {
@@ -256,5 +273,22 @@ export const unpublishEventPosition = async (event: Event, position: EventPositi
     revalidatePath(`/admin/events/${event.id}/manager`);
 
     return { eventPosition };
+}
+
+export const fetchAllUsers = async () => {
+    return prisma.user.findMany({
+        select: {
+            id: true,
+            cid: true,
+            firstName: true,
+            lastName: true,
+            rating: true,
+        },
+        where: {
+            controllerStatus: {
+                not: 'NONE',
+            },
+        },
+    });
 }
 

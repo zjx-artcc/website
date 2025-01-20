@@ -1,13 +1,11 @@
 import { EventPositionWithSolo } from "@/app/admin/events/[id]/manager/page";
-import { Chip, IconButton, Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 import { ButtonGroup } from "@mui/material";
-import { getIconForCertificationOption } from "@/lib/certification";
 import { formatZuluDate } from "@/lib/date";
 import { getRating } from "@/lib/vatsim";
 import { TableBody, Tooltip } from "@mui/material";
 import { CardContent, Table, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Card } from "@mui/material";
-import { DeleteForever, Edit } from "@mui/icons-material";
 import Link from "next/link";
 import { Event, EventPosition } from "@prisma/client";
 import TogglePositionsLockButton from "./TogglePositionsLockButton";
@@ -20,6 +18,14 @@ import EventPositionPublishAllButton from "./EventPositionPublishAllButton";
 export default async function EventPositionsTable({ event, positions }: { event: Event, positions: EventPositionWithSolo[] }) {
 
     const getTimeRectangle = (position: EventPosition, eventStart: Date, start: Date, eventEnd: Date, end: Date) => {
+
+        if (eventStart.getTime() > start.getTime() || eventEnd.getTime() < end.getTime()) {
+            return <>
+                <div style={{ position: 'relative', height: '20px', backgroundColor: 'red', width: '80px' }} />
+                <Typography variant="caption">INVALID (hover)</Typography>
+            </>;
+        }
+
         const totalDuration = eventEnd.getTime() - eventStart.getTime();
         const startOffset = start.getTime() - eventStart.getTime();
         const endOffset = end.getTime() - eventStart.getTime();
@@ -53,7 +59,7 @@ export default async function EventPositionsTable({ event, positions }: { event:
                                 <TableCell>Final Position</TableCell>
                                 <TableCell>Final Time</TableCell>
                                 <TableCell>Final Notes</TableCell>
-                                <TableCell>Actions</TableCell>
+                                { !event.archived && <TableCell>Actions</TableCell> }
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -63,6 +69,7 @@ export default async function EventPositionsTable({ event, positions }: { event:
                                         <Link href={`/admin/controller/${position.user.cid}`} passHref target="_blank">
                                             <Chip
                                                 label={`${position.user.firstName} ${position.user.lastName} - ${getRating(position.user.rating)}` || 'Unknown'}
+                                                color={position.published ? 'success' : 'default'}
                                                 size="small"
                                             />
                                         </Link>
@@ -87,13 +94,13 @@ export default async function EventPositionsTable({ event, positions }: { event:
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell>{position.finalNotes}</TableCell>
-                                    <TableCell>
+                                    { !event.archived && <TableCell>
                                         <ButtonGroup variant="outlined" color="inherit" size="small">
                                             <EventPositionPublishButton event={event} position={position} />
                                             <EventPositionEditButton event={event} position={position} />
                                             <EventPositionDeleteButton event={event} position={position} />
                                         </ButtonGroup>
-                                    </TableCell>
+                                    </TableCell> }
                                 </TableRow>
                             ))}
                         </TableBody>

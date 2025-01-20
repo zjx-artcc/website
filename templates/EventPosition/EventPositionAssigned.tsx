@@ -11,7 +11,7 @@ export const eventPositionAssigned = (controller: User, eventPosition: EventPosi
                 control <strong>{eventPosition.finalPosition}</strong> for the following event: <strong>{event.name}</strong>.
             </p>
             <p>You are required to control from <strong>{formatZuluDate(eventPosition.finalStartTime || event.start)}</strong> to <strong>{formatZuluDate(eventPosition.finalEndTime || event.end)}</strong>.</p>
-            <p>The event start at <strong>{formatZuluDate(event.start)}</strong></p>
+            <p>The event starts at <strong>{formatZuluDate(event.start)}</strong></p>
             <br/>
             <p>Important event reminders:</p>
             <p>Please be ready to control at least <strong>10</strong> minutes before the start time.</p>

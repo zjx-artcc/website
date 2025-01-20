@@ -13,7 +13,7 @@ export default function EventPositionPublishAllButton({ event, positions, }: { e
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [errors, setErrors] = useState<EventPositionError[]>([]);
 
-    const allPublished = positions.every((position) => position.published);
+    const allPublished = positions.length > 0 && positions.every((position) => position.published);
 
     const handleClick = async () => {
         if (allPublished) {
@@ -41,7 +41,7 @@ export default function EventPositionPublishAllButton({ event, positions, }: { e
 
     return (
         <>
-            <Button variant={allPublished ? 'outlined' : 'contained'} color={allPublished ? 'error' : 'success'} disabled={!!event.archived} onClick={handleClick}>{allPublished ? 'Unp' : 'P'}ublish All</Button>
+            <Button variant={allPublished ? 'outlined' : 'contained'} color={allPublished ? 'error' : 'success'} disabled={!!event.archived || positions.length === 0} onClick={handleClick}>{allPublished ? 'Unp' : 'P'}ublish All</Button>
             <Dialog open={errorDialogOpen} onClose={() => setErrorDialogOpen(false)}>
                 <DialogTitle>Could Not Auto-Publish</DialogTitle>
                 <DialogContent>

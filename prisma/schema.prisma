@@ -279,6 +279,7 @@ enum LogModel {
   ROLE
   EVENT
   EVENT_POSITION
+  EVENT_POSITION_PRESET
   FILE_CATEGORY
   FILE
   STAFFING_REQUEST
@@ -603,66 +604,68 @@ model TrainingProgressionStep {
 }
 
 model Event {
-  id          String          @id @default(cuid())
-  name        String
-  type        EventType
+  id   String    @id @default(cuid())
+  name String
+  type EventType
 
   featuredFields String[]
 
   description String
 
-  bannerKey   String?
+  bannerKey String?
 
-  hidden      Boolean         @default(true)
-  positionsLocked Boolean     @default(true)
+  hidden              Boolean @default(true)
+  positionsLocked     Boolean @default(true)
   manualPositionsOpen Boolean @default(false)
 
   archived DateTime?
 
-  start       DateTime
-  end         DateTime
+  start DateTime
+  end   DateTime
 
-  positions   EventPosition[]
+  positions       EventPosition[]
   presetPositions String[]
 }
 
 enum EventType {
-  SINGLE
-  SINGLE_SUPPORT
-  MULTIPLE
-  MULTIPLE_SUPPORT
+  HOME
+  SUPPORT_REQUIRED
+  SUPPORT_OPTIONAL
   GROUP_FLIGHT
+  FRIDAY_NIGHT_OPERATIONS
+  SATURDAY_NIGHT_OPERATIONS
   TRAINING
-} 
+}
 
 model EventPosition {
-  id        String  @id @default(cuid())
+  id String @id @default(cuid())
 
-  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId   String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String
 
-  user     User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
 
-  requestedPosition  String
-  notes              String?
+  requestedPosition String
+  notes             String?
 
   requestedStartTime DateTime
   requestedEndTime   DateTime
 
-  finalStartTime      DateTime?
-  finalEndTime        DateTime?
+  finalStartTime DateTime?
+  finalEndTime   DateTime?
 
-  finalPosition      String?
-  finalNotes         String?
+  finalPosition String?
+  finalNotes    String?
 
-  published          Boolean @default(false)
+  published Boolean @default(false)
 
   @@unique([eventId, userId])
 }
 
 model EventPositionPreset {
-  id        String  @id @default(cuid())
+  id String @id @default(cuid())
 
+  name      String
   positions String[]
 }

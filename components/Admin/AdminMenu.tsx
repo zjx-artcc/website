@@ -15,6 +15,7 @@ import {
     ListAlt,
     MilitaryTech,
     QuestionAnswer,
+    RecentActors,
     Report,
     Send,
     Task,
@@ -97,6 +98,14 @@ export default async function AdminMenu() {
                                 <CalendarMonth/>
                             </ListItemIcon>
                             <ListItemText primary="Events"/>
+                        </ListItemButton>
+                    </Link>
+                    <Link href="/admin/event-presets" style={{textDecoration: 'none', color: 'inherit',}}>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <RecentActors/>
+                            </ListItemIcon>
+                            <ListItemText primary="Event Position Presets"/>
                         </ListItemButton>
                     </Link>
                     <Link href="/admin/staffing-requests" style={{textDecoration: 'none', color: 'inherit',}}>

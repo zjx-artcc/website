@@ -18,6 +18,7 @@ import { formatZuluDate } from '@/lib/date';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth/auth';
 import EventPositionRequestForm from '@/components/EventPosition/EventPositionRequestForm';
+import { User } from '@prisma/client';
 
 const ut = new UTApi();
 
@@ -39,7 +40,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
     const session = await getServerSession(authOptions);
 
-    const imageUrl = `https://utfs.io/f/${event.bannerKey}`;
+    const imageUrl = event.bannerKey && `https://utfs.io/f/${event.bannerKey}`;
 
     const eventPosition = await prisma.eventPosition.findUnique({
         where: {
@@ -81,7 +82,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 { session?.user && session.user.controllerStatus !== 'NONE' && !session.user.noEventSignup && !eventPosition?.published && <Card>
                     <CardContent>
                         <Typography variant="h6" gutterBottom>Request Position</Typography>
-                        <EventPositionRequestForm event={event} eventPosition={eventPosition} />
+                        <EventPositionRequestForm event={event} eventPosition={eventPosition} currentUser={session.user as User} />
                     </CardContent>
                 </Card> }
                 { session?.user && session.user.controllerStatus !== 'NONE' && !session.user.noEventSignup && eventPosition?.published && <Card>

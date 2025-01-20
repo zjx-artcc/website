@@ -3,8 +3,10 @@
 import prisma from "@/lib/db";
 import { after } from "next/server";
 import { log } from "./log";
-import { Event } from "@prisma/client";
+import { User as NAUser } from "next-auth";
+import { Event, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { sendEventPositionEmail, sendEventPositionRemovalEmail } from "./mail/event";
 
 export const toggleEventHidden = async (event: Event) => {
     
@@ -28,7 +30,7 @@ export const toggleEventHidden = async (event: Event) => {
 
 export const toggleEventArchived = async (event: Event) => {
         
-        await prisma.event.update({
+        const updatedEvent = await prisma.event.update({
             where: {
                 id: event.id,
             },
@@ -38,11 +40,29 @@ export const toggleEventArchived = async (event: Event) => {
                 positionsLocked: true,
                 manualPositionsOpen: false,
             },
+            include: {
+                positions: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
         });
     
         revalidatePath(`/admin/events/${event.id}/manager`);
+        revalidatePath(`/admin/events/${event.id}`);
     
         after(async () => {
             await log("UPDATE", "EVENT", `${event.archived ? 'Unarchived' : 'Archived'} event ${event.name}.`);
+
+            if (updatedEvent.start.getTime() < new Date().getTime()) {
+                for (const position of updatedEvent.positions.filter(p => p.published)) {
+                    if (updatedEvent.archived) {
+                        sendEventPositionRemovalEmail(position.user as NAUser, position, updatedEvent);
+                    } else {
+                        sendEventPositionEmail(position.user as NAUser, position, updatedEvent);
+                    }
+                }   
+            }
         });
     }

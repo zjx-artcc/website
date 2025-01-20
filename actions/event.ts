@@ -10,6 +10,8 @@ import { EventType, Prisma } from "@prisma/client";
 import { z } from "zod";
 import { UTApi } from "uploadthing/server";
 import { revalidatePath } from "next/cache";
+import { sendEventPositionRemovalEmail } from "./mail/event";
+import { User } from "next-auth";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 4;
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
@@ -226,11 +228,41 @@ export const deleteEvent = async (id: string) => {
         where: {
             id,
         },
+        include: {
+            positions: {
+                include: {
+                    user: true,
+                },
+            },
+        },
     });
 
     after(async () => {
         await log("DELETE", "EVENT", `Deleted event ${event.name}.`);
+
+        for (const position of event.positions) {
+            sendEventPositionRemovalEmail(position.user as User, position, event);
+        }
     });
 
     revalidatePath('/admin/events');
+}
+
+export const updateEventPresetPositions = async (eventId: string, positions: string[]) => {
+    const event = await prisma.event.update({
+        where: {
+            id: eventId,
+        },
+        data: {
+            presetPositions: {
+                set: positions,
+            },
+        },
+    });
+
+    revalidatePath(`/admin/events/${eventId}/manager`);
+
+    after(async () => {
+        await log("UPDATE", "EVENT", `Updated '${event.name}' preset positions.`);
+    });
 }

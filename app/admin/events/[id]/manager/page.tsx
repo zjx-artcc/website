@@ -1,8 +1,16 @@
+import { authOptions } from "@/auth/auth";
+import ArchivedAlert from "@/components/EventManager/ArchivedAlert";
 import EventControls from "@/components/EventManager/EventControls";
 import EventPositionsTable from "@/components/EventManager/EventPositionsTable";
+import EventPresetSelector from "@/components/EventManager/EventPresetSelector";
+import HiddenAlert from "@/components/EventManager/HiddenAlert";
+import ManualControllerAddForm from "@/components/EventManager/ManualControllerAddForm";
+import EventPositionRequestForm from "@/components/EventPosition/EventPositionRequestForm";
 import prisma from "@/lib/db";
-import { Alert, Stack } from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Card, CardContent, Stack, Typography } from "@mui/material";
 import { EventPosition, SoloCertification, User } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 export type EventPositionWithSolo = EventPosition & { 
@@ -22,6 +30,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             positions: {
                 include: {
                     user: true,
+                },
+                orderBy: {
+                    published: 'asc',
                 }
             },
         },
@@ -31,6 +42,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         notFound();
     }
 
+    const session = await getServerSession(authOptions);
+
     const positions: EventPositionWithSolo[] = await Promise.all(event.positions.map(async (position) => {
         if (!position.user) {
             return { ...position, soloCert: undefined, user: undefined };
@@ -39,15 +52,33 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         return { ...position, soloCert };
     }));
 
-    return (
+    return session?.user && (
         <Stack spacing={2}>
-            { event.archived && <Alert severity="info">This event is archived and hidden.  In order to unarchive this event, change the start and end dates to the future (if they are not).</Alert> }
-            { event.hidden && !event.archived && <Alert severity="warning">This event is hidden.  In order to show this event, change the visibility.</Alert> }
+            { event.archived && <ArchivedAlert /> }
+            { event.hidden && !event.archived && <HiddenAlert /> }
             <EventControls event={event} />
+
+            <Accordion>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="h6" gutterBottom>Preset Positions</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <EventPresetSelector event={event} />
+                </AccordionDetails>
+            </Accordion>
+
+            <Accordion>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="h6" gutterBottom>Manually Assign Controller</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <EventPositionRequestForm event={event} admin currentUser={session.user as User} />
+                </AccordionDetails>
+            </Accordion>
+
             <EventPositionsTable event={event} positions={positions} />
         </Stack>
     );
-
 }
 
 const getSoloCertification = async (user: User) => {

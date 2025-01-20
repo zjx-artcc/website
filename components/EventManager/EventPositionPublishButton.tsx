@@ -21,7 +21,7 @@ export default function EventPositionPublishButton({ event, position, }: { event
     }
 
     return (
-        <Tooltip title={`${position.published ? 'Un' : ''}publish Position`}>
+        <Tooltip title={`${position.published ? 'Unp' : 'P'}ublish Position`}>
             <IconButton onClick={handleClick}>
                 { position.published ? <Unpublished /> : <Publish /> }
             </IconButton>

@@ -6,6 +6,19 @@ import {formatZuluDate} from "@/lib/date";
 import {eventPositionAssigned} from "@/templates/EventPosition/EventPositionAssigned";
 import {eventPositionRemoved} from "@/templates/EventPosition/EventPositionRemoved";
 import { positionRequestDeleted } from "@/templates/EventPosition/RequestDeleted";
+import { newEventPosted } from "@/templates/Event/NewEventPosted";
+
+export const sendEventPostedEmail = async (controller: User, event: Event) => {
+
+    const {html} = await newEventPosted(controller, event);
+
+    await mailTransport.sendMail({
+        from: FROM_EMAIL,
+        to: controller.email,
+        subject: `New Event Posted: ${event.name}`,
+        html,
+    });
+}
 
 export const sendEventPositionEmail = async (controller: User, eventPosition: EventPosition, event: Event) => {
 

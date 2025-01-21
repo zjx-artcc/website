@@ -6,7 +6,7 @@ import { log } from "./log";
 import { User as NAUser } from "next-auth";
 import { Event, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { sendEventPositionEmail, sendEventPositionRemovalEmail } from "./mail/event";
+import { sendEventPositionEmail, sendEventPositionRemovalEmail, sendEventPostedEmail } from "./mail/event";
 
 export const toggleEventHidden = async (event: Event) => {
     
@@ -25,6 +25,21 @@ export const toggleEventHidden = async (event: Event) => {
 
     after(async () => {
         await log("UPDATE", "EVENT", `${event.hidden ? 'Showed' : 'Hidden'} event ${event.name}.`);
+
+        if (event.hidden) {
+            const users = await prisma.user.findMany({
+                where: {
+                    newEventNotifications: true,
+                    controllerStatus: {
+                        not: 'NONE',
+                    },
+                },
+            });
+
+            for (const user of users) {
+                sendEventPostedEmail(user as NAUser, event);
+            }
+        }
     });
 }
 

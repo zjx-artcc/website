@@ -73,7 +73,9 @@ model User {
   updatedAt          DateTime
   staffingRequests   StaffingRequest[]
   loas               LOA[]
-  receiveEmail       Boolean?            @default(true)
+
+  newEventNotifications Boolean? @default(false)
+  receiveEmail          Boolean? @default(true)
 
   noRequestLoas                  Boolean?
   noRequestTrainingAssignments   Boolean?

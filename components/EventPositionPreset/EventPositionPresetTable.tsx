@@ -43,7 +43,7 @@ export function EventPositionPresetTable() {
                     <GridActionsCellItem
                         icon={<Edit/>}
                         label="Edit Event Position Preset"
-                        onClick={() => router.push(`/admin/event-presets/${params.row.id}`)}
+                        onClick={() => router.push(`/events/admin/event-presets/${params.row.id}`)}
                     />
                 </Tooltip>,
                 <EventPositionPresetDeleteButton positionPreset={params.row as EventPositionPreset} />,

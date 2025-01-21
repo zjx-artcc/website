@@ -10,6 +10,9 @@ export default async function Page() {
             operatingInitials: {
                 not: null,
             },
+            controllerStatus: {
+                not: 'NONE',
+            },
         },
         select: {
             operatingInitials: true,

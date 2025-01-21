@@ -82,10 +82,10 @@ export default function EventPositionRequestForm({ admin, currentUser, event, ev
                         />
                     </Grid2>
                     <Grid2 size={{ xs: 6, sm: 3, md: 2, }}>
-                        <DateTimePicker sx={{ width: '100%', }} disabled={!admin && (!!eventPosition || event.positionsLocked)} disablePast ampm={false} minDateTime={dayjs.utc(event.start)} maxDateTime={dayjs.utc(event.end)} name="end" label={admin ? 'FINAL Start' : 'Requested Start'} value={end} onChange={setEnd} />
+                        <DateTimePicker sx={{ width: '100%', }} disabled={!admin && (!!eventPosition || event.positionsLocked)} disablePast ampm={false} minDateTime={dayjs.utc(event.start)} maxDateTime={dayjs.utc(event.end)} name="start" label={admin ? 'FINAL Start' : 'Requested Start'} value={start} onChange={setStart} />
                     </Grid2>
                     <Grid2 size={{ xs: 6, sm: 3, md: 2, }}>
-                        <DateTimePicker sx={{ width: '100%', }} disabled={!admin && (!!eventPosition || event.positionsLocked)} disablePast ampm={false} minDateTime={dayjs.utc(event.start)} maxDateTime={dayjs.utc(event.end)} name="start" label={admin ? 'FINAL End' : 'Requested End'} value={start} onChange={setStart} />
+                        <DateTimePicker sx={{ width: '100%', }} disabled={!admin && (!!eventPosition || event.positionsLocked)} disablePast ampm={false} minDateTime={dayjs.utc(event.start)} maxDateTime={dayjs.utc(event.end)} name="end" label={admin ? 'FINAL End' : 'Requested End'} value={end} onChange={setEnd} />
                     </Grid2>
                     <Grid2 size={6}>
                         <TextField variant="filled" fullWidth multiline rows={4} disabled={!admin && (!!eventPosition || event.positionsLocked)} name="notes" label={admin ? 'FINAL Notes (optional)' : 'Notes (optional)'} value={notes} onChange={(e) => setNotes(e.target.value)} />

@@ -324,7 +324,7 @@ const getDescription = (type: EventType) => {
         case EventType.GROUP_FLIGHT:
             return 'Organizations that have requested, or notified the ARTCC, staffing may be posted. Controllers may staff during these requested periods but the ARTCC has made no commitment to making staffing available for the activity.';
         case EventType.FRIDAY_NIGHT_OPERATIONS:
-            return 'Any event between 2100z and 0600z on a Friday. FNOsare “owned” by VATUSA but may be delegated to subdivisions for planning, coordination, and execution.';
+            return 'Any event between 2100z and 0600z on a Friday. FNOs are “owned” by VATUSA but may be delegated to subdivisions for planning, coordination, and execution.';
         case EventType.SATURDAY_NIGHT_OPERATIONS:
             return 'Any event between the hours of 2100z and 0600z on a Saturday. SNOs must receive approval from VATUSA prior to being publicly advertised.';
         case EventType.TRAINING:

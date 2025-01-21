@@ -1,6 +1,6 @@
 'use client';
 import { publishEventPosition, unpublishEventPosition, validateFinalEventPosition } from "@/actions/eventPosition";
-import { EventPositionWithSolo } from "@/app/admin/events/[id]/manager/page";
+import { EventPositionWithSolo } from "@/app/events/admin/events/[id]/manager/page";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { Event, } from "@prisma/client";
 import { User } from "next-auth";

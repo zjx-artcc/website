@@ -13,7 +13,7 @@ export default async function EventsPage() {
                         <Typography variant="h5">Events</Typography>
                         <Typography>Events are archived 24 hours after the published end time.</Typography>
                     </Box>
-                    <Link href="/admin/events/new">
+                    <Link href="/events/admin/events/new">
                         <Button variant="contained" size="large" startIcon={<Add />}>New Event</Button>
                     </Link>
                 </Stack>

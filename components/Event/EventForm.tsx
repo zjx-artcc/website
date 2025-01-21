@@ -76,7 +76,7 @@ export default function EventForm({ event }: { event?: Event, }) {
         formData.set('name', name);
         formData.set('start', start?.toISOString() || '');
         formData.set('end', end?.toISOString() || '');
-        formData.set('type', type || EventType.SINGLE);
+        formData.set('type', type || EventType.HOME);
         formData.set('bannerUrl', bannerUrl);
         formData.set('description', description);
         formData.set('featuredFields', JSON.stringify(featuredFields));
@@ -92,7 +92,7 @@ export default function EventForm({ event }: { event?: Event, }) {
             toast.success('Event updated successfully.');
         } else {
             toast.success('Event created successfully.');
-            router.push(`/admin/events/${newEvent.id}/manager`);
+            router.push(`/events/admin/events/${newEvent.id}/manager`);
 
             setDescription('');
             setFeaturedFields([]);

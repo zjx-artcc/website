@@ -8,7 +8,7 @@ export default function Page() {
         <CardContent>
             <Stack direction="row" justifyContent="space-between">
                 <Typography variant="h5">Event Position Presets</Typography>
-                <Link href="/admin/event-presets/new">
+                <Link href="/events/admin/event-presets/new">
                     <Button variant="contained" size="large" startIcon={<Add />}>New Position Preset</Button>
                 </Link>
             </Stack>

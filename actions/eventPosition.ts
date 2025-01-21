@@ -50,7 +50,7 @@ export const saveEventPosition = async (event: Event, formData: FormData, admin?
         return { errors: [{ message: 'You must be logged in to perform this action' }] };
     }
 
-    if (!session.user.roles.includes('STAFF') && admin) {
+    if (!session.user.roles.includes('STAFF') && !session.user.roles.includes("EVENT_STAFF") && admin) {
         return { errors: [{ message: 'You do not have permission to perform this action' }] };
     }
 

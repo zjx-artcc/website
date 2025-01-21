@@ -92,32 +92,6 @@ export default async function AdminMenu() {
                             <ListItemText primary="Airports"/>
                         </ListItemButton>
                     </Link>
-                    <Link href="/admin/events" style={{textDecoration: 'none', color: 'inherit',}}>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <CalendarMonth/>
-                            </ListItemIcon>
-                            <ListItemText primary="Events"/>
-                        </ListItemButton>
-                    </Link>
-                    <Link href="/admin/event-presets" style={{textDecoration: 'none', color: 'inherit',}}>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <RecentActors/>
-                            </ListItemIcon>
-                            <ListItemText primary="Event Position Presets"/>
-                        </ListItemButton>
-                    </Link>
-                    <Link href="/admin/staffing-requests" style={{textDecoration: 'none', color: 'inherit',}}>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <Badge color="primary" badgeContent={staffingRequests}>
-                                    <QuestionAnswer/>
-                                </Badge>
-                            </ListItemIcon>
-                            <ListItemText primary="Staffing Requests"/>
-                        </ListItemButton>
-                    </Link>
                     <Link href="/admin/certification-types" style={{textDecoration: 'none', color: 'inherit',}}>
                         <ListItemButton>
                             <ListItemIcon>

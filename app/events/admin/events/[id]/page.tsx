@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                 <CardContent>
                     <Typography variant="h5" gutterBottom>Edit - {event.name}</Typography>
                     <Stack direction="row" spacing={1}>
-                        <Link href={`/admin/events/${event.id}/manager`} target="_blank">
+                        <Link href={`/events/admin/events/${event.id}/manager`} target="_blank">
                             <Button variant="contained" endIcon={<OpenInNew />}>Manager</Button>
                         </Link>
                         <ToggleVisibilityButton event={event} />

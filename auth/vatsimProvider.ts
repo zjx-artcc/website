@@ -75,7 +75,7 @@ export const getVatusaData = async (data: Profile | User, allUsers?: User[]): Pr
         return {
             controllerStatus: "HOME",
             roles: [
-                "CONTROLLER", "MENTOR", "INSTRUCTOR", "STAFF"
+                "CONTROLLER", "EVENT_STAFF", "MENTOR", "INSTRUCTOR", "STAFF",
             ],
             staffPositions: [
                 "ATM"

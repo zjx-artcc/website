@@ -197,6 +197,7 @@ enum Role {
   MENTOR
   INSTRUCTOR
   STAFF
+  EVENT_STAFF
 }
 
 enum StaffPosition {

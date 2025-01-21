@@ -17,7 +17,7 @@ import {
     Typography
 } from "@mui/material";
 import {Session} from "next-auth";
-import {AdminPanelSettings, Cancel, Class, Login, Logout, Person, Refresh, Settings} from "@mui/icons-material";
+import {AdminPanelSettings, CalendarMonth, Cancel, Class, Login, Logout, Person, Refresh, Settings} from "@mui/icons-material";
 import NavDropdown from "@/components/Navbar/NavDropdown";
 import Link from "next/link";
 import {getRating} from "@/lib/vatsim";
@@ -116,6 +116,10 @@ export default function LoginButton({session, sidebar, sidebarButtonClicked,}: {
                         <Link href="/training/overview" style={{textDecoration: 'none', color: 'inherit',}}>
                             <NavSidebarButton icon={<Class/>} text="Training Administration"/>
                         </Link>}
+                    {session?.user.roles.some((r) => ["EVENT_STAFF", "STAFF"].includes(r)) &&
+                    <Link href="/events/admin/overview" style={{textDecoration: 'none', color: 'inherit',}}>
+                        <NavSidebarButton icon={<CalendarMonth />} text="Events Administration"/>
+                    </Link>}
                     <NavSidebarButton icon={<Refresh/>} text="Refresh VATUSA Account Information"
                                       onClick={handleClick}/>
                     <NavSidebarButton icon={<Logout/>} text="Logout" onClick={logout}/>
@@ -152,6 +156,15 @@ export default function LoginButton({session, sidebar, sidebarButtonClicked,}: {
                             <ListItemText>Training Administration</ListItemText>
                         </MenuItem>
                     </Link>}
+                {session?.user.roles.some((r) => ["EVENT_STAFF", "STAFF"].includes(r)) &&
+                <Link href="/events/admin/overview" style={{textDecoration: 'none', color: 'inherit',}}>
+                    <MenuItem onClick={closeDropdown}>
+                        <ListItemIcon>
+                            <CalendarMonth />
+                        </ListItemIcon>
+                        <ListItemText>Events Administration</ListItemText>
+                    </MenuItem>
+                </Link>}
                 <MenuItem onClick={handleRefresh}>
                     <ListItemIcon>
                         <Refresh/>

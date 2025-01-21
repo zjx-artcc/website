@@ -25,7 +25,7 @@ export default function EventPositionPresetForm({ positionPreset }: { positionPr
 
         if (!positionPreset) {
             toast.success('Event position preset created successfully!');
-            router.push('/admin/event-presets');
+            router.push('/events/admin/event-presets');
         } else {
             toast.success('Event position preset updated successfully!');
         }

@@ -208,7 +208,7 @@ export const upsertEvent = async (formData: FormData) => {
     });
 
     if (data.id) {
-        revalidatePath(`/admin/events/${data.id}`);
+        revalidatePath(`/events/admin/events/${data.id}`);
     }
 
     after(async () => {
@@ -245,7 +245,7 @@ export const deleteEvent = async (id: string) => {
         }
     });
 
-    revalidatePath('/admin/events');
+    revalidatePath('/events/admin/events');
 }
 
 export const updateEventPresetPositions = async (eventId: string, positions: string[]) => {
@@ -260,7 +260,7 @@ export const updateEventPresetPositions = async (eventId: string, positions: str
         },
     });
 
-    revalidatePath(`/admin/events/${eventId}/manager`);
+    revalidatePath(`/events/admin/events/${eventId}/manager`);
 
     after(async () => {
         await log("UPDATE", "EVENT", `Updated '${event.name}' preset positions.`);

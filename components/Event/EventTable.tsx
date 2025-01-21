@@ -73,14 +73,14 @@ export default function EventTable() {
                     <GridActionsCellItem
                         icon={<Checklist />}
                         label="Event Manager"
-                        onClick={() => router.push(`/admin/events/${params.row.id}/manager`)}
+                        onClick={() => router.push(`/events/admin/events/${params.row.id}/manager`)}
                     />
                 </Tooltip>,
                 <Tooltip title="Edit Event" key={`edit-${params.row.id}`}>
                     <GridActionsCellItem
                         icon={<Edit/>}
                         label="Edit Event"
-                        onClick={() => router.push(`/admin/events/${params.row.id}`)}
+                        onClick={() => router.push(`/events/admin/events/${params.row.id}`)}
                     />
                 </Tooltip>,
                 <EventDeleteButton event={params.row} />,

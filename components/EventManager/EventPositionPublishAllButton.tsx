@@ -29,7 +29,10 @@ export default function EventPositionPublishAllButton({ event, positions, }: { e
         if (errors.length === 0) {
             await Promise.all(positions.map(async (position) => {
                 if (!position.published) {
-                    await publishEventPosition(event, position);
+                    await publishEventPosition(event, {
+                        ...position,
+                        finalPosition: position.finalPosition || position.requestedPosition || 'ERR - CONTACT EVENT STAFF',
+                    });
                 }
             }));
             toast.success('All positions published successfully!');

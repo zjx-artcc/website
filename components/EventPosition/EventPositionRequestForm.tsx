@@ -76,7 +76,7 @@ export default function EventPositionRequestForm({ admin, currentUser, event, ev
                             freeSolo
                             fullWidth
                             options={event.presetPositions}
-                            renderInput={(params) => <TextField {...params} variant="filled" label={admin ? 'FINAL Position' : 'Requested Position'} />}
+                            renderInput={(params) => <TextField {...params} variant="filled" label={admin ? 'FINAL Position' : 'Requested Position'} helperText="Pick from selections OR type your own" />}
                             inputValue={position}
                             onInputChange={(e, value) => setPosition(value)}
                         />

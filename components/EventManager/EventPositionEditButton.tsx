@@ -38,6 +38,7 @@ export default function EventPositionEditButton({ event, position, }: { event: E
     const save = async (publish?: boolean) => {
 
         const formData = new FormData();
+        formData.set('requestedPosition', position.requestedPosition);
         formData.set('finalPosition', finalPosition);
         formData.set('finalStartTime', finalStartTime!.toISOString());
         formData.set('finalEndTime', finalEndTime!.toISOString());

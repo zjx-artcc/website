@@ -173,14 +173,20 @@ export const deleteEventPosition = async (event: Event, eventPositionId: string,
 
 export const validateFinalEventPosition = async (event: Event, formData: FormData) => {
     const eventPositionZ = z.object({
-        finalPosition: z.string().min(1, { message: 'Final Position is required' }).max(50, { message: 'Final Position must be less than 50 characters' }),
+        finalPosition: z.string().min(1, { message: 'Final Position is required and could not be autofilled.' }).max(50, { message: 'Final Position must be less than 50 characters' }),
         finalStartTime: z.date().min(event.start, { message: 'Final time must be within the event' }).max(event.end, { message: 'Final time must be within the event' }),
         finalEndTime: z.date().min(event.start, { message: 'Final time must be within the event' }).max(event.end, { message: 'Final time must be within the event' }),
         finalNotes: z.string().optional(),
     });
 
+    const requestedPosition = formData.get('requestedPosition') as string;
+    let finalPosition = formData.get('finalPosition') as string;
+    if (!finalPosition && event.presetPositions.includes(requestedPosition)) {
+        finalPosition = requestedPosition;
+    }
+
     return eventPositionZ.safeParse({
-        finalPosition: formData.get('finalPosition'),
+        finalPosition,
         finalStartTime: new Date(formData.get('finalStartTime') as string),
         finalEndTime: new Date(formData.get('finalEndTime') as string),
         finalNotes: formData.get('finalNotes'),
@@ -231,6 +237,7 @@ export const publishEventPosition = async (event: Event, position: EventPosition
             id: position.id,
         },
         data: {
+            finalPosition: position.finalPosition,
             published: true,
         },
         include: {

@@ -69,7 +69,7 @@ export default function EventForm({ event }: { event?: Event, }) {
         const fourthStep = await getStepStatus(res, { bannerUrl });
         const fifthStep = await getStepStatus(res, { featuredFields });
         setStatus([firstStep, secondStep, thirdStep, fourthStep, fifthStep]);
-    }, [name, start, end, type, description, bannerUrl, featuredFields]);
+    }, [event?.archived, event?.id, name, start, end, type, description, bannerUrl, featuredFields]);
 
     const handleSubmit = async (formData: FormData) => {
 
@@ -102,7 +102,7 @@ export default function EventForm({ event }: { event?: Event, }) {
 
     useEffect(() => {
         updateStatus();
-    }, [open]);
+    }, [updateStatus]);
 
     const handleOpen = (panel: number) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setOpen(isExpanded ? panel : -1);

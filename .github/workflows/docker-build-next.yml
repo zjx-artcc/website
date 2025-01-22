@@ -1,0 +1,55 @@
+name: Build and Push Docker Image to GitHub Packages
+
+on:
+  push:
+    branches:
+      next
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Extract Commit Hash
+      - name: Extract Commit Hash
+        id: commit_hash
+        run: |
+          COMMIT_HASH=${GITHUB_SHA::7}  # Get the first 7 characters of the commit hash
+          echo "COMMIT_HASH=${COMMIT_HASH,,}" >> $GITHUB_ENV  # Convert to lowercase
+
+      # Step 3: Check for localhost in NEXT_PUBLIC_ env variables
+      - name: Check for localhost in NEXT_PUBLIC_ variables
+        run: |
+          for var in $(printenv | grep '^NEXT_PUBLIC_' | cut -d= -f1); do
+            value=$(printenv $var)
+            if [[ "$value" == *"localhost"* ]]; then
+              echo "ERROR: $var contains 'localhost'. This is not allowed."
+              exit 1
+            fi
+          done
+
+      # Step 4: Log in to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 5: Build and Push Docker Image using commit hash as the tag
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:next-latest
+            ghcr.io/${{ github.repository }}:next-${{ env.COMMIT_HASH }}

@@ -4,9 +4,12 @@ import prisma from "@/lib/db";
 import { after } from "next/server";
 import { log } from "./log";
 import { User as NAUser } from "next-auth";
-import { Event, User } from "@prisma/client";
+import { Event } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendEventPositionEmail, sendEventPositionRemovalEmail, sendEventPostedEmail } from "./mail/event";
+import { UTApi } from "uploadthing/server";
+
+const ut = new UTApi();
 
 export const toggleEventHidden = async (event: Event) => {
     
@@ -54,6 +57,7 @@ export const toggleEventArchived = async (event: Event) => {
                 hidden: true,
                 positionsLocked: true,
                 manualPositionsOpen: false,
+                bannerKey: event.archived ? event.bannerKey : null,
             },
             include: {
                 positions: {
@@ -69,6 +73,10 @@ export const toggleEventArchived = async (event: Event) => {
     
         after(async () => {
             await log("UPDATE", "EVENT", `${event.archived ? 'Unarchived' : 'Archived'} event ${event.name}.`);
+
+            if (updatedEvent.archived) {
+                await ut.deleteFiles(event.bannerKey || '');
+            }
 
             if (updatedEvent.start.getTime() < new Date().getTime()) {
                 for (const position of updatedEvent.positions.filter(p => p.published)) {

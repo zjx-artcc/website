@@ -46,7 +46,7 @@ export function EventPositionPresetTable() {
                         onClick={() => router.push(`/events/admin/event-presets/${params.row.id}`)}
                     />
                 </Tooltip>,
-                <EventPositionPresetDeleteButton positionPreset={params.row as EventPositionPreset} />,
+                <EventPositionPresetDeleteButton key={`deletebtn-${params.row.id}`} positionPreset={params.row as EventPositionPreset} />,
             ],
         }
     ];

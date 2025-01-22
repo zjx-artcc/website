@@ -37,11 +37,11 @@ export default function EventForm({ event }: { event?: Event, }) {
     const [featuredFields, setFeaturedFields] = useState<string[]>(event?.featuredFields || []);
 
     const [status, setStatus] = useState<ReactNode[]>([
-        <CircularProgress color="inherit" size={20} />,
-        <CircularProgress color="inherit" size={20} />,
-        <CircularProgress color="inherit" size={20} />,
-        <CircularProgress color="inherit" size={20} />,
-        <CircularProgress color="inherit" size={20} />,
+        <CircularProgress key={1} color="inherit" size={20} />,
+        <CircularProgress key={2} color="inherit" size={20} />,
+        <CircularProgress key={3} color="inherit" size={20} />,
+        <CircularProgress key={4} color="inherit" size={20} />,
+        <CircularProgress key={5} color="inherit" size={20} />,
     ]);
 
     const updateStatus = useCallback(async () => {
@@ -60,7 +60,7 @@ export default function EventForm({ event }: { event?: Event, }) {
         const firstStep = await getStepStatus(res, { name, start: start?.toDate(), end: end?.toDate(), });
 
         if (event?.archived) {
-            setStatus([<CheckCircle color="success" />, <CheckCircle color="success" />, <CheckCircle color="success" />, <CheckCircle color="success" />, <CheckCircle color="success" />]);
+            setStatus([<CheckCircle key={1} color="success" />, <CheckCircle key={2} color="success" />, <CheckCircle key={3} color="success" />, <CheckCircle key={4} color="success" />, <CheckCircle key={5} color="success" />]);
             return;
         }
         

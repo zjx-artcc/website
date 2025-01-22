@@ -1,6 +1,6 @@
 'use client';
 import { adminSaveEventPosition, publishEventPosition } from "@/actions/eventPosition";
-import { EventPositionWithSolo } from "@/app/admin/events/[id]/manager/page";
+import { EventPositionWithSolo } from "@/app/events/admin/events/[id]/manager/page";
 import { formatZuluDate } from "@/lib/date";
 import { Edit } from "@mui/icons-material";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, TextField, Tooltip } from "@mui/material";
@@ -71,7 +71,7 @@ export default function EventPositionEditButton({ event, position, }: { event: E
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogTitle>Position -  {position.user?.firstName} {position.user?.lastName}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>REQUESTED '{position.requestedPosition}'</DialogContentText>
+                    <DialogContentText>REQUESTED &apos;{position.requestedPosition}&apos;</DialogContentText>
                     <DialogContentText>{eventStart.isSame(reqStart) && eventEnd.isSame(reqEnd) ? 'FULL EVENT' : `${formatZuluDate(position.requestedStartTime)} - ${formatZuluDate(position.requestedEndTime)}`}</DialogContentText>
                     <br />
                     <DialogContentText>Notes:</DialogContentText>

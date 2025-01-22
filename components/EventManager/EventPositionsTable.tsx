@@ -1,4 +1,4 @@
-import { EventPositionWithSolo } from "@/app/admin/events/[id]/manager/page";
+import { EventPositionWithSolo } from "@/app/events/admin/events/[id]/manager/page";;
 import { Chip, Stack } from "@mui/material";
 import { ButtonGroup } from "@mui/material";
 import { formatZuluDate } from "@/lib/date";

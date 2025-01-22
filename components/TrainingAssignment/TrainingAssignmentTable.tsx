@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import {getRating} from "@/lib/vatsim";
 import Link from "next/link";
 import {Lesson} from "@prisma/client";
+import {formatZuluDate, getTimeAgo} from "@/lib/date";
 
 export default function TrainingAssignmentTable({manageMode}: { manageMode: boolean }) {
 
@@ -41,20 +42,48 @@ export default function TrainingAssignmentTable({manageMode}: { manageMode: bool
             sortable: false,
             filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
         },
-        {
-            field: 'cid',
-            flex: 1,
-            headerName: 'CID',
-            sortable: false,
-            renderCell: (params) => params.row.student.cid,
-            filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
-        },
-        {
+         {
             field: 'rating',
             flex: 1,
             headerName: 'Rating',
             renderCell: (params) => getRating(params.row.student.rating),
             filterable: false,
+            filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
+        },
+       {
+            field: 'lastSessionDate',
+            flex: 1,
+            headerName: 'Last Session Date',
+            renderCell: (params) => {
+                const lastSession = params.row.student.trainingSessions[0];
+                if (!lastSession) {
+                    return 'N/A';
+                }
+
+                const lastSessionDate = new Date(lastSession.start);
+                const now = new Date();
+                const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+                const twoWeeksInMs = 2 * oneWeekInMs;
+                let chipColor: 'success' | 'warning' | 'error' = 'success';
+
+                if ((now.getTime() - lastSessionDate.getTime()) > twoWeeksInMs) {
+                    chipColor = 'error';
+                } else if ((now.getTime() - lastSessionDate.getTime()) > oneWeekInMs) {
+                    chipColor = 'warning';
+                }
+
+                return (
+                    <Tooltip title={formatZuluDate(lastSessionDate)}>
+                        <Chip
+                            label={getTimeAgo(lastSessionDate)}
+                            size="small"
+                            color={chipColor}
+                        />
+                    </Tooltip>
+                );
+            },
+            filterable: false,
+            sortable: false,
             filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
         },
         {

@@ -151,13 +151,37 @@ const getTable = (students: Student[]) => (
                 {students.map(student => (<TableRow key={student.user.id}>
                     <TableCell>{student.user.fullName}</TableCell>
                     <TableCell>{getRating(student.user.rating)}</TableCell>
-                    <TableCell>{student.lastSession ? <Tooltip
-                        title={formatZuluDate(student.lastSession.start)}><>{getTimeAgo(student.lastSession.start)}</>
-                    </Tooltip> : 'N/A'}</TableCell>
-                    <TableCell>{student.lastSession ? student.lastSession.tickets.map((ticket) => <Chip size="small"
-                                                                                                        key={ticket.lesson.name}
-                                                                                                        label={ticket.lesson.name}
-                                                                                                        color={ticket.passed ? 'success' : 'error'}/>) : 'N/A'}</TableCell>
+                    <TableCell>
+                        {student.lastSession ? (
+                            <Tooltip title={formatZuluDate(student.lastSession.start)}>
+                                <Chip
+                                    label={getTimeAgo(student.lastSession.start)}
+                                    size="small"
+                                    color={(() => {
+                                        const lastSessionDate = new Date(student.lastSession.start);
+                                        const now = new Date();
+                                        const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+                                        const twoWeeksInMs = 2 * oneWeekInMs;
+
+                                        if ((now.getTime() - lastSessionDate.getTime()) > twoWeeksInMs) {
+                                            return 'error';
+                                        } else if ((now.getTime() - lastSessionDate.getTime()) > oneWeekInMs) {
+                                            return 'warning';
+                                        } else {
+                                            return 'success';
+                                        }
+                                    })()}
+                                />
+                            </Tooltip>
+                        ) : 'N/A'}
+                    </TableCell>
+                    <TableCell>{student.lastSession ? student.lastSession.tickets.map((ticket) =>
+                        <Chip size="small"
+                            key={ticket.lesson.name}
+                            label={ticket.lesson.name}
+                            color={ticket.passed ? 'success' : 'error'}
+                        />) : 'N/A'}
+                    </TableCell>
                     <TableCell>
                         {student.lastSession ? (
                             <Tooltip title="View Last Training Session">

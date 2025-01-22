@@ -153,9 +153,21 @@ export async function createOrUpdateTrainingSession(
             },
         })
 
+        let ticketComment = "";
+
+        if (trainingSession.tickets.length > 1) {
+            trainingSession.tickets.toReversed().map((t)=>{
+                ticketComment = ticketComment.concat(`${t.lesson.identifier}: ${t.passed ? 'PASS' : 'FAIL'}\n`)
+            })
+
+            ticketComment = ticketComment.concat('\nCOMMENTS: \n\n', `${result.data.additionalComments || 'No additional comments from trainer'}`)
+        } else {
+            ticketComment = result.data.additionalComments || '';
+        }
+
         await log("UPDATE", "TRAINING_SESSION", `Updated training session with student ${trainingSession.student.cid} - ${trainingSession.student.firstName} ${trainingSession.student.lastName}`);
 
-        const updateStatus = await editVatusaTrainingSession(session.user.cid, start, trainingSession.tickets.map((tt) => tt.lesson.position).join(','), getDuration(trainingSession.start, trainingSession.end), `${result.data.additionalComments || ''}\n\nRefer to your training ticket in the vZDC website to see the scoring rubric.`, getOtsStatus(trainingSession.tickets), trainingSession.vatusaId || '');
+        const updateStatus = await editVatusaTrainingSession(session.user.cid, start, trainingSession.tickets.map((tt) => tt.lesson.position).join(','), getDuration(trainingSession.start, trainingSession.end), `${ticketComment}\n\nRefer to your training ticket in the vZDC website to see the scoring rubric.`, getOtsStatus(trainingSession.tickets), trainingSession.vatusaId || '');
 
         if (updateStatus !== 'OK') {
             await log("CREATE", "TRAINING_SESSION", `An error occurred when trying to save training ticket.`)

@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import {User} from "next-auth";
+import {Filter} from 'bad-words';
 import {Card, CardContent, Divider, Stack, Switch, TextField, Tooltip} from "@mui/material";
 import {getRating} from "@/lib/vatsim";
 import {z} from "zod";
@@ -18,7 +19,6 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
 }) {
 
     const router = useRouter();
-    const [switchState, setSwitchState] = React.useState(user.receiveEmail)
 
     const handleSubmit = async (formData: FormData) => {
         const User = z.object({
@@ -26,13 +26,15 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
             bio: z.string().max(400, "Bio must not be over 400 characters").optional(),
             operatingInitials: z.string().length(2, "Operating Initials must be 2 characters").toUpperCase(),
             receiveEmail: z.boolean(),
+            newEventNotifications: z.boolean(),
         });
 
         const result = User.safeParse({
             preferredName: formData.get('preferredName') as string,
             bio: formData.get('bio') as string,
             operatingInitials: formData.get('operatingInitials') as string || user.operatingInitials,
-            receiveEmail: formData.get('receiveEmailSwitch') === 'on',
+            receiveEmail: true,
+            newEventNotifications: formData.get('newEventNotifications') === 'on',
         });
 
         if (!result.success) {
@@ -40,10 +42,9 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
             return;
         }
 
-        const Filter = require('bad-words');
         const filter = new Filter();
 
-        if (filter.isProfane(result.data.preferredName) || filter.isProfane(result.data.bio)) {
+        if (filter.isProfane(result.data.preferredName || '') || filter.isProfane(result.data.bio || '')) {
             await writeDossier(admin ?
                     `Staff ${sessionUser.cid} attempted to force update profile with profanity in preferred name or bio.` :
                     `Attempted to update profile with profanity in preferred name or bio.`,
@@ -86,8 +87,9 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
                                        helperText="Initials are automatically converted to uppercase on submit."
                                        defaultValue={user.operatingInitials || ''}/>
                         }
+                        <FormControlLabel name="newEventNotifications" control={<Switch defaultChecked={user.newEventNotifications} />} label="Receive NEW event notifications" />
                         <Tooltip  title={'As of now, this feature is DISABLED! Once implemented, toggling this off will remove you from any email notifications send from this site.'}  placement="top-start">
-                            <FormControlLabel name="receiveEmailSwitch" onChange={() => setSwitchState(!switchState)} checked={switchState} disabled control={<Switch />} label="Receive Emails" />
+                            <FormControlLabel name="receiveEmail" checked disabled control={<Switch />} label="Receive non-urgent emails" />
                         </Tooltip>
                         <FormSaveButton />
                     </Stack>

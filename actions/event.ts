@@ -1,231 +1,28 @@
 'use server';
-import {Event, EventType, Prisma} from "@prisma/client";
-import {revalidatePath} from "next/cache";
+
 import prisma from "@/lib/db";
-import {log} from "@/actions/log";
-import {z} from "zod";
-import {UTApi} from "uploadthing/server";
-import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
+import { log } from "./log";
+import { after } from "next/server";
+import { GridFilterItem } from "@mui/x-data-grid";
+import { GridPaginationModel } from "@mui/x-data-grid";
+import { GridSortModel } from "@mui/x-data-grid";
+import { EventType, Prisma } from "@prisma/client";
+import { z } from "zod";
+import { UTApi } from "uploadthing/server";
+import { revalidatePath } from "next/cache";
+import { sendEventPositionRemovalEmail } from "./mail/event";
+import { User } from "next-auth";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 4;
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 const ut = new UTApi();
 
-export const lockUpcomingEvents = async () => {
-    const in48Hours = new Date();
-    in48Hours.setHours(in48Hours.getHours() + 48);
-
-    await prisma.event.updateMany({
-        where: {
-            start: {
-                lte: in48Hours,
-            },
-            positionsLocked: false,
-        },
-        data: {
-            positionsLocked: true,
-        },
-    });
-
-}
-
-export const deleteStaleEvents = async () => {
-
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-    const eventsToDelete = await prisma.event.findMany({
-        where: {
-            end: {
-                lte: oneWeekAgo,
-            },
-        },
-    });
-
-    for (const event of eventsToDelete) {
-        await deleteEvent(event.id);
-        await ut.deleteFiles(eventsToDelete.map((e) => e.bannerKey));
-    }
-
-}
-
-
-export const deleteEvent = async (id: string) => {
-    revalidatePath('/admin/events');
-    const data = await prisma.event.delete({
-        where: {
-            id,
-        },
-    });
-    await log('DELETE', 'EVENT', `Deleted event ${data.name}`);
-    const res = await ut.deleteFiles(data.bannerKey);
-    if (!res.success) {
-        throw new Error("Failed to delete banner image");
-    }
-    return data;
-}
-
-export const createOrUpdateEvent = async (formData: FormData) => {
-
-    const eventZ = z.object({
-        id: z.string().optional(),
-        name: z.string(),
-        host: z.string().optional(),
-        type: z.string().min(1, "Type is required"),
-        description: z.string(),
-        start: z.date(),
-        end: z.date(),
-        featuredFields: z.array(z.string()),
-        bannerImage: z
-            .any()
-            .optional()
-            .or(
-            z.any().refine((file) => {
-                return formData.get('id') || !file || file.size <= MAX_FILE_SIZE;
-            }, 'File size must be less than 4MB')
-            .refine((file) => {
-                return formData.get('id') || ALLOWED_FILE_TYPES.includes(file?.type || '');
-            }, 'File must be a PNG, JPEG, or GIF')
-            ),
-        bannerUrl: z.any().optional()
-    });
-
-    const result = eventZ.safeParse({
-        id: formData.get('id'),
-        name: formData.get('name'),
-        host: formData.get('host'),
-        type: formData.get('type'),
-        description: formData.get('description'),
-        featuredFields: formData.get('featuredFields')?.toString().split(',').map((f) => f.trim()) || [],
-        start: new Date(formData.get('start') as unknown as string),
-        end: new Date(formData.get('end') as unknown as string),
-        bannerImage: formData.get('bannerImage') as File,
-        bannerUrl: formData.get('bannerUrl') as string
-    });
-
-    if (!result.success) {
-        return {errors: result.error.errors};
-    }
-
-    if (result.data.start.getTime() >= result.data.end.getTime()) {
-        return {errors: [{message: "eventZ start time must be before the end time",}]};
-    }
-
-    const eventExists = await prisma.event.findUnique({
-            where: {
-                id: result.data.id,
-            },
-    });
-
-    if (!eventExists && !result.data.bannerImage && !result.data.bannerUrl) {
-        return {errors: [{message: "Banner image is required",}]};
-    }
-
-    let bannerKey = eventExists?.bannerKey || '';
-    if (!eventExists) {
-        if (result.data.bannerUrl) {
-            const res = await ut.uploadFilesFromUrl(result.data.bannerUrl)
-
-            if (!res.data) {
-                throw new Error("Failed to upload banner image");
-            }
-            bannerKey = res.data?.key;
-        }else{
-            const res = await ut.uploadFiles(result.data.bannerImage);
-
-            if (!res.data) {
-                throw new Error("Failed to upload banner image");
-            }
-            bannerKey = res.data?.key;
-        }
-    } else if ((result.data.bannerImage as File) !== null && (result.data.bannerImage as File).size > 0 || result.data.bannerUrl) {
-        const deletion = await ut.deleteFiles(eventExists.bannerKey);
-        if (!deletion.success) {
-            throw new Error("Failed to delete old banner image");
-        }
-
-        if (result.data.bannerUrl) {
-            const res = await ut.uploadFilesFromUrl(result.data.bannerUrl)
-
-            if (!res.data) {
-                throw new Error("Failed to upload banner image");
-            }
-            bannerKey = res.data?.key;
-        }else{
-            const res = await ut.uploadFiles(result.data.bannerImage);
-
-            if (!res.data) {
-                throw new Error("Failed to upload banner image");
-            }
-            bannerKey = res.data?.key;
-        }
-    }
-
-    const event = await prisma.event.upsert({
-        create: {
-            name: result.data.name,
-            host: result.data.host,
-            type: result.data.type as EventType,
-            description: result.data.description,
-            start: result.data.start,
-            end: result.data.end,
-            external: !!result.data.host,
-            featuredFields: result.data.featuredFields,
-            positionsLocked: false,
-            bannerKey,
-        },
-        update: {
-            name: result.data.name,
-            host: result.data.host,
-            type: result.data.type as EventType,
-            description: result.data.description,
-            start: result.data.start,
-            end: result.data.end,
-            external: !!result.data.host,
-            featuredFields: result.data.featuredFields,
-            bannerKey,
-        },
-        where: {
-            id: result.data.id,
-        }
-    });
-
-    if (result.data.id) {
-        await log('UPDATE', 'EVENT', `Updated event ${event.name}`);
-    } else {
-        await log('CREATE', 'EVENT', `Created event ${event.name}`);
-    }
-
-    revalidatePath('/admin/events');
-    revalidatePath(`/events`);
-    revalidatePath(`/events/${event.id}`);
-
-    return {event};
-}
-
-export const setPositionsLock = async (event: Event, lock: boolean) => {
-    const data = await prisma.event.update({
-        where: {
-            id: event.id,
-        },
-        data: {
-            positionsLocked: lock,
-        },
-    });
-
-    await log('UPDATE', 'EVENT', `Set positions lock for event ${data.name} to ${lock}`);
-
-    revalidatePath(`/admin/events/${event.id}/positions`);
-    revalidatePath(`/admin/events/${event.id}`);
-    revalidatePath(`/admin/events`);
-    return data;
-}
-
 export const fetchEvents = async (pagination: GridPaginationModel, sort: GridSortModel, filter?: GridFilterItem) => {
+
     const orderBy: Prisma.EventOrderByWithRelationInput = {};
+
     if (sort.length > 0) {
-        const sortField = sort[0].field as keyof Prisma.EventOrderByWithRelationInput;
-        orderBy[sortField] = sort[0].sort === 'asc' ? 'asc' : 'desc';
+        orderBy[sort[0].field as keyof Prisma.EventOrderByWithRelationInput] = sort[0].sort === 'asc' ? 'asc' : 'desc';
     }
 
     return prisma.$transaction([
@@ -239,13 +36,15 @@ export const fetchEvents = async (pagination: GridPaginationModel, sort: GridSor
             skip: pagination.page * pagination.pageSize,
         })
     ]);
-};
+}
 
 const getWhere = (filter?: GridFilterItem): Prisma.EventWhereInput => {
+
     if (!filter) {
         return {};
     }
-    switch (filter?.field) {
+
+    switch (filter.field) {
         case 'name':
             return {
                 name: {
@@ -255,16 +54,215 @@ const getWhere = (filter?: GridFilterItem): Prisma.EventWhereInput => {
             };
         case 'type':
             return {
-                type: filter.value as EventType,
+                type: {
+                    equals: filter.value as EventType,
+                },
             };
-        case 'host':
+        case 'hidden':
             return {
-                host: {
-                    [filter.operator]: filter.value as string,
-                    mode: 'insensitive',
+                hidden: {
+                    equals: filter.value as boolean,
                 },
             };
         default:
             return {};
     }
-};
+}
+
+export const validateEvent = async (input: { [key: string]: any }) => {
+    
+    const isAfterToday = (date: Date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date > today;
+    };
+    
+    const isBeforeEndDate = (start: Date, end: Date) => {
+        return start <= end;
+    };
+    
+    const bannerImageOrUrlExists = (data: any) => {
+        if (data.id) {
+            return true; // Skip validation if editing
+        }
+    
+        return (data.bannerImage && (data.bannerImage as File).size > 0) || data.bannerUrl;
+    };
+    
+    const isLongerThan30Minutes = (start: Date, end: Date) => {
+        const duration = (end.getTime() - start.getTime()) / (1000 * 60); // duration in minutes
+        return duration > 30;
+    };
+
+    const eventZ = z.object({
+        id: z.string().optional(),
+        name: z.string().min(3, { message: "Name must be between 3 and 255 characters" }).max(255, { message: "Name must be between 3 and 255 characters" }),
+        start: z.date({ required_error: 'Start date is required' }).refine(isAfterToday, { message: "Start date must be after today" }),
+        end: z.date({ required_error: 'End date is required' }),
+        type: z.nativeEnum(EventType, { required_error: 'Type is required' }),
+        description: z.string().min(10, { message: "Description must be at least 10 characters." }),
+        bannerImage: z
+            .any()
+            .optional()
+            .or(
+                z.any().refine((file) => {
+                    return (input.id && (input.bannerImage as File).size === 0) || !file || file.size <= MAX_FILE_SIZE;
+                }, 'File size must be less than 4MB')
+                .refine((file) => {
+                    return (input.id && (input.bannerImage as File).size === 0) || ALLOWED_FILE_TYPES.includes(file?.type || '');
+                }, 'File must be a PNG, JPEG, or GIF')
+            ),
+        bannerUrl: z.string().url().optional(),
+        featuredFields: z.array(z.string()),
+    }).refine(data => isLongerThan30Minutes(data.start, data.end), {
+        message: "Event duration must be longer than 30 minutes.",
+        path: ["end"],
+    }).refine(data => isBeforeEndDate(data.start, data.end), {
+        message: "Start date must be before the end date.",
+        path: ["start"],
+    }).refine(bannerImageOrUrlExists, {
+        message: "Either banner image or banner URL must exist.",
+        path: ["bannerImage", "bannerUrl"],
+    })
+
+    return eventZ.safeParse(input);
+}
+
+export const upsertEvent = async (formData: FormData) => {
+
+    const result = await validateEvent({
+        id: formData.get('id'),
+        name: formData.get('name'),
+        start: new Date(formData.get('start') as string),
+        end: new Date(formData.get('end') as string),
+        type: formData.get('type'),
+        description: formData.get('description'),
+        bannerImage: formData.get('bannerImage') as File,
+        bannerUrl: (formData.get('bannerUrl') as string) || undefined,
+        featuredFields: JSON.parse(formData.get('featuredFields') as string),
+    });
+
+    if (!result.success) {
+        return { errors: result.error.errors };
+    }
+
+    const { data } = result;
+    const existingEvent = await prisma.event.findUnique({
+        where: {
+            id: data.id,
+        },
+    });
+
+    let bannerKey = existingEvent?.bannerKey;
+
+    if ((data.bannerImage as File).size > 0 || data.bannerUrl) {
+        if ((data.bannerImage as File).size > 0) {
+            const res = await ut.uploadFiles(data.bannerImage as File);
+
+            if (!res.data) {
+                return { errors: [{message: 'Failed to upload banner image.'}] };
+            }
+
+            bannerKey = res.data?.key;
+        } else if (data.bannerUrl) {
+            const res = await ut.uploadFilesFromUrl(data.bannerUrl);
+
+            if (!res.data) {
+                return { errors: [{message: 'Failed to upload banner image from URL.'}] };
+            }
+
+            bannerKey = res.data?.key;
+        }
+
+        if (existingEvent?.bannerKey) {
+            const res = await ut.deleteFiles(existingEvent.bannerKey);
+
+            if (!res.success) {
+                return { errors: [{message: 'Failed to delete old banner image.'}] };
+            }
+        }
+    }
+
+    const event = await prisma.event.upsert({
+        where: {
+            id: data.id,
+        },
+        update: {
+            name: data.name,
+            start: data.start,
+            end: data.end,
+            type: data.type,
+            description: data.description,
+            featuredFields: data.featuredFields,
+            bannerKey,
+        },
+        create: {
+            name: data.name,
+            start: data.start,
+            end: data.end,
+            type: data.type,
+            description: data.description,
+            featuredFields: data.featuredFields,
+            bannerKey,
+        },
+    });
+
+    if (data.id) {
+        revalidatePath(`/events/admin/events/${data.id}`);
+    }
+
+    after(async () => {
+        if (data.id) {
+            await log("UPDATE", "EVENT", `Updated event ${data.name}.`);
+        } else {
+            await log("CREATE", "EVENT", `Created event ${data.name}.`);
+        }
+    });
+
+    return {event};
+}
+
+export const deleteEvent = async (id: string) => {
+
+    const event = await prisma.event.delete({
+        where: {
+            id,
+        },
+        include: {
+            positions: {
+                include: {
+                    user: true,
+                },
+            },
+        },
+    });
+
+    after(async () => {
+        await log("DELETE", "EVENT", `Deleted event ${event.name}.`);
+
+        for (const position of event.positions) {
+            sendEventPositionRemovalEmail(position.user as User, position, event);
+        }
+    });
+
+    revalidatePath('/events/admin/events');
+}
+
+export const updateEventPresetPositions = async (eventId: string, positions: string[]) => {
+    const event = await prisma.event.update({
+        where: {
+            id: eventId,
+        },
+        data: {
+            presetPositions: {
+                set: positions,
+            },
+        },
+    });
+
+    revalidatePath(`/events/admin/events/${eventId}/manager`);
+
+    after(async () => {
+        await log("UPDATE", "EVENT", `Updated '${event.name}' preset positions.`);
+    });
+}

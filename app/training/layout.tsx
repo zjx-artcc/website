@@ -7,7 +7,7 @@ import {Metadata} from "next";
 
 export const metadata: Metadata = {
     title: 'Training | vZDC',
-    description: 'vZDC training page',
+    description: 'vZDC training admin page',
 };
 
 export default async function Layout({children}: { children: React.ReactNode }) {

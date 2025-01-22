@@ -20,6 +20,7 @@ export default async function Home() {
             start: {
                 gt: new Date(),
             },
+            hidden: false,
         },
         orderBy: {
             start: 'asc',
@@ -30,6 +31,7 @@ export default async function Home() {
     const imageUrls = Object.fromEntries(upcomingEvents.map((event) => {
         return [event.id, event.bannerKey ? `https://utfs.io/f/${event.bannerKey}` : '/img/logo_large.png'];
     }));
+
 
     const onlineAtc = await prisma.controllerPosition.findMany({
         where: {
@@ -70,8 +72,6 @@ export default async function Home() {
     });
 
     const top3Controllers = getTop3Controllers(top3Logs);
-
-    // return <Loading />
 
     return (
         (<Grid2 container columns={8} spacing={4}>

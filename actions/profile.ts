@@ -11,6 +11,7 @@ export const updateCurrentProfile = async (user: User) => {
         bio: z.string().max(400, "Bio must not be over 400 characters").optional(),
         operatingInitials: z.string().length(2, "Operating Initials must be 2 characters").toUpperCase(),
         receiveEmail: z.boolean(),
+        newEventNotifications: z.boolean(),
     });
 
     const result = User.parse(user);

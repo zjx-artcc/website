@@ -3,6 +3,7 @@ import {User} from "next-auth";
 import {
     Card,
     CardContent,
+    IconButton,
     Table,
     TableBody,
     TableCell,
@@ -11,28 +12,23 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
-import prisma from "@/lib/db";
-import {formatZuluDate} from "@/lib/date";
-import EventPositionSignupForm from "@/components/EventPosition/EventPositionSignupForm";
-import {Lock} from "@mui/icons-material";
+import prisma from '@/lib/db';
+import { formatZuluDate } from '@/lib/date';
+import Link from 'next/link';
+import { Check, Close, Edit, Visibility } from '@mui/icons-material';
 
 export default async function EventSignupCard({user}: { user: User, }) {
 
-    const eventSignups = await prisma.eventPosition.findMany({
+    const positions = await prisma.eventPosition.findMany({
         where: {
-            controllers: {
-                some: {
-                    id: user.id,
-                },
-            },
+            userId: user.id,
         },
         include: {
             event: true,
-            controllers: true,
         },
         orderBy: {
             event: {
-                start: 'desc',
+                start: 'asc',
             },
         },
     });
@@ -41,28 +37,31 @@ export default async function EventSignupCard({user}: { user: User, }) {
         <Card sx={{height: '100%',}}>
             <CardContent>
                 <Typography variant="h6" sx={{mb: 1,}}>Event Signups</Typography>
-                {eventSignups.length === 0 && <Typography>You are not signed up for any events.</Typography>}
-                {eventSignups.length > 0 && <TableContainer>
+                {positions.length === 0 && <Typography>You are not signed up for any events.</Typography>}
+                {positions.length > 0 && <TableContainer>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Event Name</TableCell>
                                 <TableCell>Position</TableCell>
-                                <TableCell>Start</TableCell>
+                                <TableCell>Final</TableCell>
+                                <TableCell>Start (for you)</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {eventSignups.map((eventSignup) => (
-                                <TableRow key={eventSignup.id}>
-                                    <TableCell>{eventSignup.event.name}</TableCell>
-                                    <TableCell>{eventSignup.position}</TableCell>
-                                    <TableCell>{formatZuluDate(eventSignup.event.start)}</TableCell>
+                            {positions.map((position) => (
+                                <TableRow key={position.id}>
+                                    <TableCell>{position.event.name}</TableCell>
+                                    <TableCell>{position.published ? position.finalPosition : position.requestedPosition}</TableCell>
+                                    <TableCell>{position.published ? <Check /> : <Close />}</TableCell>
+                                    <TableCell>{formatZuluDate(position.finalStartTime || position.event.start)}</TableCell>
                                     <TableCell>
-                                        {eventSignup.event.positionsLocked ? <Lock/> :
-                                            <EventPositionSignupForm user={user} event={eventSignup.event}
-                                                                     position={eventSignup}
-                                                                     controllers={eventSignup.controllers as User[]}/>}
+                                        <Link href={`/events/${position.eventId}`}>
+                                            <IconButton>
+                                                { position.published ? <Visibility /> : <Edit /> }
+                                            </IconButton>
+                                        </Link>
                                     </TableCell>
                                 </TableRow>
                             ))}

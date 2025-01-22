@@ -15,6 +15,7 @@ import {
     ListAlt,
     MilitaryTech,
     QuestionAnswer,
+    RecentActors,
     Report,
     Send,
     Task,
@@ -89,24 +90,6 @@ export default async function AdminMenu() {
                                 <AirplanemodeActive/>
                             </ListItemIcon>
                             <ListItemText primary="Airports"/>
-                        </ListItemButton>
-                    </Link>
-                    <Link href="/admin/events" style={{textDecoration: 'none', color: 'inherit',}}>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <CalendarMonth/>
-                            </ListItemIcon>
-                            <ListItemText primary="Events"/>
-                        </ListItemButton>
-                    </Link>
-                    <Link href="/admin/staffing-requests" style={{textDecoration: 'none', color: 'inherit',}}>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <Badge color="primary" badgeContent={staffingRequests}>
-                                    <QuestionAnswer/>
-                                </Badge>
-                            </ListItemIcon>
-                            <ListItemText primary="Staffing Requests"/>
                         </ListItemButton>
                     </Link>
                     <Link href="/admin/certification-types" style={{textDecoration: 'none', color: 'inherit',}}>

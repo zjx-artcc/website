@@ -71,10 +71,11 @@ model User {
   visitorApplication VisitorApplication?
   writtenFeedback    Feedback[]          @relation("FeedbackPilot")
   updatedAt          DateTime
-  eventSignups       EventPosition[]
   staffingRequests   StaffingRequest[]
   loas               LOA[]
-  receiveEmail       Boolean?            @default(true)
+
+  newEventNotifications Boolean? @default(false)
+  receiveEmail          Boolean? @default(true)
 
   noRequestLoas                  Boolean?
   noRequestTrainingAssignments   Boolean?
@@ -88,6 +89,7 @@ model User {
   accounts              Account[]
   sessions              Session[]
   soloCertifications    SoloCertification[]
+  eventPositions        EventPosition[]
   certifications        Certification[]
   logs                  Log[]
   dossier               DossierEntry[]      @relation("DossierEntryUser")
@@ -195,6 +197,7 @@ enum Role {
   MENTOR
   INSTRUCTOR
   STAFF
+  EVENT_STAFF
 }
 
 enum StaffPosition {
@@ -279,6 +282,7 @@ enum LogModel {
   ROLE
   EVENT
   EVENT_POSITION
+  EVENT_POSITION_PRESET
   FILE_CATEGORY
   FILE
   STAFFING_REQUEST
@@ -388,39 +392,6 @@ model RunwayInstruction {
   runwayId  String
   route     String
   procedure String
-}
-
-model Event {
-  id              String          @id @default(cuid())
-  name            String
-  type            EventType
-  description     String
-  start           DateTime
-  end             DateTime
-  external        Boolean
-  host            String?
-  positionsLocked Boolean
-  bannerKey       String
-  featuredFields  String[]
-  positions       EventPosition[]
-}
-
-enum EventType {
-  HOME
-  SUPPORT_REQUIRED
-  SUPPORT_OPTIONAL
-  GROUP_FLIGHT
-  TRAINING
-}
-
-model EventPosition {
-  id          String @id @default(cuid())
-  event       Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId     String
-  position    String
-  minRating   Int?
-  signupCap   Int?
-  controllers User[]
 }
 
 model StaffingRequest {
@@ -596,7 +567,6 @@ model StatisticsPrefixes {
   prefixes String[]
 }
 
-// additionChangeLog
 model Version {
   id            String         @id @default(cuid())
   versionNumber String         @unique
@@ -634,4 +604,71 @@ model TrainingProgressionStep {
   progressionId String
 
   @@unique([lessonId, progressionId])
+}
+
+model Event {
+  id   String    @id @default(cuid())
+  name String
+  type EventType
+
+  featuredFields String[]
+
+  description String
+
+  bannerKey String?
+
+  hidden              Boolean @default(true)
+  positionsLocked     Boolean @default(true)
+  manualPositionsOpen Boolean @default(false)
+
+  archived DateTime?
+
+  start DateTime
+  end   DateTime
+
+  positions       EventPosition[]
+  presetPositions String[]
+}
+
+enum EventType {
+  HOME
+  SUPPORT_REQUIRED
+  SUPPORT_OPTIONAL
+  GROUP_FLIGHT
+  FRIDAY_NIGHT_OPERATIONS
+  SATURDAY_NIGHT_OPERATIONS
+  TRAINING
+}
+
+model EventPosition {
+  id String @id @default(cuid())
+
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+
+  requestedPosition String
+  notes             String?
+
+  requestedStartTime DateTime
+  requestedEndTime   DateTime
+
+  finalStartTime DateTime?
+  finalEndTime   DateTime?
+
+  finalPosition String?
+  finalNotes    String?
+
+  published Boolean @default(false)
+
+  @@unique([eventId, userId])
+}
+
+model EventPositionPreset {
+  id String @id @default(cuid())
+
+  name      String
+  positions String[]
 }

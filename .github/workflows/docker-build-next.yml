@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to GitHub Packages
+name: Build & Push NEXT
 
 on:
   push:

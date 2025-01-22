@@ -10,13 +10,14 @@ import MarkdownEditor from "@uiw/react-markdown-editor";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import Form from "next/form";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import FormSaveButton from "../Form/FormSaveButton";
 import { upsertEvent, validateEvent } from "@/actions/event";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { SafeParseReturnType, ZodIssue } from "zod";
 import Markdown from "react-markdown";
+import { ZodErrorSlimResponse } from "@/types";
 
 export default function EventForm({ event }: { event?: Event, }) {
     
@@ -44,32 +45,42 @@ export default function EventForm({ event }: { event?: Event, }) {
         <CircularProgress key={5} color="inherit" size={20} />,
     ]);
 
-    const updateStatus = useCallback(async () => {
+    const debounce = (func: Function, wait: number) => {
+        let timeout: NodeJS.Timeout;
+        return (...args: any[]) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+    };
 
-        const res = await validateEvent({
-            id: event?.id,
-            name,
-            start: start?.toDate(),
-            end: end?.toDate(),
-            type: type?.toString() || '',
-            description,
-            bannerUrl,
-            featuredFields,
-        });
+    const debouncedUpdateStatus = useMemo(
+        () => debounce(async () => {
+            const res = await validateEvent({
+                id: event?.id,
+                name,
+                start: start?.toDate(),
+                end: end?.toDate(),
+                type: type?.toString() || '',
+                description,
+                bannerUrl,
+                featuredFields,
+            }) as ZodErrorSlimResponse;
 
-        const firstStep = await getStepStatus(res, { name, start: start?.toDate(), end: end?.toDate(), });
+            const firstStep = await getStepStatus(res, { name, start: start?.toDate(), end: end?.toDate(), });
 
-        if (event?.archived) {
-            setStatus([<CheckCircle key={1} color="success" />, <CheckCircle key={2} color="success" />, <CheckCircle key={3} color="success" />, <CheckCircle key={4} color="success" />, <CheckCircle key={5} color="success" />]);
-            return;
-        }
-        
-        const secondStep = await getStepStatus(res, { type: type?.toString() || '' });
-        const thirdStep = await getStepStatus(res, { description });
-        const fourthStep = await getStepStatus(res, { bannerUrl });
-        const fifthStep = await getStepStatus(res, { featuredFields });
-        setStatus([firstStep, secondStep, thirdStep, fourthStep, fifthStep]);
-    }, [event?.archived, event?.id, name, start, end, type, description, bannerUrl, featuredFields]);
+            if (event?.archived) {
+                setStatus([<CheckCircle key={1} color="success" />, <CheckCircle key={2} color="success" />, <CheckCircle key={3} color="success" />, <CheckCircle key={4} color="success" />, <CheckCircle key={5} color="success" />]);
+                return;
+            }
+            
+            const secondStep = await getStepStatus(res, { type: type?.toString() || '' });
+            const thirdStep = await getStepStatus(res, { description });
+            const fourthStep = await getStepStatus(res, { bannerUrl });
+            const fifthStep = await getStepStatus(res, { featuredFields });
+            setStatus([firstStep, secondStep, thirdStep, fourthStep, fifthStep]);
+        }, 500),
+        [event?.archived, event?.id, name, start, end, type, description, bannerUrl, featuredFields]
+    );
 
     const handleSubmit = async (formData: FormData) => {
 
@@ -101,8 +112,8 @@ export default function EventForm({ event }: { event?: Event, }) {
     }
 
     useEffect(() => {
-        updateStatus();
-    }, [updateStatus]);
+        debouncedUpdateStatus();
+    }, [debouncedUpdateStatus]);
 
     const handleOpen = (panel: number) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setOpen(isExpanded ? panel : -1);
@@ -110,12 +121,12 @@ export default function EventForm({ event }: { event?: Event, }) {
 
     const back = () => {
         setOpen((prev) => prev - 1);
-        updateStatus();
+        debouncedUpdateStatus();
     }
 
     const forward = () => {
         setOpen((prev) => prev + 1);
-        updateStatus();
+        debouncedUpdateStatus();
     }
 
     const NextButton = 
@@ -334,16 +345,13 @@ const getDescription = (type: EventType) => {
     }
 }
 
-const getStepStatus = async (parse: SafeParseReturnType<any, any>, input: { [key: string]: any }) => {
+const getStepStatus = async (parse: ZodErrorSlimResponse, input: { [key: string]: any }) => {
 
-    if (parse.success) {
+    if (parse.success || parse.errors.length === 0) {
         return <CheckCircle color="success" />;
     }
-
-    const error = parse.error as Error;
-    const errors = JSON.parse(error.message) as ZodIssue[];
     
-    if (errors.filter((error) => Object.keys(input).includes(error.path[0] + '')).length > 0) {
+    if (parse.errors.filter((error) => Object.keys(input).includes(error.path)).length > 0) {
         return <Info color="warning" />;
     } else {
         return <CheckCircle color="success" />;

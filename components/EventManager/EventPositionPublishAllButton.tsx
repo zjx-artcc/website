@@ -1,6 +1,7 @@
 'use client';
 import { publishEventPosition, unpublishEventPosition, validateFinalEventPosition } from "@/actions/eventPosition";
 import { EventPositionWithSolo } from "@/app/events/admin/events/[id]/manager/page";
+import { ZodErrorSlimResponse } from "@/types";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { Event, } from "@prisma/client";
 import { User } from "next-auth";
@@ -117,20 +118,17 @@ const getErrors = async (event: Event, positions: EventPositionWithSolo[]): Prom
         formData.set('finalEndTime', modPosition.finalEndTime.toISOString());
         formData.set('finalNotes', modPosition.finalNotes);
 
-        const parse = await validateFinalEventPosition(event, formData);
+        const parse = await validateFinalEventPosition(event, formData) as ZodErrorSlimResponse;
 
         if (parse.success) {
             continue;
         }
     
-        const error = parse.error as Error;
-        const zodErrors = JSON.parse(error.message) as ZodIssue[];
-
-        for (const zodError of zodErrors) {
+        for (const error of parse.errors) {
             if (errors.find((error) => error.user === position.user)) {
-                errors.find((error) => error.user === position.user)?.errors.push(zodError.message);
+                errors.find((error) => error.user === position.user)?.errors.push(error.message);
             } else {
-                errors.push({ user: position.user as User, errors: [zodError.message] });
+                errors.push({ user: position.user as User, errors: [error.message] });
             }
         }
     }

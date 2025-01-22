@@ -5,10 +5,11 @@ import prisma from "@/lib/db";
 import { Event, EventPosition } from "@prisma/client";
 import { getServerSession, User } from "next-auth";
 import { after } from "next/server";
-import { z } from "zod";
+import { SafeParseReturnType, z } from "zod";
 import { log } from "./log";
 import { revalidatePath } from "next/cache";
 import { sendEventPositionEmail, sendEventPositionRemovalEmail, sendEventPositionRequestDeletedEmail } from "./mail/event";
+import { ZodErrorSlimResponse } from "@/types";
 
 export const toggleManualPositionOpen = async (event: Event) => {
 
@@ -171,7 +172,7 @@ export const deleteEventPosition = async (event: Event, eventPositionId: string,
     
 }
 
-export const validateFinalEventPosition = async (event: Event, formData: FormData) => {
+export const validateFinalEventPosition = async (event: Event, formData: FormData, zodResponse?: boolean): Promise<ZodErrorSlimResponse | SafeParseReturnType<any, any>> => {
     const eventPositionZ = z.object({
         finalPosition: z.string().min(1, { message: 'Final Position is required and could not be autofilled.' }).max(50, { message: 'Final Position must be less than 50 characters' }),
         finalStartTime: z.date().min(event.start, { message: 'Final time must be within the event' }).max(event.end, { message: 'Final time must be within the event' }),
@@ -185,17 +186,29 @@ export const validateFinalEventPosition = async (event: Event, formData: FormDat
         finalPosition = requestedPosition;
     }
 
-    return eventPositionZ.safeParse({
+    const data =  eventPositionZ.safeParse({
         finalPosition,
         finalStartTime: new Date(formData.get('finalStartTime') as string),
         finalEndTime: new Date(formData.get('finalEndTime') as string),
         finalNotes: formData.get('finalNotes'),
     });
+
+    if (zodResponse) {
+        return data;
+    }
+
+    return {
+        success: data.success,
+        errors: data.error ? data.error.errors.map((e) => ({
+            path: e.path.join('.'),
+            message: e.message,
+        })) : [],
+    };
 }
 
 export const adminSaveEventPosition = async (event: Event, position: EventPosition, formData: FormData) => {
     
-    const result = await validateFinalEventPosition(event, formData);
+    const result = await validateFinalEventPosition(event, formData, true) as SafeParseReturnType<any, any>;
 
     if (!result.success) {
         return { errors: result.error.errors };
@@ -232,12 +245,37 @@ export const adminSaveEventPosition = async (event: Event, position: EventPositi
 }
 
 export const publishEventPosition = async (event: Event, position: EventPosition) => {
+
+    const formData = new FormData();
+    let finalPosition = position.finalPosition || '';
+
+    if (!finalPosition && event.presetPositions.includes(position.requestedPosition)) {
+        finalPosition = position.requestedPosition;
+    }
+
+    formData.set('finalPosition', finalPosition);
+    formData.set('finalStartTime', position.finalStartTime?.toISOString() || position.requestedStartTime?.toISOString() || '');
+    formData.set('finalEndTime', position.finalEndTime?.toISOString() || position.requestedEndTime?.toISOString() || '');
+    formData.set('finalNotes', position.finalNotes || '');
+
+    const result = await validateFinalEventPosition(event, formData, true) as SafeParseReturnType<any, any>;
+
+    if (!result.success) {
+        return { error: {
+            success: false,
+            errors: result.error.errors.map((e) => ({
+                path: e.path.join('.'),
+                message: e.message,
+            })),
+        } as ZodErrorSlimResponse };
+    }
+
     const eventPosition = await prisma.eventPosition.update({
         where: {
             id: position.id,
         },
         data: {
-            finalPosition: position.finalPosition,
+            finalPosition,
             published: true,
         },
         include: {
@@ -274,6 +312,8 @@ export const unpublishEventPosition = async (event: Event, position: EventPositi
     after(async () => {
         if (eventPosition) {
             await log("UPDATE", "EVENT_POSITION", `Unpublished event position for ${eventPosition.user?.firstName} ${eventPosition.user?.lastName} for ${eventPosition.finalPosition} from ${eventPosition.finalStartTime?.toUTCString()} to ${eventPosition.finalEndTime?.toUTCString()}`);
+        
+            sendEventPositionRemovalEmail(eventPosition.user as User, eventPosition, event);
         }
     });
 

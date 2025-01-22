@@ -16,7 +16,13 @@ export default function EventPositionPublishButton({ event, position, }: { event
             return;
         }
 
-        await publishEventPosition(event, position);
+        const {error} = await publishEventPosition(event, position);
+
+        if (error) {
+            toast.error(error.errors.map((error) => error.message).join('.  '));
+            return;
+        }
+
         toast.success('Position published successfully!');
     }
 

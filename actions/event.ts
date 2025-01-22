@@ -7,11 +7,12 @@ import { GridFilterItem } from "@mui/x-data-grid";
 import { GridPaginationModel } from "@mui/x-data-grid";
 import { GridSortModel } from "@mui/x-data-grid";
 import { EventType, Prisma } from "@prisma/client";
-import { z } from "zod";
+import { SafeParseReturnType, z } from "zod";
 import { UTApi } from "uploadthing/server";
 import { revalidatePath } from "next/cache";
 import { sendEventPositionRemovalEmail } from "./mail/event";
 import { User } from "next-auth";
+import { ZodErrorSlimResponse } from "@/types";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 4;
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
@@ -69,7 +70,7 @@ const getWhere = (filter?: GridFilterItem): Prisma.EventWhereInput => {
     }
 }
 
-export const validateEvent = async (input: { [key: string]: any }) => {
+export const validateEvent = async (input: { [key: string]: any }, zodResponse?: boolean): Promise<ZodErrorSlimResponse | SafeParseReturnType<any, any>> => {
     
     const isAfterToday = (date: Date) => {
         const today = new Date();
@@ -125,7 +126,19 @@ export const validateEvent = async (input: { [key: string]: any }) => {
         path: ["bannerImage", "bannerUrl"],
     })
 
-    return eventZ.safeParse(input);
+    const data = eventZ.safeParse(input);
+
+    if (zodResponse) {
+        return data;
+    }
+    
+    return {
+        success: data.success,
+        errors: data.error ? data.error.errors.map((e) => ({
+            path: e.path.join('.'),
+            message: e.message,
+        })) : [],
+    }
 }
 
 export const upsertEvent = async (formData: FormData) => {
@@ -140,7 +153,7 @@ export const upsertEvent = async (formData: FormData) => {
         bannerImage: formData.get('bannerImage') as File,
         bannerUrl: (formData.get('bannerUrl') as string) || undefined,
         featuredFields: JSON.parse(formData.get('featuredFields') as string),
-    });
+    }, true) as SafeParseReturnType<any, any>;
 
     if (!result.success) {
         return { errors: result.error.errors };

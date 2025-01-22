@@ -44,7 +44,7 @@ export default function EventPositionEditButton({ event, position, }: { event: E
         formData.set('finalEndTime', finalEndTime!.toISOString());
         formData.set('finalNotes', finalNotes);
 
-        const { errors } = await adminSaveEventPosition(event, position, formData);
+        const { eventPosition, errors } = await adminSaveEventPosition(event, position, formData);
         
         if (errors) {
             toast.error(errors.map((error) => error.message).join('.  '));
@@ -54,7 +54,13 @@ export default function EventPositionEditButton({ event, position, }: { event: E
         toast.success('Position saved successfully!');
 
         if (publish) {
-            await publishEventPosition(event, position);
+            const {error} = await publishEventPosition(event, eventPosition);
+
+            if (error) {
+                toast.error(error.errors.map((error) => error.message).join('.  '));
+                return;
+            }
+
             toast.success('Position published successfully!');
         }
 

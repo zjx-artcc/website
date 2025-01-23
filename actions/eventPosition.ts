@@ -59,7 +59,7 @@ export const saveEventPosition = async (event: Event, formData: FormData, admin?
         return { errors: [{ message: 'Positions are locked for this event' }] };
     }
 
-    if ((await prisma.eventPosition.count({ where: { eventId: event.id, userId: session.user.id } })) > 0) {
+    if ((await prisma.eventPosition.count({ where: { eventId: event.id, userId: admin ? formData.get('userId') as string : session.user.id } })) > 0) {
         return { errors: [{ message: admin ? 'This controller already has a position request' : 'You have already requested a position for this event' }] };
     }
 

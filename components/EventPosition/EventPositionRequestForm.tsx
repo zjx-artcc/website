@@ -92,7 +92,7 @@ export default function EventPositionRequestForm({ admin, currentUser, event, ev
                     </Grid2>
                     <Grid2 size={6}>
                         { admin && <FormSaveButton text="Add" icon={<Add />} /> }
-                        { !eventPosition && !event.positionsLocked && <FormSaveButton text="Request" icon={<Add />} /> }
+                        { !admin && !eventPosition && !event.positionsLocked && <FormSaveButton text="Request" icon={<Add />} /> }
                         { !admin && eventPosition && !event.positionsLocked && <Button type="button" variant="contained" color="error" startIcon={<Delete />} onClick={() => deleteEventPosition(event, eventPosition.id)}>Delete</Button> }
                         { !admin && event.positionsLocked && <Typography sx={{ mt: 2, }}>Positions are locked for this event.</Typography> }
                         { !admin && <Typography sx={{ mt: 2, }}>You will recieve an email once your final position and time has been published.</Typography> }

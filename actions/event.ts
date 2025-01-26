@@ -18,7 +18,7 @@ const MAX_FILE_SIZE = 1024 * 1024 * 4;
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 const ut = new UTApi();
 
-export const fetchEvents = async (pagination: GridPaginationModel, sort: GridSortModel, filter?: GridFilterItem) => {
+export const fetchEvents = async (pagination: GridPaginationModel, sort: GridSortModel, filter?: GridFilterItem, archived?: boolean) => {
 
     const orderBy: Prisma.EventOrderByWithRelationInput = {};
 
@@ -28,26 +28,30 @@ export const fetchEvents = async (pagination: GridPaginationModel, sort: GridSor
 
     return prisma.$transaction([
         prisma.event.count({
-            where: getWhere(filter),
+            where: getWhere(filter, archived),
         }),
         prisma.event.findMany({
             orderBy,
-            where: getWhere(filter),
+            where: getWhere(filter, archived),
             take: pagination.pageSize,
             skip: pagination.page * pagination.pageSize,
         })
     ]);
 }
 
-const getWhere = (filter?: GridFilterItem): Prisma.EventWhereInput => {
+const getWhere = (filter?: GridFilterItem, archived?: boolean): Prisma.EventWhereInput => {
+    const baseWhere: Prisma.EventWhereInput = {
+        archived: archived ? { not: null } : null
+    };
 
     if (!filter) {
-        return {};
+        return baseWhere;
     }
 
     switch (filter.field) {
         case 'name':
             return {
+                ...baseWhere,
                 name: {
                     [filter.operator]: filter.value as string,
                     mode: 'insensitive',
@@ -55,18 +59,20 @@ const getWhere = (filter?: GridFilterItem): Prisma.EventWhereInput => {
             };
         case 'type':
             return {
+                ...baseWhere,
                 type: {
                     equals: filter.value as EventType,
                 },
             };
         case 'hidden':
             return {
+                ...baseWhere,
                 hidden: {
                     equals: filter.value as boolean,
                 },
             };
         default:
-            return {};
+            return baseWhere;
     }
 }
 

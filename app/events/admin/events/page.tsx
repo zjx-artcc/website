@@ -1,9 +1,12 @@
 import EventTable from "@/components/Event/EventTable";
+import EventTableToggleSwitch from "@/components/Event/EventTableToggleSwitch";
 import { Add } from "@mui/icons-material";
 import { Box, Button, Card, CardContent, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
-export default async function EventsPage() {
+export default async function EventsPage({ searchParams }: { searchParams: Promise<{ archived?: string, }> }) {
+
+    const { archived } = await searchParams;
 
     return (
         <Card>
@@ -17,7 +20,8 @@ export default async function EventsPage() {
                         <Button variant="contained" size="large" startIcon={<Add />}>New Event</Button>
                     </Link>
                 </Stack>
-                <EventTable />
+                <EventTableToggleSwitch archived={archived === 'true'} />
+                <EventTable archived={archived === 'true'} />
             </CardContent>
         </Card>
     );

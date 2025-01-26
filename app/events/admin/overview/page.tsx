@@ -53,8 +53,8 @@ export default async function Page() {
                         <>
                             <Stack direction="row" alignItems="center">
                                 <Typography variant="h4" sx={{ mr: 1, }}>{upcomingEvents[0].name || 'N/A'}</Typography>
-                                <Link href={`/events/${upcomingEvents[0].id}`} style={{ color: 'inherit', textDecoration: 'none', }}>
-                                    <IconButton>
+                                <Link href={upcomingEvents[0].hidden ? '' : `/events/${upcomingEvents[0].id}`} style={{ color: 'inherit', textDecoration: 'none', }}>
+                                    <IconButton disabled={upcomingEvents[0].hidden}>
                                         <Info />
                                     </IconButton>
                                 </Link>

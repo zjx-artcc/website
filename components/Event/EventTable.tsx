@@ -11,7 +11,7 @@ import DataTable, { containsOnlyFilterOperator, equalsOnlyFilterOperator } from 
 import { fetchEvents } from "@/actions/event";
 import { formatZuluDate } from "@/lib/date";
 
-export default function EventTable() {
+export default function EventTable({ archived }: { archived?: boolean, }) {
 
     const router = useRouter();
 
@@ -89,9 +89,9 @@ export default function EventTable() {
     ];
 
     return (
-        <DataTable columns={columns} initialSort={[{field: 'start', sort: 'asc',}]}
+        <DataTable columns={columns} initialSort={[archived ? { field: 'end', sort: 'desc', } : {field: 'start', sort: 'asc',}]}
                    fetchData={async (pagination, sortModel, filter) => {
-                       const events = await fetchEvents(pagination, sortModel, filter);
+                       const events = await fetchEvents(pagination, sortModel, filter, archived);
                        return {
                            data: events[1],
                            rowCount: events[0],

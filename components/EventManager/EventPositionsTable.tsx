@@ -1,5 +1,5 @@
 import { EventPositionWithSolo } from "@/app/events/admin/events/[id]/manager/page";;
-import { Chip, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import { ButtonGroup } from "@mui/material";
 import { formatZuluDate } from "@/lib/date";
 import { getRating } from "@/lib/vatsim";
@@ -43,10 +43,19 @@ export default async function EventPositionsTable({ event, positions }: { event:
             <CardContent>
                 <Typography variant="h6" gutterBottom>Controller Positions</Typography>
                 <Stack direction="row" spacing={2} sx={{ my: 2, }}>
-                    <EventPositionPublishAllButton event={event} positions={positions} />
-                    <TogglePositionsLockButton event={event} />
-                    <ForcePositionsToggleSwitch event={event} />
+                    <Box>
+                        <EventPositionPublishAllButton event={event} positions={positions} />
+                    </Box>
+                    <Box>
+                        <TogglePositionsLockButton event={event} />
+                    </Box>
+                    <Box sx={{ display: { xs: 'none', sm: 'inherit', }}}>
+                       <ForcePositionsToggleSwitch event={event} /> 
+                    </Box>
                 </Stack>
+                <Box sx={{ display: { sm: 'none', }}}>
+                       <ForcePositionsToggleSwitch event={event} /> 
+                </Box>
                 <TableContainer>
                     <Table>
                         <TableHead>

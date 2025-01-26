@@ -41,7 +41,7 @@ export async function GET() {
             },
         });
 
-        if (!vatsimUser || !prefixes?.prefixes.some((prefix) => vatsimUser.callsign.startsWith(prefix))) {
+        if (!vatsimUser || !prefixes?.prefixes.some((prefix) => vatsimUser.callsign.startsWith(prefix + "_"))) {
             // The controller is offline
             if (activePosition) {
                 // The controller was active on a position, mark it as inactive

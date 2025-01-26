@@ -8,11 +8,11 @@ import Link from "next/link";
 import getConfig from "next/config";
 
 const DEV_MODE = process.env['DEV_MODE'] === 'true';
-
+const { VERSION } = process.env;
 
 export default function Footer() {
 
-    const {publicRuntimeConfig} = getConfig();
+    const { publicRuntimeConfig } = getConfig();
 
     return (
         <AppBar position="static" sx={{marginTop: 20}}>
@@ -42,7 +42,7 @@ export default function Footer() {
                             <Link href="/changelog" style={{color: 'inherit',textDecoration: 'none'}}>
                                 {DEV_MODE &&
                                     <Typography variant="subtitle2" color="limegreen">Development Build</Typography>}
-                                {!DEV_MODE && <Typography>v{publicRuntimeConfig?.version}</Typography>}
+                                {!DEV_MODE && <Typography>{VERSION}</Typography>}
                             </Link>
                         </Box>
                     </Tooltip>

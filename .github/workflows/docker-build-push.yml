@@ -1,9 +1,10 @@
-name: Build and Push Docker Image to GitHub Packages
+name: Build and Push Docker Image
 
 on:
   push:
     branches:
       master
+      next
 
 jobs:
   build-and-push:
@@ -13,18 +14,20 @@ jobs:
       packages: write
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Extract Commit Hash
-      - name: Extract Commit Hash
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+        
+      - name: Extract commit hash
         id: commit_hash
         run: |
           COMMIT_HASH=${GITHUB_SHA::7}  # Get the first 7 characters of the commit hash
           echo "COMMIT_HASH=${COMMIT_HASH,,}" >> $GITHUB_ENV  # Convert to lowercase
 
-      # Step 3: Check for localhost in NEXT_PUBLIC_ env variables
       - name: Check for localhost in NEXT_PUBLIC_ variables
         run: |
           for var in $(printenv | grep '^NEXT_PUBLIC_' | cut -d= -f1); do
@@ -35,15 +38,23 @@ jobs:
             fi
           done
 
-      # Step 4: Log in to GitHub Container Registry
-      - name: Log in to GitHub Container Registry
+      - name: Login to GCR
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 5: Build and Push Docker Image using commit hash as the tag
+      - name: Set version number
+        run: |
+          if [ -f "package.json" ]; then
+            VERSION=v$(node -p "require('./package.json').version").${{ steps.extract_branch.outputs.branch }}.${{ env.COMMIT_HASH }}
+            echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          else
+            echo "package.json not found!"
+            exit 1
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -51,5 +62,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ env.COMMIT_HASH }}
+            ghcr.io/${{ github.repository }}:${{ steps.extract_branch.outputs.branch }}-latest
+            ghcr.io/${{ github.repository }}:${{ steps.extract_branch.outputs.branch }}-${{ env.COMMIT_HASH }}

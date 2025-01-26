@@ -239,7 +239,7 @@ export default function EventForm({ event }: { event?: Event, }) {
                                     disabled={!!event?.archived}                     
                                     accept="image/*" 
                                     name="bannerImage" /> :
-                                    <TextField variant="filled" type="url" fullWidth value={bannerUrl} label="Image URL" onChange={(e) => setBannerUrl(e.target.value)} disabled={!!event?.archived} />}
+                                    <TextField variant="filled" fullWidth value={bannerUrl} label="Image URL" onChange={(e) => setBannerUrl(e.target.value)} disabled={!!event?.archived} />}
                             </Box>
                             {NextButton}                        
                         </AccordionDetails>

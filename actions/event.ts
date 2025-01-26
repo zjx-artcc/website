@@ -86,6 +86,13 @@ export const validateEvent = async (input: { [key: string]: any }, zodResponse?:
         if (data.id) {
             return true; // Skip validation if editing
         }
+
+        if (data.bannerImage && (data.bannerImage as File).size > 0 ) {
+            const file = data.bannerImage as File;
+            return ALLOWED_FILE_TYPES.includes(file?.type || '') && file.size <= MAX_FILE_SIZE;
+        } else if (data.bannerUrl) {
+            return z.string().url().safeParse(data.bannerUrl).success;
+        }
     
         return (data.bannerImage && (data.bannerImage as File).size > 0) || data.bannerUrl;
     };
@@ -102,18 +109,8 @@ export const validateEvent = async (input: { [key: string]: any }, zodResponse?:
         end: z.date({ required_error: 'End date is required' }),
         type: z.nativeEnum(EventType, { required_error: 'Type is required' }),
         description: z.string().min(10, { message: "Description must be at least 10 characters." }),
-        bannerImage: z
-            .any()
-            .optional()
-            .or(
-                z.any().refine((file) => {
-                    return (input.id && (input.bannerImage as File).size === 0) || !file || file.size <= MAX_FILE_SIZE;
-                }, 'File size must be less than 4MB')
-                .refine((file) => {
-                    return (input.id && (input.bannerImage as File).size === 0) || ALLOWED_FILE_TYPES.includes(file?.type || '');
-                }, 'File must be a PNG, JPEG, or GIF')
-            ),
-        bannerUrl: z.string().url().optional(),
+        bannerImage: z.any().optional(),
+        bannerUrl: z.string().optional(),
         featuredFields: z.array(z.string()),
     }).refine(data => isLongerThan30Minutes(data.start, data.end), {
         message: "Event duration must be longer than 30 minutes.",
@@ -122,7 +119,7 @@ export const validateEvent = async (input: { [key: string]: any }, zodResponse?:
         message: "Start date must be before the end date.",
         path: ["start"],
     }).refine(bannerImageOrUrlExists, {
-        message: "Either banner image or banner URL must exist.",
+        message: "Either banner image or a VALID banner URL must exist.",
         path: ["bannerImage", "bannerUrl"],
     })
 
@@ -168,8 +165,8 @@ export const upsertEvent = async (formData: FormData) => {
 
     let bannerKey = existingEvent?.bannerKey;
 
-    if ((data.bannerImage as File).size > 0 || data.bannerUrl) {
-        if ((data.bannerImage as File).size > 0) {
+    if ((data.bannerImage as File)?.size > 0 || data.bannerUrl) {
+        if ((data.bannerImage as File)?.size > 0) {
             const res = await ut.uploadFiles(data.bannerImage as File);
 
             if (!res.data) {

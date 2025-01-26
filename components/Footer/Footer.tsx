@@ -41,7 +41,7 @@ export default function Footer() {
                             <Link href="/changelog" style={{color: 'inherit',textDecoration: 'none'}}>
                                 {DEV_MODE &&
                                     <Typography variant="subtitle2" color="limegreen">Development Build</Typography>}
-                                {!DEV_MODE && <Typography>{publicRuntimeConfig?.version}</Typography>}
+                                {!DEV_MODE && <Typography>v{publicRuntimeConfig?.version}</Typography>}
                             </Link>
                         </Box>
                     </Tooltip>

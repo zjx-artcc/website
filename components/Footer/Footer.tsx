@@ -9,10 +9,9 @@ import getConfig from "next/config";
 
 const DEV_MODE = process.env['DEV_MODE'] === 'true';
 
-
 export default function Footer() {
 
-    const {publicRuntimeConfig} = getConfig();
+    const { publicRuntimeConfig } = getConfig();
 
     return (
         <AppBar position="static" sx={{marginTop: 20}}>

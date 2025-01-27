@@ -66,6 +66,7 @@ declare module "next-auth" {
         excludedFromVatusaRosterUpdate: boolean,
         hiddenFromRoster: boolean,
         receiveEmail:   boolean
+        newEventNotifications: boolean,
         flagAutoAssignSinglePass: boolean,
     }
 

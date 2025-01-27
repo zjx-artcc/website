@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
-import {Event, EventType} from '@prisma/client';
 import dayGridPlugin from "@fullcalendar/daygrid";
 import FullCalendar from "@fullcalendar/react";
 import {useRouter} from "next/navigation";
+import { EventType } from '@prisma/client';
 
-export default function EventCalendar({events}: { events: Event[], }) {
+export default function EventCalendar({events}: { events: any[], }) {
 
     const router = useRouter();
 
@@ -39,11 +39,15 @@ const getEventColor = (eventType: EventType) => {
             return '#834091';
         case EventType.SUPPORT_OPTIONAL:
             return '#cd8dd8';
+        case EventType.FRIDAY_NIGHT_OPERATIONS:
+            return '#36d1e7';
+        case EventType.SATURDAY_NIGHT_OPERATIONS:
+            return '#e6af34';
         case EventType.GROUP_FLIGHT:
             return '#66bb6a';
         case EventType.TRAINING:
-            return '#ffa726';
+            return 'darkgray';
         default:
-            return 'gray';
+            return 'darkgray';
     }
 }

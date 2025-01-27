@@ -56,3 +56,13 @@ export const formatZuluDate = (date: Date) => {
 
     return [month, day, year].join('/') + ' ' + [hour, minute].join('') + 'z';
 };
+
+export const eventGetDuration = (start: Date, end: Date, days?: boolean) => {
+    const diff = end.getTime() - start.getTime();
+    const hours = Math.floor(diff / 1000 / 60 / 60);
+    const minutes = Math.floor(diff / 1000 / 60) % 60;
+    if (days) {
+        return hours / 24 + minutes / 60 / 24;
+    }
+    return hours + minutes / 60;
+}

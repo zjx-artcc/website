@@ -1,222 +1,341 @@
 'use server';
 
+import { authOptions } from "@/auth/auth";
 import prisma from "@/lib/db";
-import {log} from "@/actions/log";
-import {Event, EventPosition} from "@prisma/client";
-import {z} from "zod";
-import {revalidatePath} from "next/cache";
-import {User} from "next-auth";
-import {sendEventPositionEmail, sendEventPositionRemovalEmail} from "@/actions/mail/event";
+import { Event, EventPosition } from "@prisma/client";
+import { getServerSession, User } from "next-auth";
+import { after } from "next/server";
+import { SafeParseReturnType, z } from "zod";
+import { log } from "./log";
+import { revalidatePath } from "next/cache";
+import { sendEventPositionEmail, sendEventPositionRemovalEmail, sendEventPositionRequestDeletedEmail } from "./mail/event";
+import { ZodErrorSlimResponse } from "@/types";
 
-export const deleteEventPosition = async (id: string) => {
-    const data = await prisma.eventPosition.delete({
-        where: {
-            id,
-        },
-        include: {
-            event: true,
-            controllers: true,
+export const toggleManualPositionOpen = async (event: Event) => {
+
+    await prisma.event.update({
+        where: { id: event.id },
+        data: {
+            manualPositionsOpen: !event.manualPositionsOpen,
         },
     });
-    await log('DELETE', 'EVENT_POSITION', `Deleted event position ${data.position} for ${data.event.name}`);
 
-    for (const controller of data.controllers) {
-        await sendEventPositionRemovalEmail(controller as User, data, data.event);
-    }
+    after(async () => {
+        await log("UPDATE", "EVENT", `Toggled manual position open for event ${event.name}`);
+    });
 
-    revalidatePath(`/admin/events/edit/${data.event.id}/positions`);
-    revalidatePath(`/admin/events`);
-    return data;
+    revalidatePath(`/admin/events/${event.id}/manager`);
 }
 
-export const createOrUpdateEventPosition = async (formData: FormData) => {
+export const togglePositionsLocked = async (event: Event) => {
+
+    await prisma.event.update({
+        where: { id: event.id },
+        data: {
+            positionsLocked: !event.positionsLocked,
+        },
+    });
+
+    after(async () => {
+        await log("UPDATE", "EVENT", `Toggled positions locked for event ${event.name}`);
+    });
+
+    revalidatePath(`/admin/events/${event.id}/manager`);
+}
+
+export const saveEventPosition = async (event: Event, formData: FormData, admin?: boolean) => {
+
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user) {
+        return { errors: [{ message: 'You must be logged in to perform this action' }] };
+    }
+
+    if (!session.user.roles.includes('STAFF') && !session.user.roles.includes("EVENT_STAFF") && admin) {
+        return { errors: [{ message: 'You do not have permission to perform this action' }] };
+    }
+
+    if (!admin && (await prisma.event.findUnique({ where: { id: event.id } }))?.positionsLocked) {
+        return { errors: [{ message: 'Positions are locked for this event' }] };
+    }
+
+    if ((await prisma.eventPosition.count({ where: { eventId: event.id, userId: admin ? formData.get('userId') as string : session.user.id } })) > 0) {
+        return { errors: [{ message: admin ? 'This controller already has a position request' : 'You have already requested a position for this event' }] };
+    }
+
     const eventPositionZ = z.object({
-        eventId: z.string(),
-        id: z.string().optional(),
-        position: z.string().min(1, "Position Name is required.").max(40, 'Position name must be less than 40 characters'),
-        signupCap: z.number().optional(),
-        minRating: z.number().min(-1, "Rating is invalid").max(10, "Rating is invalid"),
+        controllerId: z.string().min(1, { message: 'Controller is required' }),
+        requestedPosition: z.string().min(1, { message: 'Requested Position is required' }).max(50, { message: 'Requested Position must be less than 50 characters' }),
+        requestedStartTime: z.date().min(event.start, { message: 'Requested time must be within the event' }).max(event.end, { message: 'Requested time must be within the event' }),
+        requestedEndTime: z.date().min(event.start, { message: 'Requested time must be within the event' }).max(event.end, { message: 'Requested time must be within the event' }),
+        notes: z.string().optional(),
     });
 
     const result = eventPositionZ.safeParse({
-        eventId: formData.get('eventId') as string,
-        id: formData.get('id') as string,
-        position: formData.get('position'),
-        signupCap: Number(formData.get('signupCap') as string),
-        minRating: Number(formData.get('minRating') as string),
+        controllerId: admin ? formData.get('userId') : session.user.id,
+        requestedPosition: formData.get('requestedPosition'),
+        requestedStartTime: new Date(formData.get('requestedStartTime') as string),
+        requestedEndTime: new Date(formData.get('requestedEndTime') as string),
+        notes: formData.get('notes'),
     });
 
     if (!result.success) {
-        return {errors: result.error.errors};
+        return { errors: result.error.errors };
     }
 
-    const eventPositionExists = await prisma.eventPosition.findUnique({
-        where: {
-            id: result.data.id,
-        },
-    });
-
-    const eventPosition = await prisma.eventPosition.upsert({
-        where: {
-            id: result.data.id,
-        },
-        update: {
-            position: result.data.position,
-            signupCap: result.data.signupCap,
-            minRating: result.data.minRating,
-        },
-        create: {
-            position: result.data.position,
-            signupCap: result.data.signupCap,
-            minRating: result.data.minRating,
-            event: {
-                connect: {
-                    id: result.data.eventId,
-                },
-            },
+    const eventPosition = await prisma.eventPosition.create({
+        data: {
+            eventId: event.id,
+            userId: result.data.controllerId,
+            requestedPosition: result.data.requestedPosition,
+            requestedStartTime: result.data.requestedStartTime,
+            requestedEndTime: result.data.requestedEndTime,
+            notes: `${result.data.notes}${admin ? `\n(MAN ASSIGN)` : ''}`,
         },
         include: {
-            event: true,
+            user: true,
         },
     });
 
-    if (eventPositionExists) {
-        await log('UPDATE', 'EVENT_POSITION', `Updated event position ${eventPosition.position} for ${eventPosition.event.name}`);
-    } else {
-        await log('CREATE', 'EVENT_POSITION', `Created event position ${eventPosition.position} for ${eventPosition.event.name}`);
-    }
-
-    revalidatePath(`/admin/events/edit/${eventPosition.eventId}/positions`);
-    revalidatePath(`/admin/events`);
-    return {eventPosition};
-}
-
-export const assignEventPosition = async (event: Event, eventPosition: EventPosition,  controllers: User[], user: User) => {
-    if (!isAbleToSignup(eventPosition, controllers, user)) {
-        throw new Error("User is not able to signup for this position");
-    }
-    // const signedUpPositions = await prisma.eventPosition.findMany({
-    //     where: {
-    //         controllers: {
-    //             some: {
-    //                 id: user.id,
-    //             },
-    //         },
-    //         id: {
-    //             not: eventPosition.id,
-    //         },
-    //     },
-    // });
-    // if (signedUpPositions.length > 0) {
-    //     throw new Error("User is already signed up for another position");
-    // }
-    if (event.positionsLocked) {
-        throw new Error("Event positions are locked");
-    }
-    if (eventPosition.signupCap && controllers.length >= eventPosition.signupCap) {
-        throw new Error("Position is full");
-    }
-    const data = await prisma.eventPosition.update({
-        where: {
-            id: eventPosition.id,
-        },
-        data: {
-            controllers: {
-                connect: {
-                    id: user.id,
-                },
+    if (admin) {
+        await prisma.eventPosition.update({
+            where: {
+                id: eventPosition.id,
             },
-        },
-    });
-
-    await sendEventPositionEmail(user, eventPosition, event);
-
-    revalidatePath(`/admin/events/edit/${eventPosition.eventId}/positions`);
-    revalidatePath(`/events/${eventPosition.eventId}`);
-    return data;
-}
-
-export const unassignEventPosition = async (event: Event, eventPosition: EventPosition, user: User, force?: boolean) => {
-
-    if (event.positionsLocked && !force) {
-        throw new Error("Event positions are locked");
-    }
-
-    const data = await prisma.eventPosition.update({
-        where: {
-            id: eventPosition.id,
-        },
-        data: {
-            controllers: {
-                disconnect: {
-                    id: user.id,
-                },
+            data: {
+                finalPosition: result.data.requestedPosition,
+                finalStartTime: result.data.requestedStartTime,
+                finalEndTime: result.data.requestedEndTime,
+                finalNotes: result.data.notes,
             },
-        },
+            include: {
+                user: true,
+            },
+        });
+    }
+    
+    after(async () => {
+        if (admin && eventPosition) {
+            await log("CREATE", "EVENT_POSITION", `Created event position for ${eventPosition.user?.firstName} ${eventPosition.user?.lastName} for ${eventPosition.requestedPosition} from ${eventPosition.requestedStartTime.toUTCString()} to ${eventPosition.requestedEndTime.toUTCString()}`);
+        }
     });
 
-    await sendEventPositionRemovalEmail(user, eventPosition, event);
-
-    revalidatePath(`/admin/events/edit/${event.id}/positions`);
     revalidatePath(`/events/${event.id}`);
-    return data;
+    
+    return { eventPosition };
 }
 
-export const forceAssignPosition = async (formData: FormData) => {
+export const deleteEventPosition = async (event: Event, eventPositionId: string, admin?: boolean) => {
+    
+        const session = await getServerSession(authOptions);
+    
+        if (!session?.user) {
+            return { errors: [{ message: 'You must be logged in to perform this action' }] };
+        }
+    
+        const eventPosition = await prisma.eventPosition.findUnique({
+            where: {
+                id: eventPositionId,
+            },
+            include: {
+                user: true,
+            },
+        });
+    
+        if (!eventPosition) {
+            return { errors: [{ message: 'Event position not found' }] };
+        }
+    
+        if (!session.user.roles.includes('STAFF') && eventPosition.userId !== session.user.id) {
+            return { errors: [{ message: 'You do not have permission to perform this action' }] };
+        }
+    
+        const deletedPosition = await prisma.eventPosition.delete({
+            where: {
+                id: eventPositionId,
+            },
+        });
+    
+        after(async () => {
+            if (deletedPosition && admin) {
+                await log("DELETE", "EVENT_POSITION", `Deleted event position for ${eventPosition.user?.firstName} ${eventPosition.user?.lastName}`);
+            }
 
-    const assignZ = z.object({
-        position: z.string(),
-        controller: z.string(),
+            if (deletedPosition.published) {
+                sendEventPositionRemovalEmail(eventPosition.user as User, eventPosition, event);
+            } else if (admin) {
+                sendEventPositionRequestDeletedEmail(eventPosition.user as User, event);
+            }
+        });
+    
+        revalidatePath(`/events/${event.id}`);
+    
+}
+
+export const validateFinalEventPosition = async (event: Event, formData: FormData, zodResponse?: boolean): Promise<ZodErrorSlimResponse | SafeParseReturnType<any, any>> => {
+    const eventPositionZ = z.object({
+        finalPosition: z.string().min(1, { message: 'Final Position is required and could not be autofilled.' }).max(50, { message: 'Final Position must be less than 50 characters' }),
+        finalStartTime: z.date().min(event.start, { message: 'Final time must be within the event' }).max(event.end, { message: 'Final time must be within the event' }),
+        finalEndTime: z.date().min(event.start, { message: 'Final time must be within the event' }).max(event.end, { message: 'Final time must be within the event' }),
+        finalNotes: z.string().optional(),
     });
 
-    const result = assignZ.safeParse({
-        position: formData.get('position') as string,
-        controller: formData.get('controller') as string,
+    const requestedPosition = formData.get('requestedPosition') as string;
+    let finalPosition = formData.get('finalPosition') as string;
+    if (!finalPosition && event.presetPositions.includes(requestedPosition)) {
+        finalPosition = requestedPosition;
+    }
+
+    const data =  eventPositionZ.safeParse({
+        finalPosition,
+        finalStartTime: new Date(formData.get('finalStartTime') as string),
+        finalEndTime: new Date(formData.get('finalEndTime') as string),
+        finalNotes: formData.get('finalNotes'),
     });
+
+    if (zodResponse) {
+        return data;
+    }
+
+    return {
+        success: data.success,
+        errors: data.error ? data.error.errors.map((e) => ({
+            path: e.path.join('.'),
+            message: e.message,
+        })) : [],
+    };
+}
+
+export const adminSaveEventPosition = async (event: Event, position: EventPosition, formData: FormData) => {
+    
+    const result = await validateFinalEventPosition(event, formData, true) as SafeParseReturnType<any, any>;
 
     if (!result.success) {
-        return {errors: [{message: 'Invalid form data'}]};
+        return { errors: result.error.errors };
     }
 
     const eventPosition = await prisma.eventPosition.update({
         where: {
-            id: result.data.position,
+            id: position.id,
         },
         data: {
-            controllers: {
-                connect: {
-                    id: result.data.controller,
-                },
-            },
+            finalPosition: result.data.finalPosition,
+            finalStartTime: result.data.finalStartTime,
+            finalEndTime: result.data.finalEndTime,
+            finalNotes: result.data.finalNotes,
         },
         include: {
-            event: true,
+            user: true,
+        },
+    });
+
+    after(async () => {
+        if (eventPosition) {
+            await log("UPDATE", "EVENT_POSITION", `Updated event position for ${eventPosition.user?.firstName} ${eventPosition.user?.lastName} to ${eventPosition.finalPosition} from ${eventPosition.finalStartTime?.toUTCString()} to ${eventPosition.finalEndTime?.toUTCString()}`);
+        }
+
+        if (eventPosition.published) {
+            sendEventPositionEmail(eventPosition.user as User, eventPosition, event);
         }
     });
 
-    const controller = await prisma.user.findUniqueOrThrow({
+    revalidatePath(`/admin/events/${event.id}/manager`);
+
+    return { eventPosition };
+}
+
+export const publishEventPosition = async (event: Event, position: EventPosition) => {
+
+    const formData = new FormData();
+    let finalPosition = position.finalPosition || '';
+
+    if (!finalPosition && event.presetPositions.includes(position.requestedPosition)) {
+        finalPosition = position.requestedPosition;
+    }
+
+    formData.set('finalPosition', finalPosition);
+    formData.set('finalStartTime', position.finalStartTime?.toISOString() || position.requestedStartTime?.toISOString() || '');
+    formData.set('finalEndTime', position.finalEndTime?.toISOString() || position.requestedEndTime?.toISOString() || '');
+    formData.set('finalNotes', position.finalNotes || '');
+
+    const result = await validateFinalEventPosition(event, formData, true) as SafeParseReturnType<any, any>;
+
+    if (!result.success) {
+        return { error: {
+            success: false,
+            errors: result.error.errors.map((e) => ({
+                path: e.path.join('.'),
+                message: e.message,
+            })),
+        } as ZodErrorSlimResponse };
+    }
+
+    const eventPosition = await prisma.eventPosition.update({
         where: {
-            id: result.data.controller,
+            id: position.id,
+        },
+        data: {
+            finalPosition,
+            published: true,
+        },
+        include: {
+            user: true,
+        },
+    });
+
+    after(async () => {
+        if (eventPosition && eventPosition.user) {
+            await log("UPDATE", "EVENT_POSITION", `Published event position for ${eventPosition.user?.firstName} ${eventPosition.user?.lastName} for ${eventPosition.finalPosition} from ${eventPosition.finalStartTime?.toUTCString()} to ${eventPosition.finalEndTime?.toUTCString()}`);
+        }
+
+        sendEventPositionEmail(eventPosition.user as User, eventPosition, event);
+    });
+
+    revalidatePath(`/admin/events/${event.id}/manager`);
+
+    return { eventPosition };
+}
+
+export const unpublishEventPosition = async (event: Event, position: EventPosition) => {
+    const eventPosition = await prisma.eventPosition.update({
+        where: {
+            id: position.id,
+        },
+        data: {
+            published: false,
+        },
+        include: {
+            user: true,
+        },
+    });
+
+    after(async () => {
+        if (eventPosition) {
+            await log("UPDATE", "EVENT_POSITION", `Unpublished event position for ${eventPosition.user?.firstName} ${eventPosition.user?.lastName} for ${eventPosition.finalPosition} from ${eventPosition.finalStartTime?.toUTCString()} to ${eventPosition.finalEndTime?.toUTCString()}`);
+        
+            sendEventPositionRemovalEmail(eventPosition.user as User, eventPosition, event);
         }
     });
 
-    await sendEventPositionEmail(controller as User, eventPosition, eventPosition.event);
-    await log('UPDATE', 'EVENT_POSITION', `Forced assigned ${eventPosition.position} to ${controller.firstName} ${controller.lastName} (${controller.cid}) in ${eventPosition.event.name}`);
-    revalidatePath(`/admin/events/edit/${eventPosition.eventId}/positions`);
-    revalidatePath(`/events/${eventPosition.eventId}`);
-    return { eventPosition, controller };
+    revalidatePath(`/admin/events/${event.id}/manager`);
+
+    return { eventPosition };
 }
 
-const isAbleToSignup = (eventPosition: EventPosition, controllersSignedUp: User[], controller: User) => {
-    if (controller.noEventSignup) {
-        return false;
-    }
-    if (controller.controllerStatus === "NONE") {
-        return false;
-    }
-    if (eventPosition.signupCap && controllersSignedUp.length >= eventPosition.signupCap) {
-        return false;
-    }
-    return !(eventPosition.minRating && eventPosition.minRating > controller.rating);
-
+export const fetchAllUsers = async () => {
+    return prisma.user.findMany({
+        select: {
+            id: true,
+            cid: true,
+            firstName: true,
+            lastName: true,
+            rating: true,
+        },
+        where: {
+            controllerStatus: {
+                not: 'NONE',
+            },
+        },
+    });
 }
+

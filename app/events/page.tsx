@@ -1,16 +1,13 @@
 import React from 'react';
-import {Box, Card, CardContent, Container, Stack, Typography} from "@mui/material";
-import prisma from "@/lib/db";
-import EventCalendar from "@/components/Events/EventCalendar";
-import {formatZuluDate} from "@/lib/date";
-import Image from "next/image";
-import {UTApi} from "uploadthing/server";
-import Link from "next/link";
+import Image from 'next/image';
+import {Accordion, AccordionDetails, AccordionSummary, Box, Card, CardContent, Container, Link, Stack, Typography} from "@mui/material";
 import {Metadata} from "next";
-import Placeholder from "../../public/img/logo_large.png";
+import EventCalendar from '@/components/Events/EventCalendar';
+import prisma from '@/lib/db';
+import { formatZuluDate } from '@/lib/date';
+import Placeholder from '@/public/img/logo_large.png';
+import { ExpandMore } from '@mui/icons-material';
 
-const ut = new UTApi();
-const VATUSA_FACILITY = process.env.VATUSA_FACILITY;
 export const metadata: Metadata = {
     title: 'Events | vZDC',
     description: 'vZDC charts page',
@@ -19,27 +16,36 @@ export const metadata: Metadata = {
 export default async function Page() {
 
     const events = await prisma.event.findMany({
+        where: {
+            hidden: false,
+        },
         orderBy: {
             start: 'asc',
         },
     });
-
+    
     return (
         <Container maxWidth="lg">
-            <Card sx={{mb: 2,}}>
-                <CardContent>
+            <Accordion sx={{ mb: 2, }}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
                     <Typography variant="h6">Legend</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
                     <Stack direction="column" spacing={2} sx={{mt: 1,}}>
                         <Typography color="#f44336" fontWeight="bold" sx={{p: 1, border: 1,}}>Home</Typography>
                         <Typography color="#cd8dd8" fontWeight="bold"
                                     sx={{p: 1, border: 1,}}>Support/Optional</Typography>
                         <Typography color="#834091" fontWeight="bold"
                                     sx={{p: 1, border: 1,}}>Support/Required</Typography>
+                            <Typography color="#36d1e7" fontWeight="bold"
+                            sx={{p: 1, border: 1,}}>Friday Night Operations</Typography>
+                            <Typography color="#e6af34" fontWeight="bold"
+                            sx={{p: 1, border: 1,}}>Saturday Night Operations</Typography>
                         <Typography color="#66bb6a" fontWeight="bold" sx={{p: 1, border: 1,}}>Group Flight</Typography>
-                        <Typography color="#ffa726" fontWeight="bold" sx={{p: 1, border: 1,}}>Training</Typography>
+                        <Typography color="darkgray" fontWeight="bold" sx={{p: 1, border: 1,}}>Training</Typography>
                     </Stack>
-                </CardContent>
-            </Card>
+                </AccordionDetails>
+            </Accordion>
             <Card>
                 <CardContent>
                     <EventCalendar events={events}/>
@@ -52,14 +58,13 @@ export default async function Page() {
                         <CardContent>
                             <Link href={`/events/${event.id}`} style={{color: 'inherit', textDecoration: 'none',}}>
                                 <Box sx={{position: 'relative', width: '100%', minHeight: 200,}}>
-                                    <Image src={['png','jpeg','jpg','gif'].indexOf((await ut.getFileUrls([event.bannerKey])).data[0].url.split('.').at(-1)!) > -1?(await ut.getFileUrls([event.bannerKey])).data[0].url:Placeholder}
+                                    <Image src={event.bannerKey ? `https://utfs.io/f/${event.bannerKey}` : Placeholder}
                                            alt={event.name} fill style={{objectFit: 'contain'}}/>
                                 </Box>
                             </Link>
                             <Typography variant="h5">{event.name}</Typography>
                             <Typography
                                 variant="subtitle2">{formatZuluDate(event.start)} - {formatZuluDate(event.end).substring(9)}</Typography>
-                            <Typography variant="subtitle2">Hosted by {event.host || VATUSA_FACILITY}</Typography>
                             <Typography variant="subtitle2">{event.featuredFields.join(', ')}</Typography>
                         </CardContent>
                     </Card>

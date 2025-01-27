@@ -10,6 +10,9 @@ export default async function Page() {
             operatingInitials: {
                 not: null,
             },
+            controllerStatus: {
+                not: 'NONE',
+            },
         },
         select: {
             operatingInitials: true,
@@ -31,11 +34,11 @@ export default async function Page() {
             <Card>
                 <CardContent>
                     <Typography variant="h5">Operating Initials Matrix</Typography>
-                    <Box sx={{mt: 1, border: 2, borderRadius: 2, color: 'red',}}>
+                    <Box sx={{mt: 1, border: 2, borderRadius: 2, color: 'cyan',}}>
                         <Typography textAlign="center" variant="body2">In Use - HOME (hover/click to inspect
                             controller)</Typography>
                     </Box>
-                    <Box sx={{mt: 1, border: 2, borderRadius: 2, color: 'green',}}>
+                    <Box sx={{mt: 1, border: 2, borderRadius: 2, color: 'purple',}}>
                         <Typography textAlign="center" variant="body2">In Use - VISITOR (hover/click to inspect
                             controller)</Typography>
                     </Box>
@@ -64,7 +67,7 @@ export default async function Page() {
                                             <Box sx={{
                                                 border: 2,
                                                 borderRadius: 2,
-                                                color: inUse.controllerStatus === "HOME" ? 'red' : 'green',
+                                                color: inUse.controllerStatus === "HOME" ? 'cyan' : 'purple',
                                             }}>
                                                 <Typography textAlign="center" variant="body2">{initials}</Typography>
                                             </Box>

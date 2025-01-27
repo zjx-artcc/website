@@ -67,7 +67,7 @@ export default function EventPositionRequestForm({ admin, currentUser, event, ev
                             onChange={(event, newValue) => {
                                 setUser(newValue ? newValue.id : '');
                             }}
-                            renderInput={(params) => <TextField {...params} label="Student"/>}
+                            renderInput={(params) => <TextField {...params} label="Controller"/>}
                         />
                     </Grid2> }
                     <Grid2 size={{ xs: 6, md: 2, }}>

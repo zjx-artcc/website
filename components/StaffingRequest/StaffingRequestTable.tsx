@@ -49,7 +49,7 @@ export default function StaffingRequestTable() {
                     <GridActionsCellItem
                         icon={<Visibility/>}
                         label="View Staffing Request"
-                        onClick={() => router.push(`/admin/staffing-requests/${params.row.id}`)}
+                        onClick={() => router.push(`/events/admin/staffing-requests/${params.row.id}`)}
                     />
                 </Tooltip>,
             ],

@@ -18,9 +18,9 @@ export async function GET() {
         if (!user.excludedFromVatusaRosterUpdate) {
             const vatusaData = await getVatusaData(user as User, users as User[]);
             let newOperatingInitials = user.operatingInitials;
-            if (vatusaData.controllerStatus === "NONE" && user.controllerStatus !== "NONE") {
+            if (vatusaData.controllerStatus === "NONE") {
                 newOperatingInitials = null;
-            } else if (vatusaData.controllerStatus !== "NONE" && user.controllerStatus === "NONE") {
+            } else if (user.controllerStatus === "NONE") {
                 newOperatingInitials = await getOperatingInitials(user.firstName || '', user.lastName || '', users.map(user => user.operatingInitials).filter(initial => initial !== null) as string[]);
             }
             await prisma.user.update({

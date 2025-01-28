@@ -43,6 +43,7 @@ export async function GET() {
                         },
                     },
                 });
+                continue;
             }
 
             await prisma.user.update({

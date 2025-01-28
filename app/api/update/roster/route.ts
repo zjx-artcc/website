@@ -10,11 +10,14 @@ import {assignNextProgressionOrRemove, getProgressionStatus} from "@/actions/pro
 
 export const dynamic = 'force-dynamic';
 
+const DEV_MODE = process.env['DEV_MODE'] === 'true';
+
 export async function GET() {
 
     const users = await prisma.user.findMany();
 
     for (const user of users) {
+
         if (!user.excludedFromVatusaRosterUpdate) {
             const vatusaData = await getVatusaData(user as User, users as User[]);
             let newOperatingInitials = user.operatingInitials;
@@ -23,6 +26,25 @@ export async function GET() {
             } else if (user.controllerStatus === "NONE") {
                 newOperatingInitials = await getOperatingInitials(user.firstName || '', user.lastName || '', users.map(user => user.operatingInitials).filter(initial => initial !== null) as string[]);
             }
+
+            if (DEV_MODE) {
+                await prisma.user.update({
+                    where: {
+                        id: user.id
+                    },
+                    data: {
+                        controllerStatus: "HOME",
+                        operatingInitials: newOperatingInitials,
+                        roles: {
+                            set: ['CONTROLLER', 'MENTOR', 'INSTRUCTOR', 'STAFF', 'EVENT_STAFF'],
+                        },
+                        staffPositions: {
+                            set: ['ATM'],
+                        },
+                    },
+                });
+            }
+
             await prisma.user.update({
                 where: {
                     id: user.id

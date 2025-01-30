@@ -4,7 +4,9 @@ import {getAllTimeHours} from "@/lib/hours";
 import StatisticsTimeSelector from "@/components/Statistics/StatisticsTimeSelector";
 import {Metadata} from "next";
 import prisma from "@/lib/db";
-import {User} from "next-auth";
+import {getServerSession, User} from "next-auth";
+import {authOptions} from "@/auth/auth";
+import LoginButton from "@/components/Navbar/LoginButton";
 
 export const metadata: Metadata = {
     title: 'Statistics | vZDC',
@@ -12,6 +14,20 @@ export const metadata: Metadata = {
 };
 
 export default async function Layout({children}: { children: React.ReactNode }) {
+
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+        return <Card>
+            <CardContent>
+                <Typography variant="h5">Login Required</Typography>
+                <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be logged in to
+                    see this information.</Typography>
+                <LoginButton session={session}/>
+            </CardContent>
+        </Card>;
+
+    }
 
     const allTimeHours = await getAllTimeHours();
     const controllers = await prisma.user.findMany({

@@ -17,7 +17,7 @@ export default function Footer() {
         <AppBar position="static" sx={{marginTop: 20}}>
             <Toolbar>
                 <Container maxWidth="md" sx={{padding: 5,}}>
-                    <Typography textAlign="center">&copy; 2024 Virtual Washington Air Route Traffic Control Center, All
+                    <Typography textAlign="center">&copy; 2025 Virtual Washington Air Route Traffic Control Center, All
                         Rights Reserved.</Typography>
                     <Typography textAlign="center" sx={{marginTop: 1,}}>A sub-division of VATUSA, a division of the
                         VATSIM network.</Typography>

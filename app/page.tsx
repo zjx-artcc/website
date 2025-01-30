@@ -10,10 +10,15 @@ import {getTop3Controllers} from "@/lib/hours";
 import HeaderText from "@/components/Hero/HeaderText";
 import BackgroundImage from "@/components/Hero/BackgroundImage";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/auth/auth";
+import LoginButton from "@/components/Navbar/LoginButton";
 
 const headingFont = Roboto({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
+
+    const session = await getServerSession(authOptions);
 
     const upcomingEvents = await prisma.event.findMany({
         where: {
@@ -115,7 +120,12 @@ export default async function Home() {
                 <Card sx={{minHeight: 600,}}>
                     <CardContent>
                         <Typography {...headingFont.style} variant="h5" sx={{mb: 1,}}>Online ATC</Typography>
-                        <Stack direction="column" spacing={1} sx={{maxHeight: 600,}}>
+                        {!session && <>
+                            <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be
+                                logged in to see this information.</Typography>
+                            <LoginButton session={session}/>
+                        </>}
+                        {session && <Stack direction="column" spacing={1} sx={{maxHeight: 600,}}>
                             {onlineAtc.length > 0 ? onlineAtc.map(position => (
                                 <Card elevation={0} key={position.position + position.log.userId}>
                                     <CardContent>
@@ -131,7 +141,7 @@ export default async function Home() {
                                     </CardContent>
                                 </Card>
                             )) : <Typography>No controllers online</Typography>}
-                        </Stack>
+                        </Stack>}
                     </CardContent>
                 </Card>
             </Grid2>
@@ -143,7 +153,12 @@ export default async function Home() {
                 <Card sx={{minHeight: 600,}}>
                     <CardContent>
                         <Typography {...headingFont.style} variant="h5" sx={{mb: 1,}}>Top 3 Controllers</Typography>
-                        <Stack direction="column" spacing={1}>
+                        {!session && <>
+                            <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be
+                                logged in to see this information.</Typography>
+                            <LoginButton session={session}/>
+                        </>}
+                        {session && <Stack direction="column" spacing={1}>
                             {top3Controllers.map((controller, idx) => (
                                 <Card elevation={0} key={controller.user.cid}>
                                     <CardContent>
@@ -165,7 +180,7 @@ export default async function Home() {
                                     </CardContent>
                                 </Card>
                             ))}
-                        </Stack>
+                        </Stack>}
                     </CardContent>
                 </Card>
             </Grid2>
@@ -177,7 +192,12 @@ export default async function Home() {
                 <Card sx={{minHeight: 600,}}>
                     <CardContent>
                         <Typography {...headingFont.style} variant="h5" sx={{mb: 1,}}>Solo Certifications</Typography>
-                        <Stack direction="column" spacing={1}>
+                        {!session && <>
+                            <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be
+                                logged in to see this information.</Typography>
+                            <LoginButton session={session}/>
+                        </>}
+                        {session && <Stack direction="column" spacing={1}>
                             {soloCertifications.length > 0 ? soloCertifications.map(solo => (
                                 <Card elevation={0} key={solo.id}>
                                     <CardContent>
@@ -191,7 +211,7 @@ export default async function Home() {
                                     </CardContent>
                                 </Card>
                             )) : <Typography>No active solo certifications</Typography>}
-                        </Stack>
+                        </Stack>}
                     </CardContent>
                 </Card>
             </Grid2>

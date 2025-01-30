@@ -1,28 +1,33 @@
 import React from 'react';
 import prisma from "@/lib/db";
 import {notFound} from "next/navigation";
-import {
-    Box,
-    Card,
-    CardContent,
-    Container,
-    Grid2,
-    Stack,
-    Typography
-} from "@mui/material";
+import {Box, Card, CardContent, Container, Grid2, Stack, Typography} from "@mui/material";
 import Image from "next/image";
-import {UTApi} from "uploadthing/server";
 import Markdown from "react-markdown";
 import Placeholder from "@/public/img/logo_large.png";
-import { formatZuluDate } from '@/lib/date';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/auth/auth';
+import {formatZuluDate} from '@/lib/date';
+import {getServerSession} from 'next-auth';
+import {authOptions} from '@/auth/auth';
 import EventPositionRequestForm from '@/components/EventPosition/EventPositionRequestForm';
-import { User } from '@prisma/client';
-
-const ut = new UTApi();
+import {User} from '@prisma/client';
+import LoginButton from "@/components/Navbar/LoginButton";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
+
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+        return <Card>
+            <CardContent>
+                <Typography variant="h5">Login Required</Typography>
+                <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be logged in to
+                    see this information.</Typography>
+                <LoginButton session={session}/>
+            </CardContent>
+        </Card>;
+
+    }
+
     const params = await props.params;
 
     const {id} = params;
@@ -37,8 +42,6 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     if (!event) {
         notFound();
     }
-
-    const session = await getServerSession(authOptions);
 
     const imageUrl = event.bannerKey && `https://utfs.io/f/${event.bannerKey}`;
 

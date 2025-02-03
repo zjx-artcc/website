@@ -56,6 +56,9 @@ jobs:
             exit 1
           fi
 
+      - name: Rename .env.public to .env
+        run: mv .env.public .env
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:

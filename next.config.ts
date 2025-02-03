@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     serverExternalPackages: ['mjml'],
     experimental: {
         serverActions: {
-            bodySizeLimit: '5MB',
+            bodySizeLimit: '10MB',
         },
     },
     output: 'standalone',

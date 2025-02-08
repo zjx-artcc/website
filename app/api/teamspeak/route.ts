@@ -3,7 +3,7 @@ import prisma from "@/lib/db";
 
 const {TS_KEY} = process.env;
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     const key = searchParams.get('key');
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
         status: 403,
     });
 
-    const uid = searchParams.get('uid');
+    const uid = await request.text();
 
     if (!uid) return Response.json({}, {
         status: 400,

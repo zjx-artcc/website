@@ -74,6 +74,8 @@ model User {
   staffingRequests   StaffingRequest[]
   loas               LOA[]
 
+  teamspeakUid String?
+
   newEventNotifications Boolean? @default(false)
   receiveEmail          Boolean? @default(true)
 

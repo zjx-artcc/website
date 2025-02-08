@@ -2,7 +2,7 @@
 import React from 'react';
 import {User} from "next-auth";
 import {Filter} from 'bad-words';
-import {Card, CardContent, Divider, Stack, Switch, TextField, Tooltip} from "@mui/material";
+import {Card, CardContent, Divider, Stack, Switch, TextField, Tooltip, Typography} from "@mui/material";
 import {getRating} from "@/lib/vatsim";
 import {z} from "zod";
 import {toast} from "react-toastify";
@@ -27,10 +27,12 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
             operatingInitials: z.string().length(2, "Operating Initials must be 2 characters").toUpperCase(),
             receiveEmail: z.boolean(),
             newEventNotifications: z.boolean(),
+            teamspeakUid: z.string().optional(),
         });
 
         const result = User.safeParse({
             preferredName: formData.get('preferredName') as string,
+            teamspeakUid: formData.get('teamspeakUid') as string,
             bio: formData.get('bio') as string,
             operatingInitials: formData.get('operatingInitials') as string || user.operatingInitials,
             receiveEmail: true,
@@ -78,6 +80,14 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
                         <TextField fullWidth disabled variant="filled" label="VATSIM CID" value={user.cid}/>
                         <TextField fullWidth disabled variant="filled" label="Rating" value={getRating(user.rating)}/>
                         <Divider/>
+                        {!admin && <>
+                            <TextField fullWidth variant="filled" name="teamspeakUid" label="Teamspeak UID"
+                                       defaultValue={user.teamspeakUid || ''}
+                                       helperText="This is required to access the vZDC Teamspeak server.  In order to find your ID in TeamSpeak, connect to the vZDC teamspeak server, then select 'Tools', then select 'Identities', then at the bottom, select 'Go Advanced' and copy EXACTLY the 'Unique ID'."/>
+                            <Typography color="red" fontWeight="bold">Do NOT share this I.D. with anyone. By doing so,
+                                you might be giving access to your VATSIM details.</Typography>
+                            <Divider/>
+                        </>}
                         <TextField fullWidth variant="filled" name="preferredName" label="Preferred Name"
                                    defaultValue={user.preferredName || ''}/>
                         <TextField fullWidth multiline rows={5} variant="filled" name="bio" label="Bio"

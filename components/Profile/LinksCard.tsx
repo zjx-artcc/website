@@ -16,11 +16,29 @@ export default function LinksCard() {
                 <List disablePadding>
                     <Link href="https://wkf.ms/4fqZt3O" target="_blank"
                           style={{color: 'inherit', textDecoration: 'none',}}>
-                        <ListItemButton sx={{border: 3, borderRadius: 8, borderColor: 'orange'}}>
+                        <ListItemButton>
                             <ListItemIcon>
-                                <Feedback/>
+                                <Feedback color="info"/>
                             </ListItemIcon>
                             <ListItemText primary="General Facility Feedback"/>
+                        </ListItemButton>
+                    </Link>
+                    <Link href="https://wkf.ms/3C3CEpl" target="_blank"
+                          style={{color: 'inherit', textDecoration: 'none',}}>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <Feedback color="info"/>
+                            </ListItemIcon>
+                            <ListItemText primary="Publications Feedback"/>
+                        </ListItemButton>
+                    </Link>
+                    <Link href="https://wkf.ms/4gqmZ2m" target="_blank"
+                          style={{color: 'inherit', textDecoration: 'none',}}>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <Feedback color="info"/>
+                            </ListItemIcon>
+                            <ListItemText primary="Web Systems Feedback"/>
                         </ListItemButton>
                     </Link>
                     <Link href="https://training.vzdc.org" target="_blank"

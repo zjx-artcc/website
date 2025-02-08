@@ -68,6 +68,8 @@ declare module "next-auth" {
         receiveEmail:   boolean
         newEventNotifications: boolean,
         flagAutoAssignSinglePass: boolean,
+
+        teamspeakUid?: string,
     }
 
     interface AdapterUser extends User {

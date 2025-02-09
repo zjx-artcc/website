@@ -115,6 +115,10 @@ model User {
   trainingProgressionId String?
 
   flagAutoAssignSinglePass Boolean @default(false)
+
+  changesUnseen ChangeBroadcast[] @relation("unseenByUsers")
+  changesSeen   ChangeBroadcast[] @relation("seenByUsers")
+  changesAgreed ChangeBroadcast[] @relation("agreedByUsers")
 }
 
 model TrainingAssignment {
@@ -279,6 +283,7 @@ enum LogType {
 
 enum LogModel {
   USER
+  BROADCAST
   STAFF_POSITION
   LOA
   ROLE
@@ -421,6 +426,8 @@ model File {
   key            String
   updatedAt      DateTime
   highlightColor HighlightColorType @default(INHERIT)
+
+  changes ChangeBroadcast[]
 }
 
 enum HighlightColorType {
@@ -673,4 +680,22 @@ model EventPositionPreset {
 
   name      String
   positions String[]
+}
+
+model ChangeBroadcast {
+  id String @id @default(cuid())
+
+  title       String
+  description String
+
+  file   File?   @relation(fields: [fileId], references: [id])
+  fileId String?
+
+  exemptStaff Boolean @default(false)
+
+  timestamp DateTime
+
+  agreedBy User[] @relation("agreedByUsers")
+  seenBy   User[] @relation("seenByUsers")
+  unseenBy User[] @relation("unseenByUsers")
 }

@@ -19,12 +19,10 @@ export default async function Page() {
     return (
         <>
             <Stack direction="row" spacing={2} justifyContent="space-between" sx={{mb: 2,}}>
-                <Stack direction="column" spacing={1}>
-                    <Typography variant="h5">Training Sessions</Typography>
-                </Stack>
-                    <Link href="/training/sessions/new">
-                        <Button variant="contained" size="large" startIcon={<Add/>}>New Training Session</Button>
-                    </Link>
+                <Typography variant="h5">Training Sessions</Typography>
+                <Link href="/training/sessions/new">
+                    <Button variant="contained" size="large" startIcon={<Add/>}>New Training Session</Button>
+                </Link>
             </Stack>
             <TrainingSessionTable admin isInstructor={isInstructor} mentorCID={mentorCID}/>
         </>

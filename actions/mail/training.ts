@@ -3,7 +3,6 @@
 import {Lesson, TrainingSession} from "@prisma/client";
 import {User} from "next-auth";
 import {FROM_EMAIL, mailTransport} from "@/lib/email";
-import prisma from "@/lib/db";
 import {trainingSessionCreated} from "@/templates/TrainingSession/TrainingSessionCreated";
 import {instructorNotification} from "@/templates/TrainingSession/InstructorNotification";
 import {assignmentFulfilledStudent} from "@/templates/TrainingAssignment/AssignmentFulfilledStudent";
@@ -28,23 +27,12 @@ export const sendTrainingSessionCreatedEmail = async (student: User, trainingSes
 
 export const sendInstructorsTrainingSessionCreatedEmail = async (student: User, trainingSession: TrainingSession, lesson: Lesson) => {
 
-    const instructorEmails = await prisma.user.findMany({
-        where: {
-            roles: {
-                has: "INSTRUCTOR",
-            },
-        },
-        select: {
-            email: true,
-        },
-    });
-
     const {html} = await instructorNotification(student, trainingSession, lesson);
 
     await mailTransport.sendMail({
         from: FROM_EMAIL,
         to: FROM_EMAIL,
-        bcc: instructorEmails.join(','),
+        bcc: 'zdc-instructors@vatusa.net',
         subject: `${lesson.identifier} PASS Notification`,
         html,
     })

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Badge, Card, CardContent, List, ListItemButton, ListItemIcon, ListItemText, Typography} from "@mui/material";
+import {Badge, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import Link from "next/link";
 import {
     AccessTime,
@@ -7,15 +7,13 @@ import {
     AirplanemodeActive,
     Badge as BadgeIcon,
     BarChart,
-    CalendarMonth,
+    CellTower,
     DeleteSweep,
     Feedback,
     Folder,
     Home,
     ListAlt,
     MilitaryTech,
-    QuestionAnswer,
-    RecentActors,
     Report,
     Send,
     Task,
@@ -37,8 +35,6 @@ export default async function AdminMenu() {
             status: "PENDING",
         },
     });
-
-    const staffingRequests = await prisma.staffingRequest.count();
 
     const activeIncidentReports = await prisma.incidentReport.count({
         where: {
@@ -199,6 +195,14 @@ export default async function AdminMenu() {
                         <BarChart/>
                     </ListItemIcon>
                     <ListItemText primary="Statistics Prefixes"/>
+                </ListItemButton>
+            </Link>
+            <Link href="/admin/broadcasts" style={{textDecoration: 'none', color: 'inherit',}}>
+                <ListItemButton>
+                    <ListItemIcon>
+                        <CellTower/>
+                    </ListItemIcon>
+                    <ListItemText primary="Broadcasts"/>
                 </ListItemButton>
             </Link>
             <Link href="/admin/logs" style={{textDecoration: 'none', color: 'inherit',}}>

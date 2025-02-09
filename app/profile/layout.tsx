@@ -3,6 +3,7 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
 import {Box, Typography} from "@mui/material";
 import {Metadata} from "next";
+import BroadcastViewer from "@/components/BroadcastViewer/BroadcastViewer";
 
 export const metadata: Metadata = {
     title: 'Profile | vZDC',
@@ -30,6 +31,7 @@ export default async function Layout({children}: { children: React.ReactNode }) 
 
     return (
         <>
+            <BroadcastViewer user={session.user} includeSeen/>
             {children}
         </>
     );

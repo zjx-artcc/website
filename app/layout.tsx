@@ -15,6 +15,9 @@ import Footer from "@/components/Footer/Footer";
 import {ToastContainer} from "react-toastify";
 import {GoogleTagManager} from "@next/third-parties/google";
 import InitColorSchemeScript from "@mui/system/InitColorSchemeScript";
+import BroadcastViewer from "@/components/BroadcastViewer/BroadcastViewer";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/auth/auth";
 
 export const metadata: Metadata = {
     title: "Virtual Washington ARTCC",
@@ -36,6 +39,8 @@ export default async function RootLayout({
     children: ReactNode;
 }>) {
 
+    const session = await getServerSession(authOptions);
+
   return (
       <html lang="en" suppressHydrationWarning>
       <body className={roboto.variable}>
@@ -45,6 +50,7 @@ export default async function RootLayout({
             <GoogleTagManager gtmId={googleAnalyticsId || ''}/>
             <InitColorSchemeScript attribute="class" defaultMode="system"/>
             <div>
+                {session?.user && <BroadcastViewer user={session.user}/>}
                 <Navbar/>
                 <Container maxWidth="xl" sx={{marginTop: 2,}}>
                     {children}

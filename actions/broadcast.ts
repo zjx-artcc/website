@@ -119,6 +119,7 @@ export const createOrUpdateBroadcast = async (formData: FormData) => {
         });
 
     } else {
+        console.log(result.data.users);
         broadcast = await prisma.changeBroadcast.create({
             data: {
                 title: result.data.title,
@@ -130,9 +131,9 @@ export const createOrUpdateBroadcast = async (formData: FormData) => {
                 } : undefined,
                 timestamp: new Date(),
                 exemptStaff: result.data.exemptStaff,
-                // unseenBy: {
-                //     connect: result.data.users.map((id) => ({id})),
-                // },
+                unseenBy: {
+                    connect: result.data.users.map((id) => ({id})),
+                },
             },
             include: {
                 unseenBy: true,

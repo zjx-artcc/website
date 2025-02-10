@@ -1,5 +1,3 @@
-'use client';
-
 import {ChangeBroadcast} from "@prisma/client";
 import {renderReactToMjml} from "@/actions/mjml";
 import MultipleRecipientsEmailWrapper from "@/templates/Wrapper/MultipleRecipientsEmailWrapper";

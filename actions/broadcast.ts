@@ -89,7 +89,7 @@ export const createOrUpdateBroadcast = async (formData: FormData) => {
         id: formData.get('id') as string,
         title: formData.get('title') as string,
         description: formData.get('description') as string,
-        users: formData.getAll('users'),
+        users: (formData.get('users') as string).split(','),
         file: formData.get('file') as string,
         exemptStaff: formData.get('exemptStaff') === 'on',
     });
@@ -119,7 +119,6 @@ export const createOrUpdateBroadcast = async (formData: FormData) => {
         });
 
     } else {
-        console.log(result.data.users);
         broadcast = await prisma.changeBroadcast.create({
             data: {
                 title: result.data.title,

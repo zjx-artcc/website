@@ -130,9 +130,9 @@ export const createOrUpdateBroadcast = async (formData: FormData) => {
                 } : undefined,
                 timestamp: new Date(),
                 exemptStaff: result.data.exemptStaff,
-                unseenBy: {
-                    connect: result.data.users.map((id) => ({id})),
-                },
+                // unseenBy: {
+                //     connect: result.data.users.map((id) => ({id})),
+                // },
             },
             include: {
                 unseenBy: true,

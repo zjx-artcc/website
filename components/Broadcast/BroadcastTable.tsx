@@ -10,6 +10,7 @@ import BroadcastDeleteButton from "@/components/Broadcast/BroadcastDeleteButton"
 import {fetchBroadcasts} from "@/actions/broadcast";
 import BroadcastNotAgreedViewerButton from "@/components/Broadcast/BroadcastNotAgreedViewerButton";
 import {formatZuluDate} from "@/lib/date";
+import BroadcastAgreedViewerButton from "@/components/Broadcast/BroadcastAgreedViewerButton";
 
 export default function BroadcastTable() {
 
@@ -46,7 +47,7 @@ export default function BroadcastTable() {
         {
             field: 'agreed',
             type: 'number',
-            headerName: 'Agreed',
+            headerName: 'Reviewed',
             flex: 1,
             renderCell: (params) => `${params.row.agreedBy.length}/${params.row.seenBy.length + params.row.unseenBy.length + params.row.agreedBy.length}`,
         },
@@ -56,6 +57,8 @@ export default function BroadcastTable() {
             headerName: 'Actions',
             flex: 1,
             getActions: (params) => [
+                <BroadcastAgreedViewerButton agreedBy={params.row.agreedBy}
+                                             key={`agreed-${params.row.id}`} broadcast={params.row}/>,
                 <BroadcastNotAgreedViewerButton notAgreedBy={[...params.row.unseenBy, ...params.row.seenBy]}
                                                 key={`notagreed-${params.row.id}`} broadcast={params.row}/>,
                 <Tooltip title="Edit Broadcast" key={`edit-${params.row.id}`}>

@@ -3,34 +3,34 @@ import React, {useState} from 'react';
 import {ChangeBroadcast, User} from "@prisma/client";
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tooltip} from "@mui/material";
 import {GridActionsCellItem} from "@mui/x-data-grid";
-import {Gavel} from "@mui/icons-material";
+import {Check} from "@mui/icons-material";
 import {getRating} from "@/lib/vatsim";
 import Link from "next/link";
 
-export default function BroadcastNotAgreedViewerButton({broadcast, notAgreedBy}: {
+export default function BroadcastAgreedViewerButton({broadcast, agreedBy}: {
     broadcast: ChangeBroadcast,
-    notAgreedBy: User[],
+    agreedBy: User[],
 }) {
 
     const [open, setOpen] = useState(false);
 
     return (
         <>
-            <Tooltip title="View Controllers NOT Reviewed">
+            <Tooltip title="View Controllers Reviewed">
                 <GridActionsCellItem
-                    icon={<Gavel/>}
-                    label="View Controllers NOT Reviewed"
+                    icon={<Check/>}
+                    label="View Controllers Reviewed"
                     onClick={() => setOpen(true)}
                 />
             </Tooltip>
             <Dialog open={open} onClose={() => setOpen(false)}>
-                <DialogTitle>Not Agreed - {broadcast.title}</DialogTitle>
+                <DialogTitle>Agreed - {broadcast.title}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>Click on a controller to view profile in a new tab.</DialogContentText>
-                    <DialogContentText gutterBottom>The following controllers have not reviewed this
+                    <DialogContentText gutterBottom>The following controllers have reviewed this
                         broadcast:</DialogContentText>
                     <ul>
-                        {notAgreedBy
+                        {agreedBy
                             .sort((a, b) => (a.lastName || '').localeCompare(b.lastName || ''))
                             .map((user) => (
                                 <li key={user.id}>

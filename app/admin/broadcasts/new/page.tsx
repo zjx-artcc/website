@@ -17,6 +17,10 @@ export default async function Page() {
 
     const groups: MailGroup[] = [
         {
+            name: 'All Rostered Controllers',
+            ids: users.map(user => user.id),
+        },
+        {
             name: 'Home Observers',
             ids: users.filter(user => user.rating === 1 && user.controllerStatus === "HOME").map(user => user.id),
         },

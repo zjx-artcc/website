@@ -182,3 +182,13 @@ export const deleteBroadcast = async (id: string) => {
         await log('DELETE', 'BROADCAST', `Deleted broadcast ${broadcast.title}`);
     });
 }
+
+export const deleteStaleBroadcasts = async () => {
+    await prisma.changeBroadcast.deleteMany({
+        where: {
+            timestamp: {
+                lt: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 30 * 6), // 6 months
+            },
+        },
+    });
+}

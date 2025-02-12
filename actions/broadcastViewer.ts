@@ -24,7 +24,7 @@ export const handleSeenBroadcast = async (user: User, broadcastId: string) => {
 }
 
 export const handleAgreeBroadcast = async (user: User, broadcastId: string) => {
-    const broadcast = await prisma.changeBroadcast.update({
+    await prisma.changeBroadcast.update({
         where: {
             id: broadcastId,
         },
@@ -50,12 +50,4 @@ export const handleAgreeBroadcast = async (user: User, broadcastId: string) => {
             seenBy: true,
         },
     });
-
-    if (broadcast.seenBy.length + broadcast.unseenBy.length === 0) {
-        await prisma.changeBroadcast.delete({
-            where: {
-                id: broadcastId,
-            },
-        });
-    }
 }

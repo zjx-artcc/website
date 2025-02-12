@@ -4,6 +4,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/ma
 import {ChangeBroadcast} from "@prisma/client";
 import {handleAgreeBroadcast, handleSeenBroadcast} from "@/actions/broadcastViewer";
 import {User} from "next-auth";
+import {Check} from "@mui/icons-material";
 
 export default function BroadcastDialog({user, broadcasts, children}: {
     user: User,
@@ -31,7 +32,7 @@ export default function BroadcastDialog({user, broadcasts, children}: {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="inherit">Save for Later</Button>
-                <Button onClick={handleAgree} variant="contained">Agree</Button>
+                <Button onClick={handleAgree} variant="contained" startIcon={<Check/>}>Reviewed</Button>
             </DialogActions>
         </Dialog>
     );

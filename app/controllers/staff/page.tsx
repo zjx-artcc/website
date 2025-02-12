@@ -14,9 +14,6 @@ import {
 } from "@mui/material";
 import {getRating} from "@/lib/vatsim";
 import {Metadata} from "next";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/auth/auth";
-import LoginButton from "@/components/Navbar/LoginButton";
 
 export const metadata: Metadata = {
     title: 'Staff | vZDC',
@@ -26,20 +23,6 @@ export const metadata: Metadata = {
 const VATUSA_FACILITY = process.env.VATUSA_FACILITY;
 
 export default async function Page() {
-
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-        return <Card>
-            <CardContent>
-                <Typography variant="h5">Login Required</Typography>
-                <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be logged in to
-                    see this information.</Typography>
-                <LoginButton session={session}/>
-            </CardContent>
-        </Card>;
-
-    }
 
     const atm = await prisma.user.findFirst({
         where: {

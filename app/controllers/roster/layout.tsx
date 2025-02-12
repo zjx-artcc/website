@@ -3,9 +3,6 @@ import {Card, CardContent, Container, Stack, Typography} from "@mui/material";
 import RosterSearch from "@/components/Roster/RosterSearch";
 import RosterTabs from "@/components/Roster/RosterTabs";
 import {Metadata} from "next";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/auth/auth";
-import LoginButton from "@/components/Navbar/LoginButton";
 
 export const metadata: Metadata = {
     title: 'Roster | vZDC',
@@ -15,20 +12,6 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function Layout({children}: { children: React.ReactNode }) {
-
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-        return <Card>
-            <CardContent>
-                <Typography variant="h5">Login Required</Typography>
-                <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be logged in to
-                    see this information.</Typography>
-                <LoginButton session={session}/>
-            </CardContent>
-        </Card>;
-
-    }
 
     return (
         <Container maxWidth="lg">

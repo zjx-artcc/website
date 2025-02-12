@@ -6,9 +6,6 @@ import {Card, CardContent, IconButton, Typography} from "@mui/material";
 import {OpenInNew} from "@mui/icons-material";
 import Link from "next/link";
 import {Metadata} from "next";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/auth/auth";
-import LoginButton from "@/components/Navbar/LoginButton";
 
 const ut = new UTApi();
 
@@ -32,20 +29,6 @@ export async function generateMetadata(props: { params: Promise<{ id: string, }>
 }
 
 export default async function Page(props: { params: Promise<{ id: string, }>, }) {
-
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-        return <Card>
-            <CardContent>
-                <Typography variant="h5">Login Required</Typography>
-                <Typography color="red" fontWeight="bold" gutterBottom>By order of the A.T.M, you must be logged in to
-                    see this information.</Typography>
-                <LoginButton session={session}/>
-            </CardContent>
-        </Card>;
-
-    }
 
     const params = await props.params;
 

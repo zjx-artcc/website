@@ -5,6 +5,37 @@ import prisma from "@/lib/db";
 import {after} from "next/server";
 import {log} from "@/actions/log";
 import {revalidatePath} from "next/cache";
+import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
+import {Prisma} from "@prisma/client";
+
+export const fetchPerformanceIndicators = async (pagination: GridPaginationModel, sort: GridSortModel, filter?: GridFilterItem) => {
+    const orderBy: Prisma.PerformanceIndicatorTemplateOrderByWithRelationInput = sort[0]?.field ? {[sort[0].field]: sort[0].sort} : {name: "asc"};
+
+    return prisma.$transaction([
+        prisma.performanceIndicatorTemplate.count({
+            where: getWhere(filter),
+        }),
+        prisma.performanceIndicatorTemplate.findMany({
+            orderBy,
+            where: getWhere(filter),
+            take: pagination.pageSize,
+            skip: pagination.page * pagination.pageSize,
+        }),
+    ]);
+}
+
+const getWhere = (filter?: GridFilterItem) => {
+    if (!filter) {
+        return {};
+    }
+
+    switch (filter.field) {
+        case "name":
+            return {name: {contains: filter.value}};
+        default:
+            return {};
+    }
+}
 
 export const createOrUpdatePerformanceIndicator = async (formData: FormData) => {
     const piZ = z.object({
@@ -33,6 +64,18 @@ export const createOrUpdatePerformanceIndicator = async (formData: FormData) => 
         } else {
             await log("CREATE", "PERFORMANCE_INDICATOR_TEMPLATE", `Created performance indicator ${pi.name}`);
         }
+    });
+
+    revalidatePath("/training/indicators");
+
+    return {performanceIndicator: pi};
+}
+
+export const deletePerformanceIndicator = async (id: string) => {
+    const pi = await prisma.performanceIndicatorTemplate.delete({where: {id}});
+
+    after(async () => {
+        await log("DELETE", "PERFORMANCE_INDICATOR_TEMPLATE", `Deleted performance indicator ${pi.name}`);
     });
 
     revalidatePath("/training/indicators");

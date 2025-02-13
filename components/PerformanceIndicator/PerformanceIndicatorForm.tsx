@@ -23,7 +23,7 @@ export default function PerformanceIndicatorForm({performanceIndicator}: {
         }
 
         toast.success("Performance Indicator saved!");
-        if (performanceIndicator) {
+        if (!performanceIndicator) {
             router.push("/training/indicators");
         }
     }

@@ -1,8 +1,9 @@
 import React from 'react';
-import {Badge, Card, CardContent, List, ListItemButton, ListItemIcon, ListItemText, Typography} from "@mui/material";
+import {Badge, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import Link from "next/link";
 import {
     Assignment,
+    Checklist,
     Class,
     Clear,
     FmdBad,
@@ -124,6 +125,14 @@ export default async function TrainingMenu() {
                         <Class/>
                     </ListItemIcon>
                     <ListItemText primary="Lessons"/>
+                </ListItemButton>
+            </Link>
+            <Link href="/training/indicators" style={{textDecoration: 'none', color: 'inherit',}}>
+                <ListItemButton>
+                    <ListItemIcon>
+                        <Checklist/>
+                    </ListItemIcon>
+                    <ListItemText primary="Performance Indicators"/>
                 </ListItemButton>
             </Link>
             <Link href="/training/progressions" style={{textDecoration: 'none', color: 'inherit',}}>

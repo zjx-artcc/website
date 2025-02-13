@@ -15,7 +15,7 @@ export default function PerformanceIndicatorForm({performanceIndicator}: {
     const router = useRouter();
 
     const handleSubmit = async (formData: FormData) => {
-        const {errors} = await createOrUpdatePerformanceIndicator(formData);
+        const {errors, performanceIndicator: newPi} = await createOrUpdatePerformanceIndicator(formData);
 
         if (errors) {
             toast.error(errors.map(e => e.message).join(". "));
@@ -24,7 +24,7 @@ export default function PerformanceIndicatorForm({performanceIndicator}: {
 
         toast.success("Performance Indicator saved!");
         if (!performanceIndicator) {
-            router.push("/training/indicators");
+            router.push(`/training/indicators/${newPi.id}`);
         }
     }
 

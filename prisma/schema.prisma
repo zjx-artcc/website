@@ -723,7 +723,9 @@ model PerformanceIndicatorCriteriaCategory {
   id   String @id @default(cuid())
   name String
 
-  template   PerformanceIndicatorTemplate @relation(fields: [templateId], references: [id])
+  order Int @default(0)
+
+  template   PerformanceIndicatorTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   templateId String
 
   criteria PerformanceIndicatorCriteria[]
@@ -734,7 +736,9 @@ model PerformanceIndicatorCriteria {
 
   name String
 
-  category   PerformanceIndicatorCriteriaCategory? @relation(fields: [categoryId], references: [id])
+  order Int @default(0)
+
+  category   PerformanceIndicatorCriteriaCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId String
 
   disabledForLessons LessonPerformanceIndicator[] @relation("disabledCriteria")
@@ -766,6 +770,8 @@ model TrainingSessionPerformanceIndicatorCategory {
 
   name String
 
+  order Int @default(0)
+
   session   TrainingSessionPerformanceIndicator @relation(fields: [sessionId], references: [id])
   sessionId String
 
@@ -776,6 +782,8 @@ model TrainingSessionPerformanceIndicatorCriteria {
   id String @id @default(cuid())
 
   name String
+
+  order Int @default(0)
 
   disabled Boolean
   marker   PerformanceIndicatorMarker?

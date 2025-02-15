@@ -97,3 +97,21 @@ export const deletePerformanceIndicatorCriteria = async (id: string) => {
 
     return {criteria};
 }
+
+export const getCriteria = async (performanceIndicatorId: string) => {
+    return prisma.performanceIndicatorCriteria.findMany({
+        where: {
+            category: {
+                templateId: performanceIndicatorId,
+            },
+        },
+        orderBy: {
+            category: {
+                order: 'asc',
+            },
+        },
+        include: {
+            category: true,
+        },
+    });
+}

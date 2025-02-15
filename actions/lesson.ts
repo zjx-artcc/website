@@ -5,6 +5,7 @@ import {revalidatePath} from "next/cache";
 import {z} from "zod";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
 import {Prisma} from "@prisma/client";
+import {after} from "next/server";
 
 export const deleteLesson = async (id: string) => {
     const lesson = await prisma.lesson.delete({
@@ -150,3 +151,82 @@ const getWhere = (filter?: GridFilterItem): Prisma.LessonWhereInput => {
             return {};
     }
 };
+
+export const updateLessonIndicator = async (lessonId: string, performanceIndicatorId?: string, disabledCriteria?: string[]) => {
+
+    if (!performanceIndicatorId) {
+        const lpi = await prisma.lessonPerformanceIndicator.delete({
+            where: {
+                lessonId,
+            },
+            include: {
+                lesson: true,
+            },
+        });
+
+        const criteriaList = await prisma.performanceIndicatorCriteria.findMany({
+            where: {
+                category: {
+                    templateId: performanceIndicatorId,
+                },
+            },
+        });
+
+        for (const criteria of criteriaList) {
+            await prisma.performanceIndicatorCriteria.update({
+                where: {
+                    id: criteria.id,
+                },
+                data: {
+                    disabledForLessons: {
+                        connect: {
+                            id: lessonId,
+                        },
+                    },
+                },
+            });
+        }
+
+        after(async () => {
+            await log("DELETE", "LESSON_PERFORMANCE_INDICATOR", `Removed for lesson ${lpi.lesson.identifier}`);
+        });
+
+        return;
+    }
+
+    const lpi = await prisma.lessonPerformanceIndicator.upsert({
+        where: {
+            lessonId,
+        },
+        create: {
+            lessonId,
+            templateId: performanceIndicatorId,
+        },
+        update: {
+            templateId: performanceIndicatorId,
+        },
+        include: {
+            lesson: true,
+        },
+    });
+
+    await prisma.lessonPerformanceIndicator.update({
+        where: {
+            id: lpi.id,
+        },
+        data: {
+            disabledCriteria: {
+                set:
+                    (disabledCriteria || []).map((c) => ({
+                        id: c,
+                    })),
+            },
+
+        },
+    });
+
+    after(async () => {
+        await log("UPDATE", "LESSON_PERFORMANCE_INDICATOR", `Updated for lesson ${lpi.lesson.identifier}`);
+    });
+
+}

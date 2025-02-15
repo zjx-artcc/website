@@ -8,6 +8,31 @@ import {revalidatePath} from "next/cache";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
 import {Prisma} from "@prisma/client";
 
+export const getLessonPerformanceIndicator = async (lessonId: string) => {
+    return prisma.lessonPerformanceIndicator.findUnique({
+        where: {lessonId},
+    });
+}
+
+export const getDisabledCriteria = async (lessonId: string) => {
+    const criteria = await prisma.lessonPerformanceIndicator.findUnique({
+        where: {
+            lessonId,
+        },
+        select: {
+            disabledCriteria: true,
+        },
+    });
+
+    return criteria?.disabledCriteria.map((c) => c.id);
+}
+
+export const fetchAllPerformanceIndicators = async () => {
+    return prisma.performanceIndicatorTemplate.findMany({
+        orderBy: {name: "asc"},
+    });
+}
+
 export const fetchPerformanceIndicators = async (pagination: GridPaginationModel, sort: GridSortModel, filter?: GridFilterItem) => {
     const orderBy: Prisma.PerformanceIndicatorTemplateOrderByWithRelationInput = sort[0]?.field ? {[sort[0].field]: sort[0].sort} : {name: "asc"};
 

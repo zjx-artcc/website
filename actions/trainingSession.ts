@@ -156,13 +156,14 @@ export async function createOrUpdateTrainingSession(
             },
         })
 
-        await prisma.trainingSessionPerformanceIndicator.delete({
-            where: {
-                sessionId: trainingSession.id,
-            }
-        });
-
         if (performanceIndicator) {
+
+            await prisma.trainingSessionPerformanceIndicator.deleteMany({
+                where: {
+                    sessionId: trainingSession.id,
+                }
+            });
+
             await prisma.trainingSessionPerformanceIndicator.create({
                 data: {
                     sessionId: trainingSession.id,

@@ -7,6 +7,7 @@ import {
     Box,
     Button,
     Dialog,
+    DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
@@ -238,8 +239,11 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                     <DialogContentText>{openCriteria?.name}</DialogContentText>
                     <TextField sx={{my: 2,}} multiline rows={3} fullWidth variant="filled" label="Comment"
                                name="comment" value={comment} onChange={(e) => setComment(e.target.value)}/>
-                    <Button variant="contained" onClick={() => openCriteria && saveComment()}>Save</Button>
                 </DialogContent>
+                <DialogActions>
+                    <Button color="inherit" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                    <Button variant="contained" onClick={() => openCriteria && saveComment()}>Save</Button>
+                </DialogActions>
             </Dialog>
         </>
     );

@@ -19,9 +19,9 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Tooltip
+    Tooltip,
+    Typography
 } from "@mui/material";
-import {getDisabledCriteria} from "@/actions/performanceIndicator";
 import {AddComment, Edit} from "@mui/icons-material";
 
 export default function TrainingSessionPerformanceIndicatorForm({lesson, onChange}: {
@@ -48,29 +48,12 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                     criteria: category.criteria.map((criterion) => ({
                         id: criterion.id,
                         order: criterion.order,
-                        disabled: false,
                         comments: null,
                         marker: null,
                         categoryId: '',
                         name: criterion.name,
                     })),
                 })),
-            });
-            getDisabledCriteria(lesson.id).then((dc) => {
-                if (!dc) return;
-                setData((prev) => {
-                    if (!prev) return prev;
-                    return {
-                        ...prev,
-                        categories: prev.categories.map((category) => ({
-                            ...category,
-                            criteria: category.criteria.map((c) => ({
-                                ...c,
-                                disabled: dc.includes(c.id),
-                            })),
-                        })),
-                    };
-                });
             });
         });
     }, [lesson.id]);
@@ -81,7 +64,6 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
     }, [data])
 
     const handleObserved = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
-        if (criterion.disabled) return;
         setData((prev) => {
             if (!prev) return prev;
             return {
@@ -97,8 +79,23 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
         });
     }
 
+    const handleNotObserved = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
+        setData((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                categories: prev.categories.map((category) => ({
+                    ...category,
+                    criteria: category.criteria.map((c) => c.id === criterion.id ? {
+                        ...c,
+                        marker: c.marker === 'NOT_OBSERVED' ? null : 'NOT_OBSERVED'
+                    } : c),
+                })),
+            };
+        });
+    }
+
     const handleSatisfactory = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
-        if (criterion.disabled) return;
         setData((prev) => {
             if (!prev) return prev;
             return {
@@ -115,7 +112,6 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
     }
 
     const handleNeedsImprovement = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
-        if (criterion.disabled) return;
         setData((prev) => {
             if (!prev) return prev;
             return {
@@ -132,7 +128,6 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
     }
 
     const handleUnsatisfactory = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
-        if (criterion.disabled) return;
         setData((prev) => {
             if (!prev) return prev;
             return {
@@ -149,14 +144,12 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
     }
 
     const openDialog = (c: TrainingSessionPerformanceIndicatorCriteria) => {
-        if (c.disabled) return;
         setOpenCriteria(c);
         setComment(c.comments || '');
         setDialogOpen(true);
     }
 
     const saveComment = () => {
-        if (openCriteria?.disabled) return;
         setData((prev) => {
             if (!prev) return prev;
             return {
@@ -170,6 +163,8 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
         setDialogOpen(false);
     }
 
+    if (!data) return <Typography>There are no performance indicators configured for this lesson.</Typography>;
+
     return (
         <>
             <TableContainer>
@@ -179,6 +174,7 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                             <TableCell>Category</TableCell>
                             <TableCell>Criteria</TableCell>
                             <TableCell sx={{textAlign: 'center',}}>Observed</TableCell>
+                            <TableCell sx={{textAlign: 'center',}}>Not Observed</TableCell>
                             <TableCell sx={{textAlign: 'center',}}>Comment</TableCell>
                             <TableCell sx={{textAlign: 'center',}}>Satisfactory</TableCell>
                             <TableCell sx={{textAlign: 'center',}}>Needs Improvement</TableCell>
@@ -196,14 +192,18 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                                     <TableCell sx={{
                                         border: 1,
                                         cursor: 'pointer',
-                                        background: criterion.disabled ? 'rgba(191,191,191,0.2)' : criterion.marker === 'OBSERVED' ? 'rgba(163,55,234,0.2)' : 'inherit',
+                                        background: criterion.marker === 'OBSERVED' ? 'rgba(163,55,234,0.2)' : 'inherit',
                                     }} onClick={() => handleObserved(criterion)}></TableCell>
                                     <TableCell sx={{
                                         border: 1,
-                                        background: criterion.disabled ? 'rgba(191,191,191,0.2)' : 'inherit',
+                                        cursor: 'pointer',
+                                        background: criterion.marker === 'NOT_OBSERVED' ? 'rgba(201,155,230,0.2)' : 'inherit',
+                                    }} onClick={() => handleNotObserved(criterion)}></TableCell>
+                                    <TableCell sx={{
+                                        border: 1,
                                     }}>
                                         <Box
-                                            sx={{textAlign: 'center', display: criterion.disabled ? 'none' : 'block',}}>
+                                            sx={{textAlign: 'center',}}>
                                             <Tooltip title={criterion.comments || ''}>
                                                 <IconButton size="small" onClick={() => openDialog(criterion)}>
                                                     {criterion.comments ? <Edit fontSize="small"/> :
@@ -215,17 +215,17 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                                     <TableCell sx={{
                                         border: 1,
                                         cursor: 'pointer',
-                                        background: criterion.disabled ? 'rgba(191,191,191,0.2)' : criterion.marker === 'SATISFACTORY' ? 'rgba(0, 200, 0, 0.2)' : 'inherit',
+                                        background: criterion.marker === 'SATISFACTORY' ? 'rgba(0, 200, 0, 0.2)' : 'inherit',
                                     }} onClick={() => handleSatisfactory(criterion)}></TableCell>
                                     <TableCell sx={{
                                         border: 1,
                                         cursor: 'pointer',
-                                        background: criterion.disabled ? 'rgba(191,191,191,0.2)' : criterion.marker === 'NEEDS_IMPROVEMENT' ? 'rgba(244,146,0,0.2)' : 'inherit',
+                                        background: criterion.marker === 'NEEDS_IMPROVEMENT' ? 'rgba(244,146,0,0.2)' : 'inherit',
                                     }} onClick={() => handleNeedsImprovement(criterion)}></TableCell>
                                     <TableCell sx={{
                                         border: 1,
                                         cursor: 'pointer',
-                                        background: criterion.disabled ? 'rgba(191,191,191,0.2)' : criterion.marker === 'UNSATISFACTORY' ? 'rgba(200, 0, 0, 0.2)' : 'inherit',
+                                        background: criterion.marker === 'UNSATISFACTORY' ? 'rgba(200, 0, 0, 0.2)' : 'inherit',
                                     }} onClick={() => handleUnsatisfactory(criterion)}></TableCell>
                                 </TableRow>
                             ));

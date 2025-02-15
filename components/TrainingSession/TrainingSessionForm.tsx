@@ -103,7 +103,14 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
         const {
             session,
             errors
-        } = await createOrUpdateTrainingSession(student, start, end, trainingTickets, additionalNotes, trainerNotes, enableMarkdown,
+        } = await createOrUpdateTrainingSession(
+            student,
+            start,
+            end,
+            trainingTickets,
+            additionalNotes,
+            trainerNotes,
+            enableMarkdown,
             trainingSession ? (agreeEditPerformanceIndicator ? performanceIndicator : undefined) : performanceIndicator,
             trainingSession?.id);
 

@@ -740,8 +740,6 @@ model PerformanceIndicatorCriteria {
 
   category   PerformanceIndicatorCriteriaCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId String
-
-  disabledForLessons LessonPerformanceIndicator[] @relation("disabledCriteria")
 }
 
 model LessonPerformanceIndicator {
@@ -752,8 +750,6 @@ model LessonPerformanceIndicator {
 
   template   PerformanceIndicatorTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   templateId String
-
-  disabledCriteria PerformanceIndicatorCriteria[] @relation("disabledCriteria")
 }
 
 model TrainingSessionPerformanceIndicator {
@@ -785,7 +781,6 @@ model TrainingSessionPerformanceIndicatorCriteria {
 
   order Int @default(0)
 
-  disabled Boolean
   marker   PerformanceIndicatorMarker?
   comments String?
 
@@ -795,6 +790,7 @@ model TrainingSessionPerformanceIndicatorCriteria {
 
 enum PerformanceIndicatorMarker {
   OBSERVED
+  NOT_OBSERVED
   SATISFACTORY
   NEEDS_IMPROVEMENT
   UNSATISFACTORY

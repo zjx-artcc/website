@@ -97,6 +97,21 @@ export async function createOrUpdateTrainingSession(
         return {errors: result.error.errors};
     }
 
+    const firstLesson = trainingTickets[0].lesson;
+    const fetchedPi = await prisma.lessonPerformanceIndicator.findFirst({
+        where: {
+            lessonId: firstLesson.id,
+        },
+    });
+
+    if (fetchedPi && (!performanceIndicator || !performanceIndicator.categories.every((category) => category.criteria.every((criteria) => !!criteria.marker)))) {
+        return {
+            errors: [{
+                message: "You must fill out ALL the performance indicators to submit this ticket."
+            }]
+        };
+    }
+
     const session = await getServerSession(authOptions);
 
     if (id && session) {
@@ -175,7 +190,6 @@ export async function createOrUpdateTrainingSession(
                                 create: category.criteria.map((score) => ({
                                     name: score.name,
                                     order: score.order,
-                                    disabled: score.disabled,
                                     marker: score.marker,
                                     comments: score.comments,
                                 })),
@@ -273,7 +287,6 @@ export async function createOrUpdateTrainingSession(
                                 create: category.criteria.map((score) => ({
                                     name: score.name,
                                     order: score.order,
-                                    disabled: score.disabled,
                                     marker: score.marker,
                                     comments: score.comments,
                                 })),

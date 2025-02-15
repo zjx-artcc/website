@@ -152,43 +152,25 @@ const getWhere = (filter?: GridFilterItem): Prisma.LessonWhereInput => {
     }
 };
 
-export const updateLessonIndicator = async (lessonId: string, performanceIndicatorId?: string, disabledCriteria?: string[]) => {
+export const updateLessonIndicator = async (lessonId: string, performanceIndicatorId?: string) => {
 
     if (!performanceIndicatorId) {
-        const lpi = await prisma.lessonPerformanceIndicator.delete({
+
+        const lesson = await prisma.lesson.findUnique({
+            where: {
+                id: lessonId,
+            },
+        });
+
+        await prisma.lessonPerformanceIndicator.deleteMany({
             where: {
                 lessonId,
             },
-            include: {
-                lesson: true,
-            },
         });
 
-        const criteriaList = await prisma.performanceIndicatorCriteria.findMany({
-            where: {
-                category: {
-                    templateId: performanceIndicatorId,
-                },
-            },
-        });
-
-        for (const criteria of criteriaList) {
-            await prisma.performanceIndicatorCriteria.update({
-                where: {
-                    id: criteria.id,
-                },
-                data: {
-                    disabledForLessons: {
-                        connect: {
-                            id: lessonId,
-                        },
-                    },
-                },
-            });
-        }
 
         after(async () => {
-            await log("DELETE", "LESSON_PERFORMANCE_INDICATOR", `Removed for lesson ${lpi.lesson.identifier}`);
+            await log("DELETE", "LESSON_PERFORMANCE_INDICATOR", `Removed for lesson ${lesson?.name}`);
         });
 
         return;
@@ -207,21 +189,6 @@ export const updateLessonIndicator = async (lessonId: string, performanceIndicat
         },
         include: {
             lesson: true,
-        },
-    });
-
-    await prisma.lessonPerformanceIndicator.update({
-        where: {
-            id: lpi.id,
-        },
-        data: {
-            disabledCriteria: {
-                set:
-                    (disabledCriteria || []).map((c) => ({
-                        id: c,
-                    })),
-            },
-
         },
     });
 

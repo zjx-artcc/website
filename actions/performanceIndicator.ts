@@ -14,19 +14,6 @@ export const getLessonPerformanceIndicator = async (lessonId: string) => {
     });
 }
 
-export const getDisabledCriteria = async (lessonId: string) => {
-    const criteria = await prisma.lessonPerformanceIndicator.findUnique({
-        where: {
-            lessonId,
-        },
-        select: {
-            disabledCriteria: true,
-        },
-    });
-
-    return criteria?.disabledCriteria.map((c) => c.id);
-}
-
 export const fetchAllPerformanceIndicators = async () => {
     return prisma.performanceIndicatorTemplate.findMany({
         orderBy: {name: "asc"},

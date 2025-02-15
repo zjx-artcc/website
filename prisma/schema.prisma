@@ -759,7 +759,7 @@ model LessonPerformanceIndicator {
 model TrainingSessionPerformanceIndicator {
   id String @id @default(cuid())
 
-  session   TrainingSession @relation(fields: [sessionId], references: [id])
+  session   TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sessionId String          @unique
 
   categories TrainingSessionPerformanceIndicatorCategory[]
@@ -772,7 +772,7 @@ model TrainingSessionPerformanceIndicatorCategory {
 
   order Int @default(0)
 
-  session   TrainingSessionPerformanceIndicator @relation(fields: [sessionId], references: [id])
+  session   TrainingSessionPerformanceIndicator @relation(fields: [sessionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   sessionId String
 
   criteria TrainingSessionPerformanceIndicatorCriteria[]
@@ -789,7 +789,7 @@ model TrainingSessionPerformanceIndicatorCriteria {
   marker   PerformanceIndicatorMarker?
   comments String?
 
-  category   TrainingSessionPerformanceIndicatorCategory @relation(fields: [categoryId], references: [id])
+  category   TrainingSessionPerformanceIndicatorCategory @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   categoryId String
 }
 

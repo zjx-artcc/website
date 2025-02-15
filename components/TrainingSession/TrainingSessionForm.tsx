@@ -17,6 +17,7 @@ import {
     Alert,
     Autocomplete,
     Box,
+    Button,
     Card,
     CardContent,
     Chip,
@@ -66,6 +67,7 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
     const [start, setStart] = useState<Date | string>(trainingSession?.start || new Date());
     const [end, setEnd] = useState<Date | string>(trainingSession?.end || new Date());
     const [performanceIndicator, setPerformanceIndicator] = useState<TrainingSessionIndicatorWithAll>();
+    const [agreeEditPerformanceIndicator, setAgreeEditPerformanceIndicator] = useState(false);
     const [trainingTickets, setTrainingTickets] = useState<{
         passed: boolean,
         lesson: Lesson,
@@ -101,7 +103,9 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
         const {
             session,
             errors
-        } = await createOrUpdateTrainingSession(student, start, end, trainingTickets, additionalNotes, trainerNotes, enableMarkdown, trainingSession?.id);
+        } = await createOrUpdateTrainingSession(student, start, end, trainingTickets, additionalNotes, trainerNotes, enableMarkdown,
+            trainingSession ? (agreeEditPerformanceIndicator ? performanceIndicator : undefined) : performanceIndicator,
+            trainingSession?.id);
 
         if (errors) {
             toast(errors.map((e) => e.message).join(".  "), {type: 'error'});
@@ -242,13 +246,21 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
                                 <Alert severity="info" sx={{mb: 2,}}>Performance indicators have no impact on the
                                     outcome of each lesson. They're only purpose is for the trainee and trainer's
                                     reference. Comments should be short and concise.</Alert>
-                                {trainingSession &&
-                                    <Alert severity="warning" sx={{mb: 2,}}>Performance indicator has been reset. You
-                                        will need to fill out the performance indicator again BEFORE you save this
-                                        ticket.</Alert>}
+                                {trainingSession && !agreeEditPerformanceIndicator &&
+                                    <Alert severity="warning" sx={{mb: 2,}}
+                                           action={
+                                               <Button color="inherit" size="small"
+                                                       onClick={() => setAgreeEditPerformanceIndicator(true)}>
+                                                   Yes
+                                               </Button>
+                                           }>Performance Indicators are meant to be filled out immediately after the
+                                        session. Editing it now will reset the performance indicator upon saving this
+                                        session. The changes you make here will ONLY take affect IF you save this
+                                        training session. Are you sure you would like to modify the performance
+                                        indicator?</Alert>}
                                 {trainingTickets.length === 0 &&
                                     <Typography>You must add at least one training ticket first.</Typography>}
-                                {trainingTickets.length > 0 &&
+                                {trainingTickets.length > 0 && (!trainingSession || agreeEditPerformanceIndicator) &&
                                     <TrainingSessionPerformanceIndicatorForm lesson={trainingTickets[0].lesson}
                                                                              onChange={setPerformanceIndicator}/>}
                             </AccordionDetails>

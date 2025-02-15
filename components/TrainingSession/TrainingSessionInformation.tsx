@@ -17,6 +17,7 @@ import {ExpandMore} from "@mui/icons-material";
 import Markdown from "react-markdown";
 import {formatZuluDate, getDuration} from "@/lib/date";
 import TrainingMarkdownSwitch from './TrainingMarkdownSwitch';
+import PerformanceIndicatorInformation from "@/components/TrainingSession/PerformanceIndicatorInformation";
 
 export default async function TrainingSessionInformation({id, trainerView}: { id: string, trainerView?: boolean }) {
 
@@ -34,7 +35,23 @@ export default async function TrainingSessionInformation({id, trainerView}: { id
                     scores: true,
                 }
             },
-        }
+            performanceIndicator: {
+                include: {
+                    categories: {
+                        orderBy: {
+                            order: 'asc',
+                        },
+                        include: {
+                            criteria: {
+                                orderBy: {
+                                    order: 'asc',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     });
 
     if (!trainingSession) {
@@ -97,6 +114,13 @@ export default async function TrainingSessionInformation({id, trainerView}: { id
                     ))}
                 </CardContent>
             </Card>
+            {trainingSession.performanceIndicator &&
+                <Card variant="outlined">
+                    <CardContent>
+                        <Typography variant="h6" gutterBottom>Performance Indicator</Typography>
+                        <PerformanceIndicatorInformation performanceIndicator={trainingSession.performanceIndicator}/>
+                    </CardContent>
+                </Card>}
             <TrainingMarkdownSwitch trainingSession={trainingSession} trainerView={trainerView}/>
         </Stack>
     );

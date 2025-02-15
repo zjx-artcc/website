@@ -17,6 +17,8 @@ import {
 import {getDuration} from "@/lib/date";
 import {sendInstructorsTrainingSessionCreatedEmail, sendTrainingSessionCreatedEmail} from "@/actions/mail/training";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
+import {TrainingSessionIndicatorWithAll} from "@/components/TrainingSession/TrainingSessionForm";
+import {after} from "next/server";
 
 
 export async function deleteTrainingSession(id: string) {
@@ -48,6 +50,7 @@ export async function createOrUpdateTrainingSession(
     additionalComments: string,
     trainerComments: string,
     enableMarkdown: boolean,
+    performanceIndicator?: TrainingSessionIndicatorWithAll,
     id?: string,
 ) {
 
@@ -153,6 +156,35 @@ export async function createOrUpdateTrainingSession(
             },
         })
 
+        await prisma.trainingSessionPerformanceIndicator.delete({
+            where: {
+                sessionId: trainingSession.id,
+            }
+        });
+
+        if (performanceIndicator) {
+            await prisma.trainingSessionPerformanceIndicator.create({
+                data: {
+                    sessionId: trainingSession.id,
+                    categories: {
+                        create: performanceIndicator?.categories.map((category) => ({
+                            name: category.name,
+                            order: category.order,
+                            criteria: {
+                                create: category.criteria.map((score) => ({
+                                    name: score.name,
+                                    order: score.order,
+                                    disabled: score.disabled,
+                                    marker: score.marker,
+                                    comments: score.comments,
+                                })),
+                            },
+                        })),
+                    }
+                }
+            });
+        }
+
         let ticketComment = "";
 
         if (trainingSession.tickets.length > 1) {
@@ -181,7 +213,7 @@ export async function createOrUpdateTrainingSession(
             const oldTicket = oldTickets.find((ticket) => ticket.id === newTicket.id);
 
             if (oldTicket && !oldTicket.passed && newTicket.passed && newTicket.lesson.notifyInstructorOnPass) {
-                await sendInstructorsTrainingSessionCreatedEmail(trainingSession.student as User, trainingSession, newTicket.lesson);
+                sendInstructorsTrainingSessionCreatedEmail(trainingSession.student as User, trainingSession, newTicket.lesson).then();
             }
         }
 
@@ -228,6 +260,29 @@ export async function createOrUpdateTrainingSession(
             },
         });
 
+        if (performanceIndicator) {
+            await prisma.trainingSessionPerformanceIndicator.create({
+                data: {
+                    sessionId: trainingSession.id,
+                    categories: {
+                        create: performanceIndicator?.categories.map((category) => ({
+                            name: category.name,
+                            order: category.order,
+                            criteria: {
+                                create: category.criteria.map((score) => ({
+                                    name: score.name,
+                                    order: score.order,
+                                    disabled: score.disabled,
+                                    marker: score.marker,
+                                    comments: score.comments,
+                                })),
+                            },
+                        })),
+                    }
+                }
+            });
+        }
+
         let ticketComment = "";
 
         if (trainingSession.tickets.length > 1) {
@@ -251,9 +306,9 @@ export async function createOrUpdateTrainingSession(
             }
         });
 
-        
-
-        await sendTrainingSessionCreatedEmail(trainingSession.student as User, trainingSession);
+        after(async () => {
+            await sendTrainingSessionCreatedEmail(trainingSession.student as User, trainingSession);
+        });
 
         revalidatePath('/training/sessions', "layout");
 

@@ -6,7 +6,7 @@ import {TrainingSession} from "@prisma/client"
 export default function TrainingMarkdownSwitch({trainingSession, trainerView}: { trainingSession:TrainingSession ,trainerView?: boolean }){
 
     return(
-        <Card>
+        <>
             <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h6">Comments</Typography>
@@ -21,6 +21,6 @@ export default function TrainingMarkdownSwitch({trainingSession, trainerView}: {
                     </CardContent>
                 </Card>
             }
-        </Card>
+        </>
     )
 }

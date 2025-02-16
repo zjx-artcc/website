@@ -5,6 +5,7 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Alert,
     Box,
     Card,
     CardContent,
@@ -118,6 +119,8 @@ export default async function TrainingSessionInformation({id, trainerView}: { id
                 <Card variant="outlined">
                     <CardContent>
                         <Typography variant="h6" gutterBottom>Performance Indicator</Typography>
+                        <Alert severity="info" sx={{mb: 2}}>Performance indicators do not dictate the outcome of a
+                            lesson or session. They are only for reference and improvement.</Alert>
                         <PerformanceIndicatorInformation performanceIndicator={trainingSession.performanceIndicator}/>
                     </CardContent>
                 </Card>}

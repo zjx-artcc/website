@@ -95,53 +95,53 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
         });
     }
 
-    const handleSatisfactory = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
-        setData((prev) => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                categories: prev.categories.map((category) => ({
-                    ...category,
-                    criteria: category.criteria.map((c) => c.id === criterion.id ? {
-                        ...c,
-                        marker: c.marker === 'SATISFACTORY' ? null : 'SATISFACTORY'
-                    } : c),
-                })),
-            };
-        });
-    }
-
-    const handleNeedsImprovement = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
-        setData((prev) => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                categories: prev.categories.map((category) => ({
-                    ...category,
-                    criteria: category.criteria.map((c) => c.id === criterion.id ? {
-                        ...c,
-                        marker: c.marker === 'NEEDS_IMPROVEMENT' ? null : 'NEEDS_IMPROVEMENT'
-                    } : c),
-                })),
-            };
-        });
-    }
-
-    const handleUnsatisfactory = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
-        setData((prev) => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                categories: prev.categories.map((category) => ({
-                    ...category,
-                    criteria: category.criteria.map((c) => c.id === criterion.id ? {
-                        ...c,
-                        marker: c.marker === 'UNSATISFACTORY' ? null : 'UNSATISFACTORY'
-                    } : c),
-                })),
-            };
-        });
-    }
+    // const handleSatisfactory = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
+    //     setData((prev) => {
+    //         if (!prev) return prev;
+    //         return {
+    //             ...prev,
+    //             categories: prev.categories.map((category) => ({
+    //                 ...category,
+    //                 criteria: category.criteria.map((c) => c.id === criterion.id ? {
+    //                     ...c,
+    //                     marker: c.marker === 'SATISFACTORY' ? null : 'SATISFACTORY'
+    //                 } : c),
+    //             })),
+    //         };
+    //     });
+    // }
+    //
+    // const handleNeedsImprovement = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
+    //     setData((prev) => {
+    //         if (!prev) return prev;
+    //         return {
+    //             ...prev,
+    //             categories: prev.categories.map((category) => ({
+    //                 ...category,
+    //                 criteria: category.criteria.map((c) => c.id === criterion.id ? {
+    //                     ...c,
+    //                     marker: c.marker === 'NEEDS_IMPROVEMENT' ? null : 'NEEDS_IMPROVEMENT'
+    //                 } : c),
+    //             })),
+    //         };
+    //     });
+    // }
+    //
+    // const handleUnsatisfactory = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
+    //     setData((prev) => {
+    //         if (!prev) return prev;
+    //         return {
+    //             ...prev,
+    //             categories: prev.categories.map((category) => ({
+    //                 ...category,
+    //                 criteria: category.criteria.map((c) => c.id === criterion.id ? {
+    //                     ...c,
+    //                     marker: c.marker === 'UNSATISFACTORY' ? null : 'UNSATISFACTORY'
+    //                 } : c),
+    //             })),
+    //         };
+    //     });
+    // }
 
     const openDialog = (c: TrainingSessionPerformanceIndicatorCriteria) => {
         setOpenCriteria(c);
@@ -176,9 +176,9 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                             <TableCell sx={{textAlign: 'center',}}>Observed</TableCell>
                             <TableCell sx={{textAlign: 'center',}}>Not Observed</TableCell>
                             <TableCell sx={{textAlign: 'center',}}>Comment</TableCell>
-                            <TableCell sx={{textAlign: 'center',}}>Satisfactory</TableCell>
-                            <TableCell sx={{textAlign: 'center',}}>Needs Improvement</TableCell>
-                            <TableCell sx={{textAlign: 'center',}}>Unsatisfactory</TableCell>
+                            {/*<TableCell sx={{textAlign: 'center',}}>Satisfactory</TableCell>*/}
+                            {/*<TableCell sx={{textAlign: 'center',}}>Needs Improvement</TableCell>*/}
+                            {/*<TableCell sx={{textAlign: 'center',}}>Unsatisfactory</TableCell>*/}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -192,12 +192,12 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                                     <TableCell sx={{
                                         border: 1,
                                         cursor: 'pointer',
-                                        background: criterion.marker === 'OBSERVED' ? 'rgba(163,55,234,0.2)' : 'inherit',
+                                        background: criterion.marker === 'OBSERVED' ? 'rgba(69,129,255,0.44)' : 'inherit',
                                     }} onClick={() => handleObserved(criterion)}></TableCell>
                                     <TableCell sx={{
                                         border: 1,
                                         cursor: 'pointer',
-                                        background: criterion.marker === 'NOT_OBSERVED' ? 'rgba(201,155,230,0.2)' : 'inherit',
+                                        background: criterion.marker === 'NOT_OBSERVED' ? 'rgba(200,0,255,0.2)' : 'inherit',
                                     }} onClick={() => handleNotObserved(criterion)}></TableCell>
                                     <TableCell sx={{
                                         border: 1,
@@ -212,21 +212,21 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
                                             </Tooltip>
                                         </Box>
                                     </TableCell>
-                                    <TableCell sx={{
-                                        border: 1,
-                                        cursor: 'pointer',
-                                        background: criterion.marker === 'SATISFACTORY' ? 'rgba(0, 200, 0, 0.2)' : 'inherit',
-                                    }} onClick={() => handleSatisfactory(criterion)}></TableCell>
-                                    <TableCell sx={{
-                                        border: 1,
-                                        cursor: 'pointer',
-                                        background: criterion.marker === 'NEEDS_IMPROVEMENT' ? 'rgba(244,146,0,0.2)' : 'inherit',
-                                    }} onClick={() => handleNeedsImprovement(criterion)}></TableCell>
-                                    <TableCell sx={{
-                                        border: 1,
-                                        cursor: 'pointer',
-                                        background: criterion.marker === 'UNSATISFACTORY' ? 'rgba(200, 0, 0, 0.2)' : 'inherit',
-                                    }} onClick={() => handleUnsatisfactory(criterion)}></TableCell>
+                                    {/*<TableCell sx={{*/}
+                                    {/*    border: 1,*/}
+                                    {/*    cursor: 'pointer',*/}
+                                    {/*    background: criterion.marker === 'SATISFACTORY' ? 'rgba(0, 200, 0, 0.2)' : 'inherit',*/}
+                                    {/*}} onClick={() => handleSatisfactory(criterion)}></TableCell>*/}
+                                    {/*<TableCell sx={{*/}
+                                    {/*    border: 1,*/}
+                                    {/*    cursor: 'pointer',*/}
+                                    {/*    background: criterion.marker === 'NEEDS_IMPROVEMENT' ? 'rgba(244,146,0,0.2)' : 'inherit',*/}
+                                    {/*}} onClick={() => handleNeedsImprovement(criterion)}></TableCell>*/}
+                                    {/*<TableCell sx={{*/}
+                                    {/*    border: 1,*/}
+                                    {/*    cursor: 'pointer',*/}
+                                    {/*    background: criterion.marker === 'UNSATISFACTORY' ? 'rgba(200, 0, 0, 0.2)' : 'inherit',*/}
+                                    {/*}} onClick={() => handleUnsatisfactory(criterion)}></TableCell>*/}
                                 </TableRow>
                             ));
                         })}

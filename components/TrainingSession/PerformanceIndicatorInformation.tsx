@@ -16,9 +16,9 @@ export default function PerformanceIndicatorInformation({performanceIndicator}: 
                         <TableCell sx={{textAlign: 'center',}}>Observed</TableCell>
                         <TableCell sx={{textAlign: 'center',}}>Not Observed</TableCell>
                         <TableCell sx={{textAlign: 'center',}}>Comment</TableCell>
-                        <TableCell sx={{textAlign: 'center',}}>Satisfactory</TableCell>
-                        <TableCell sx={{textAlign: 'center',}}>Needs Improvement</TableCell>
-                        <TableCell sx={{textAlign: 'center',}}>Unsatisfactory</TableCell>
+                        {/*<TableCell sx={{textAlign: 'center',}}>Satisfactory</TableCell>*/}
+                        {/*<TableCell sx={{textAlign: 'center',}}>Needs Improvement</TableCell>*/}
+                        {/*<TableCell sx={{textAlign: 'center',}}>Unsatisfactory</TableCell>*/}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -31,11 +31,11 @@ export default function PerformanceIndicatorInformation({performanceIndicator}: 
                                 <TableCell sx={{height: 40,}}>{criterion.name}</TableCell>
                                 <TableCell sx={{
                                     border: 1,
-                                    background: criterion.marker === 'OBSERVED' ? 'rgba(163,55,234,0.2)' : 'inherit',
+                                    background: criterion.marker === 'OBSERVED' ? 'rgba(69,129,255,0.44)' : 'inherit',
                                 }}></TableCell>
                                 <TableCell sx={{
                                     border: 1,
-                                    background: criterion.marker === 'NOT_OBSERVED' ? 'rgba(201,155,230,0.2)' : 'inherit',
+                                    background: criterion.marker === 'NOT_OBSERVED' ? 'rgba(200,0,255,0.2)' : 'inherit',
                                 }}></TableCell>
                                 <TableCell sx={{
                                     border: 1,
@@ -45,18 +45,18 @@ export default function PerformanceIndicatorInformation({performanceIndicator}: 
                                         <PerformanceIndicatorCommentDialog criteria={criterion}/>
                                     }
                                 </TableCell>
-                                <TableCell sx={{
-                                    border: 1,
-                                    background: criterion.marker === 'SATISFACTORY' ? 'rgba(0, 200, 0, 0.2)' : 'inherit',
-                                }}></TableCell>
-                                <TableCell sx={{
-                                    border: 1,
-                                    background: criterion.marker === 'NEEDS_IMPROVEMENT' ? 'rgba(244,146,0,0.2)' : 'inherit',
-                                }}></TableCell>
-                                <TableCell sx={{
-                                    border: 1,
-                                    background: criterion.marker === 'UNSATISFACTORY' ? 'rgba(200, 0, 0, 0.2)' : 'inherit',
-                                }}></TableCell>
+                                {/*<TableCell sx={{*/}
+                                {/*    border: 1,*/}
+                                {/*    background: criterion.marker === 'SATISFACTORY' ? 'rgba(0, 200, 0, 0.2)' : 'inherit',*/}
+                                {/*}}></TableCell>*/}
+                                {/*<TableCell sx={{*/}
+                                {/*    border: 1,*/}
+                                {/*    background: criterion.marker === 'NEEDS_IMPROVEMENT' ? 'rgba(244,146,0,0.2)' : 'inherit',*/}
+                                {/*}}></TableCell>*/}
+                                {/*<TableCell sx={{*/}
+                                {/*    border: 1,*/}
+                                {/*    background: criterion.marker === 'UNSATISFACTORY' ? 'rgba(200, 0, 0, 0.2)' : 'inherit',*/}
+                                {/*}}></TableCell>*/}
                             </TableRow>
                         ));
                     })}

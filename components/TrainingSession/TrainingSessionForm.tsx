@@ -251,7 +251,8 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Alert severity="info" sx={{mb: 2,}}>Performance indicators have no impact on the
-                                    outcome of each lesson. They're only purpose is for the trainee and trainer's
+                                    outcome of each lesson. They&apos;re only purpose is for the trainee and
+                                    trainer&apos;s
                                     reference. Comments should be short and concise.</Alert>
                                 {trainingSession && !agreeEditPerformanceIndicator &&
                                     <Alert severity="warning" sx={{mb: 2,}}

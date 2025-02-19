@@ -61,7 +61,7 @@ export default function TrainingSessionPerformanceIndicatorForm({lesson, onChang
     useEffect(() => {
         if (!data) return;
         onChange(data);
-    }, [data])
+    }, [data, onChange])
 
     const handleObserved = (criterion: TrainingSessionPerformanceIndicatorCriteria) => {
         setData((prev) => {

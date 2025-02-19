@@ -31,7 +31,7 @@ export default function PerformanceIndicatorTable({admin}: { admin?: boolean }) 
                         onClick={() => router.push(`/training/indicators/${params.row.id}`)}
                     />
                 </Tooltip>,
-                <PerformanceIndicatorDeleteButton performanceIndicator={params.row}/>,
+                <PerformanceIndicatorDeleteButton key={`delete-${params.row.id}`} performanceIndicator={params.row}/>,
             ] : [],
         }
     ];

@@ -2,10 +2,11 @@
 import React, {useState} from 'react';
 import {MailGroup} from "@/app/admin/mail/page";
 import {User} from "next-auth";
-import {Autocomplete, Grid2, TextField} from "@mui/material";
+import {Autocomplete, Grid2, TextField, Typography} from "@mui/material";
 import FormSaveButton from "@/components/Form/FormSaveButton";
 import {sendMail} from "@/actions/mail/general";
 import {toast} from "react-toastify";
+import MarkdownEditor from "@uiw/react-markdown-editor";
 
 export default function MailForm({allUsers, groups}: { allUsers: User[], groups: MailGroup[], }) {
 
@@ -14,6 +15,7 @@ export default function MailForm({allUsers, groups}: { allUsers: User[], groups:
         id: string;
         group: string;
     })[]>([]);
+    const [body, setBody] = useState<string>('');
 
     const options = [
         ...groups.map(group => ({...group, group: 'Groups'})),
@@ -35,7 +37,7 @@ export default function MailForm({allUsers, groups}: { allUsers: User[], groups:
             allUsers.filter(user => uniqueSelectedIds.includes(user.id)).map(user => user.email),
             formData.get('subject') as string,
             formData.get('replyTo') as string,
-            formData.get('body') as string);
+            body);
 
         if (errors) {
             toast(errors.map(e => e.message).join('. '), {type: 'error'});
@@ -82,8 +84,13 @@ export default function MailForm({allUsers, groups}: { allUsers: User[], groups:
                     <TextField required fullWidth variant="filled" name="replyTo" label="Reply To"/>
                 </Grid2>
                 <Grid2 size={2}>
-                    <TextField required fullWidth multiline rows={5} variant="filled" name="body"
-                               label="Body"/>
+                    <Typography variant="subtitle2" gutterBottom>Body:</Typography>
+                    <MarkdownEditor
+                        enableScroll={false}
+                        minHeight="400px"
+                        value={body}
+                        onChange={(b) => setBody(b)}
+                    />
                 </Grid2>
                 <Grid2 size={2}>
                     <FormSaveButton/>

@@ -1,13 +1,23 @@
 'use client';
 import React, {useCallback, useEffect, useState} from 'react';
-import {CommonMistake, Lesson, RubricCriteraScore, TrainingSession} from "@prisma/client";
+import {
+    CommonMistake,
+    Lesson,
+    RubricCriteraScore,
+    TrainingSession,
+    TrainingSessionPerformanceIndicator,
+    TrainingSessionPerformanceIndicatorCategory,
+    TrainingSessionPerformanceIndicatorCriteria
+} from "@prisma/client";
 import {getAllData, getTicketsForSession} from "@/actions/trainingSessionFormHelper";
 import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Alert,
     Autocomplete,
     Box,
+    Button,
     Card,
     CardContent,
     Chip,
@@ -33,6 +43,16 @@ import MarkdownEditor from "@uiw/react-markdown-editor";
 import FormSaveButton from "@/components/Form/FormSaveButton";
 import {createOrUpdateTrainingSession} from "@/actions/trainingSession"
 import utc from "dayjs/plugin/utc";
+import TrainingSessionPerformanceIndicatorForm
+    from "@/components/TrainingSession/TrainingSessionPerformanceIndicatorForm";
+
+export type TrainingSessionIndicatorCategoryWithAll = TrainingSessionPerformanceIndicatorCategory & {
+    criteria: TrainingSessionPerformanceIndicatorCriteria[],
+}
+
+export type TrainingSessionIndicatorWithAll = TrainingSessionPerformanceIndicator & {
+    categories: TrainingSessionIndicatorCategoryWithAll[],
+}
 
 export default function TrainingSessionForm({trainingSession,}: { trainingSession?: TrainingSession, }) {
 
@@ -46,6 +66,8 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
     const [student, setStudent] = useState<string>(trainingSession?.studentId || searchParams.get('student') || '');
     const [start, setStart] = useState<Date | string>(trainingSession?.start || new Date());
     const [end, setEnd] = useState<Date | string>(trainingSession?.end || new Date());
+    const [performanceIndicator, setPerformanceIndicator] = useState<TrainingSessionIndicatorWithAll>();
+    const [agreeEditPerformanceIndicator, setAgreeEditPerformanceIndicator] = useState(false);
     const [trainingTickets, setTrainingTickets] = useState<{
         passed: boolean,
         lesson: Lesson,
@@ -81,7 +103,16 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
         const {
             session,
             errors
-        } = await createOrUpdateTrainingSession(student, start, end, trainingTickets, additionalNotes, trainerNotes, enableMarkdown, trainingSession?.id);
+        } = await createOrUpdateTrainingSession(
+            student,
+            start,
+            end,
+            trainingTickets,
+            additionalNotes,
+            trainerNotes,
+            enableMarkdown,
+            trainingSession ? (agreeEditPerformanceIndicator ? performanceIndicator : undefined) : performanceIndicator,
+            trainingSession?.id);
 
         if (errors) {
             toast(errors.map((e) => e.message).join(".  "), {type: 'error'});
@@ -212,6 +243,35 @@ export default function TrainingSessionForm({trainingSession,}: { trainingSessio
                                                     }}/>
                             </CardContent>
                         </Card>
+                    </Grid2>
+                    <Grid2 size={2}>
+                        <Accordion variant="outlined">
+                            <AccordionSummary expandIcon={<ExpandMore/>}>
+                                <Typography variant="h6">Performance Indicator</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Alert severity="info" sx={{mb: 2,}}>Performance indicators have no impact on the
+                                    outcome of each lesson. They're only purpose is for the trainee and trainer's
+                                    reference. Comments should be short and concise.</Alert>
+                                {trainingSession && !agreeEditPerformanceIndicator &&
+                                    <Alert severity="warning" sx={{mb: 2,}}
+                                           action={
+                                               <Button color="inherit" size="small"
+                                                       onClick={() => setAgreeEditPerformanceIndicator(true)}>
+                                                   Yes
+                                               </Button>
+                                           }>Performance Indicators are meant to be filled out immediately after the
+                                        session. Editing it now will reset the performance indicator upon saving this
+                                        session. The changes you make here will ONLY take affect IF you save this
+                                        training session. Are you sure you would like to modify the performance
+                                        indicator?</Alert>}
+                                {trainingTickets.length === 0 &&
+                                    <Typography>You must add at least one training ticket first.</Typography>}
+                                {trainingTickets.length > 0 && (!trainingSession || agreeEditPerformanceIndicator) &&
+                                    <TrainingSessionPerformanceIndicatorForm lesson={trainingTickets[0].lesson}
+                                                                             onChange={setPerformanceIndicator}/>}
+                            </AccordionDetails>
+                        </Accordion>
                     </Grid2>
                     <Grid2 size={2}>
                         <Box sx={{}} data-color-mode={theme.palette.mode}>

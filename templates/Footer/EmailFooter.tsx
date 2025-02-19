@@ -22,7 +22,7 @@ function EmailFooter({recipient}: { recipient?: User }) {
                                 ONLY. If you believe that you received this email in error, contact the vZDC staff
                                 immediately. This email is not related to any real life aviation bodies or the
                                 F.A.A.</p>}
-                        <p>Do not reply to this email, this inbox is unmonitored.</p>
+                        <p>Do not reply to this email unless it asks you to do so; this inbox might be unmonitored.</p>
                     </MjmlText>
                 </MjmlColumn>
             </MjmlSection>

@@ -9,7 +9,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Tooltip,
+    TableRow,
+    Tooltip,
     Typography
 } from "@mui/material";
 import prisma from "@/lib/db";
@@ -19,6 +20,7 @@ import {ArrowBack, Edit} from "@mui/icons-material";
 import LessonRubricCriteriaDeleteButton from "@/components/Lesson/LessonRubricCriteriaDeleteButton";
 import LessonForm from "@/components/Lesson/LessonForm";
 import LessonRubricCriteriaForm from "@/components/Lesson/LessonRubricCriteriaForm";
+import LessonPerformanceIndicatorForm from "@/components/Lesson/LessonPerformanceIndicatorForm";
 
 export default async function Page(props: { params: Promise<{ id: string, }>, }) {
     const params = await props.params;
@@ -111,6 +113,12 @@ export default async function Page(props: { params: Promise<{ id: string, }>, })
                         <CardContent>
                             <Typography variant="h6" sx={{mb: 2,}}>New Lesson Rubric Criteria</Typography>
                             <LessonRubricCriteriaForm lesson={lesson}/>
+                        </CardContent>
+                    </Card>
+                    <Card variant="outlined">
+                        <CardContent>
+                            <Typography variant="h6" sx={{mb: 2,}}>Performance Indicator</Typography>
+                            <LessonPerformanceIndicatorForm lesson={lesson}/>
                         </CardContent>
                     </Card>
                 </Stack>

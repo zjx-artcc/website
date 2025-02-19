@@ -35,9 +35,9 @@ export default function AppPickerMenu() {
                 <Link href="https://ids.vzdc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
                     <MenuItem onClick={close}><DeveloperBoard sx={{mr: 1,}}/>I.D.S</MenuItem>
                 </Link>
-                {/*<Link href="https://asx.vzdc.org" passHref style={{ color: 'inherit', textDecoration: 'none', }}>*/}
-                <MenuItem onClick={close} disabled><Radar sx={{mr: 1,}}/>A.S.X (coming soon)</MenuItem>
-                {/*</Link>*/}
+                <Link href="https://asx.vzdc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
+                    <MenuItem onClick={close}><Radar sx={{mr: 1,}}/>A.S.X</MenuItem>
+                </Link>
             </Menu>
         </>
     );

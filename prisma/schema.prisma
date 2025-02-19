@@ -316,6 +316,11 @@ enum LogModel {
   TRAINING_PROGRESSION
   TRAINING_PROGRESSION_STEP
   TRAINING_PROGRESSION_ASSIGNMENT
+
+  PERFORMANCE_INDICATOR_TEMPLATE
+  PERFORMANCE_INDICATOR_CRITERIA_CATEGORY
+  PERFORMANCE_INDICATOR_CRITERIA
+  LESSON_PERFORMANCE_INDICATOR
 }
 
 model Log {
@@ -456,6 +461,9 @@ model Lesson {
   notifyInstructorOnPass Boolean
   trainingTickets        TrainingTicket[]
   progressions           TrainingProgressionStep[]
+
+  performanceIndicator   LessonPerformanceIndicator?
+  performanceIndicatorId String?
 }
 
 model LessonRubric {
@@ -508,6 +516,8 @@ model TrainingSession {
   vatusaId           String?
   tickets            TrainingTicket[]
   enableMarkdown     Boolean?         @default(false)
+
+  performanceIndicator TrainingSessionPerformanceIndicator?
 }
 
 model TrainingTicket {
@@ -698,4 +708,90 @@ model ChangeBroadcast {
   agreedBy User[] @relation("agreedByUsers")
   seenBy   User[] @relation("seenByUsers")
   unseenBy User[] @relation("unseenByUsers")
+}
+
+model PerformanceIndicatorTemplate {
+  id   String @id @default(cuid())
+  name String
+
+  categories PerformanceIndicatorCriteriaCategory[]
+
+  connectedLessons LessonPerformanceIndicator[]
+}
+
+model PerformanceIndicatorCriteriaCategory {
+  id   String @id @default(cuid())
+  name String
+
+  order Int @default(0)
+
+  template   PerformanceIndicatorTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  templateId String
+
+  criteria PerformanceIndicatorCriteria[]
+}
+
+model PerformanceIndicatorCriteria {
+  id String @id @default(cuid())
+
+  name String
+
+  order Int @default(0)
+
+  category   PerformanceIndicatorCriteriaCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId String
+}
+
+model LessonPerformanceIndicator {
+  id String @id @default(cuid())
+
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId String @unique
+
+  template   PerformanceIndicatorTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  templateId String
+}
+
+model TrainingSessionPerformanceIndicator {
+  id String @id @default(cuid())
+
+  session   TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sessionId String          @unique
+
+  categories TrainingSessionPerformanceIndicatorCategory[]
+}
+
+model TrainingSessionPerformanceIndicatorCategory {
+  id String @id @default(cuid())
+
+  name String
+
+  order Int @default(0)
+
+  session   TrainingSessionPerformanceIndicator @relation(fields: [sessionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  sessionId String
+
+  criteria TrainingSessionPerformanceIndicatorCriteria[]
+}
+
+model TrainingSessionPerformanceIndicatorCriteria {
+  id String @id @default(cuid())
+
+  name String
+
+  order Int @default(0)
+
+  marker   PerformanceIndicatorMarker?
+  comments String?
+
+  category   TrainingSessionPerformanceIndicatorCategory @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  categoryId String
+}
+
+enum PerformanceIndicatorMarker {
+  OBSERVED
+  NOT_OBSERVED
+  SATISFACTORY
+  NEEDS_IMPROVEMENT
+  UNSATISFACTORY
 }

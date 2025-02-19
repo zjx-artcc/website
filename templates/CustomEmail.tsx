@@ -4,7 +4,7 @@ import MultipleRecipientsEmailWrapper from "@/templates/Wrapper/MultipleRecipien
 export const customEmail = (subject: string, body: string) => {
     return renderReactToMjml(
         <MultipleRecipientsEmailWrapper headerText={subject}>
-            <p>{body}</p>
+            {body}
         </MultipleRecipientsEmailWrapper>
     )
 }

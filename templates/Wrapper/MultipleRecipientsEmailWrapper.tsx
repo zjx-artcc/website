@@ -3,7 +3,6 @@ import EmailHead from "@/templates/Header/EmailHead";
 import {Mjml, MjmlBody, MjmlColumn, MjmlSection, MjmlText} from "@faire/mjml-react";
 import EmailHeader from "@/templates/Header/EmailHeader";
 import EmailFooter from "@/templates/Footer/EmailFooter";
-import Markdown from "react-markdown";
 
 function MultipleRecipientsEmailWrapper({headerText, children}: { headerText: string, children: React.ReactNode }) {
     return (
@@ -14,9 +13,7 @@ function MultipleRecipientsEmailWrapper({headerText, children}: { headerText: st
                 <MjmlSection background-color="#ffffff" padding="10px">
                     <MjmlColumn>
                         <MjmlText>
-                            <Markdown>
-                                {children as string}
-                            </Markdown>
+                            {children}
                         </MjmlText>
                     </MjmlColumn>
                 </MjmlSection>

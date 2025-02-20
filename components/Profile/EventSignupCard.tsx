@@ -13,15 +13,19 @@ import {
     Typography
 } from "@mui/material";
 import prisma from '@/lib/db';
-import { formatZuluDate } from '@/lib/date';
+import {formatZuluDate} from '@/lib/date';
 import Link from 'next/link';
-import { Check, Close, Edit, Visibility } from '@mui/icons-material';
+import {Check, Close, Edit, Visibility} from '@mui/icons-material';
 
 export default async function EventSignupCard({user}: { user: User, }) {
 
     const positions = await prisma.eventPosition.findMany({
         where: {
             userId: user.id,
+            event: {
+                archived: null,
+                hidden: false,
+            },
         },
         include: {
             event: true,

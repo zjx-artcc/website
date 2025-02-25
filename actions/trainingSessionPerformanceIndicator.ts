@@ -11,8 +11,15 @@ export const getData = async (lessonId: string) => {
             template: {
                 include: {
                     categories: {
+                        orderBy: {
+                            order: 'asc',
+                        },
                         include: {
-                            criteria: true,
+                            criteria: {
+                                orderBy: {
+                                    order: 'asc',
+                                },
+                            },
                         },
                     },
                 },

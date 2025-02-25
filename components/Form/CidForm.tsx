@@ -45,7 +45,7 @@ export default function CidForm({basePath, controllers, initialCid}: {
         (<Stack direction={{xs: 'column', md: 'row',}} spacing={2}>
             <Autocomplete
                 fullWidth
-                options={controllers}
+                options={controllers.sort((a, b) => a.lastName.localeCompare(b.lastName))}
                 getOptionLabel={(option) => `${option.firstName} ${option.lastName} (${option.cid})`}
                 value={controllers.find((u) => u.cid === controller) || null}
                 onChange={(event, newValue) => {

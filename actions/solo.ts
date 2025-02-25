@@ -117,6 +117,18 @@ export const deleteExpiredSolos = async () => {
             }
         });
 
+        await prisma.certification.update({
+            where: {
+                certificationTypeId_userId: {
+                    certificationTypeId: solo.certificationTypeId,
+                    userId: solo.controller.id,
+                },
+            },
+            data: {
+                certificationOption: 'CERTIFIED',
+            },
+        });
+
         await sendSoloExpiredEmail(solo.controller as User, solo);
 
         await log('DELETE', 'SOLO_CERTIFICATION', `Deleted expired solo certification ${solo.position} for ${solo.controller.firstName} ${solo.controller.lastName}`);

@@ -10,7 +10,7 @@ export async function getMonthHours(month: number, year: number) {
         },
     });
 
-    return monthLogs.reduce((acc, log) => acc + log.deliveryHours + log.groundHours + log.towerHours + log.approachHours + log.centerHours, 0).toPrecision(3);
+    return monthLogs.reduce((acc, log) => acc + log.deliveryHours + log.groundHours + log.towerHours + log.approachHours + log.centerHours, 0).toFixed(3);
 }
 
 export async function getAllTimeHours() {

@@ -5,7 +5,6 @@ import {
     AirplanemodeActive,
     BarChart,
     CalendarMonth,
-    Chat,
     Description,
     FileOpen,
     Forum,
@@ -13,7 +12,6 @@ import {
     ListAlt,
     PersonAdd,
     Radar,
-    Radio,
     Route
 } from "@mui/icons-material";
 
@@ -111,21 +109,8 @@ export const NAVIGATION: NavigationButton[] = [
     },
     {
         label: 'Community',
-        icon: <Chat/>,
-        dropdown: {
-            buttons: [
-                {
-                    label: 'Discord',
-                    link: '/discord',
-                    icon: <Forum/>,
-                },
-                {
-                    label: 'TeamSpeak',
-                    link: '/teamspeak',
-                    icon: <Radio/>,
-                },
-            ],
-        },
+        icon: <Forum/>,
+        link: '/discord',
     },
     {
         label: 'Feedback',

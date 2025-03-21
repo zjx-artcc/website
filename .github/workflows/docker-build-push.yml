@@ -86,6 +86,6 @@ jobs:
         - name: Login to registry
           run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
         - name: Pull image
-          run: docker pull ghcr.io/zjx-artcc/ids:master
+          run: docker pull ghcr.io/zjx-artcc/${{ github.repository }}:master
         - name: Run container
           run: docker compose up -d

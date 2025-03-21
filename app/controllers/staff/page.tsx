@@ -156,7 +156,7 @@ export default async function Page() {
                     <CardContent>
                         <Typography variant="subtitle2">Air Traffic Manager (ATM)</Typography>
                         <Typography variant="h3">{atm?.firstName} {atm?.lastName}</Typography>
-                        <Typography>atm@vzdc.org</Typography>
+                        <Typography>atm@zjxartcc.org</Typography>
                     </CardContent>
                 </Card>
             </Grid2>
@@ -169,7 +169,7 @@ export default async function Page() {
                     <CardContent>
                         <Typography variant="subtitle2">Deputy Air Traffic Manager (DATM)</Typography>
                         <Typography variant="h3">{datm?.firstName} {datm?.lastName}</Typography>
-                        <Typography>datm@vzdc.org</Typography>
+                        <Typography>datm@zjxartcc.org</Typography>
                     </CardContent>
                 </Card>
             </Grid2>
@@ -183,7 +183,7 @@ export default async function Page() {
                     <CardContent>
                         <Typography variant="subtitle2">Training Administrator (TA)</Typography>
                         <Typography variant="h4">{ta?.firstName} {ta?.lastName}</Typography>
-                        <Typography>ta@vzdc.org</Typography>
+                        <Typography>ta@zjxartcc.org</Typography>
                         <Typography variant="subtitle2" sx={{mt: 4,}}>Assistant Training Administrators
                             (ATAs)</Typography>
                         <TableContainer sx={{maxHeight: 400}}>

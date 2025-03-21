@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/zjx-artcc/ids:master
+    image: ghcr.io/zjx-artcc/website:master
     ports:
       - 3700:3000
     container_name: website

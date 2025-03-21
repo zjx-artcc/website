@@ -9,12 +9,12 @@ export default function Logo() {
         <>
             <Box sx={{ display: { xs: 'none', sm: 'inherit', }}}>
                 <Link href="/">
-                    <Image src={logo} alt={"Washington ARTCC Logo"} width={215} height={39}/>
+                    <Image src={logo} alt={"Jacksonville ARTCC Logo"} width={215} height={39}/>
                 </Link>
             </Box>
             <Box sx={{ display: { sm: 'none', }}}>
                 <Link href="/">
-                    <Image src={logo} alt={"Washington ARTCC Logo"} width={140} height={25}/>
+                    <Image src={logo} alt={"Jacksonville ARTCC Logo"} width={140} height={25}/>
                 </Link>
             </Box>
         </>

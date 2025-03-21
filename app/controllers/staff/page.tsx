@@ -217,7 +217,7 @@ export default async function Page() {
                     <CardContent>
                         <Typography variant="subtitle2">Event Coordinator (EC)</Typography>
                         <Typography variant="h4">{ec?.firstName} {ec?.lastName}</Typography>
-                        <Typography>ec@vzdc.org</Typography>
+                        <Typography>ec@zjxartcc.org</Typography>
                         <Typography variant="subtitle2" sx={{mt: 4,}}>Assistant Event Coordinators (AECs)</Typography>
                         <TableContainer sx={{maxHeight: 400}}>
                             <Table size="small">
@@ -250,7 +250,7 @@ export default async function Page() {
                     <CardContent>
                         <Typography variant="subtitle2">Facility Engineer (FE)</Typography>
                         <Typography variant="h4">{fe?.firstName} {fe?.lastName}</Typography>
-                        <Typography>fe@vzdc.org</Typography>
+                        <Typography>fe@zjxartcc.org</Typography>
                         <Typography variant="subtitle2" sx={{mt: 4,}}>Assistant Facility Engineers (AFEs)</Typography>
                         <TableContainer sx={{maxHeight: 400}}>
                             <Table size="small">
@@ -283,7 +283,7 @@ export default async function Page() {
                     <CardContent>
                         <Typography variant="subtitle2">Webmaster (WM)</Typography>
                         <Typography variant="h4">{wm?.firstName} {wm?.lastName}</Typography>
-                        <Typography>wm@vzdc.org</Typography>
+                        <Typography>wm@zjxartcc.org</Typography>
                         <Typography variant="subtitle2" sx={{mt: 4,}}>Assistant Webmasters (AWMs)</Typography>
                         <TableContainer sx={{maxHeight: 400}}>
                             <Table size="small">

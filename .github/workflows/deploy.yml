@@ -12,6 +12,9 @@ jobs:
 
     - name: Build docker image
       run: docker compose down
+
+    - name: Build docker image
+      run: docker compose up --build -d
     env:
       NODE_ENV: production
       DATABASE_URL: ${{secrets.DATABASE_URL}}

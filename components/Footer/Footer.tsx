@@ -14,7 +14,7 @@ export default function Footer() {
     const { publicRuntimeConfig } = getConfig();
 
     return (
-        <AppBar position="static" sx={{marginTop: 20}}>
+        <AppBar position="static" sx={{marginTop: 20}} color="secondary">
             <Toolbar>
                 <Container maxWidth="md" sx={{padding: 5,}}>
                     <Typography textAlign="center">&copy; 2025 Virtual Jacksonville Air Route Traffic Control Center, All

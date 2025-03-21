@@ -86,5 +86,7 @@ jobs:
           run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
         - name: Pull image
           run: docker pull ghcr.io/${{ github.repository }}:master
+        - name: Compose down
+          run: docker compose down
         - name: Run container
           run: docker compose up -d

@@ -1,0 +1,35 @@
+name: Deploy to server
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_site:
+    runs-on: self-hosted
+    steps:
+    - name: Get repository
+      uses: actions/checkout@v2
+
+    - name: Build docker image
+      run: docker compose up --build -d
+    env:
+      NODE_ENV: production
+      DATABASE_URL: ${{secrets.DATABASE_URL}}
+      DEV_MODE: false
+      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}}
+      NEXT_PUBLIC_GOOGLE_CAPTCHA_SITE_KEY: ${{secrets.NEXT_PUBLIC_GOOGLE_CAPTCHA_SITE_KEY}}
+      GOOGLE_CAPTCHA_SECRET_KEY: ${{secrets.GOOGLE_CAPTCHA_SECRET_KEY}}
+      NEXTAUTH_URL: ${{secrets.NEXTAUTH_URL}}
+      NEXTAUTH_SECRET: ${{secrets.NEXTAUTH_SECRET}}
+      VATSIM_CLIENT_ID: ${{secrets.VATSIM_CLIENT_ID}}
+      VATSIM_CLIENT_SECRET: ${{secrets.VATSIM_CLIENT_SECRET}}
+      VATUSA_FACILITY: ${{secrets.VATUSA_FACILITY}}
+      VATUSA_API_KEY: ${{secrets.VATUSA_API_KEY}}
+      UPLOADTHING_TOKEN: ${{secrets.UPLOADTHING_TOKEN}}
+      UPLOADTHING_SECRET: ${{secrets.UPLOADTHING_SECRET}}
+      UPLOADTHING_APP_ID: ${{secrets.UPLOADTHING_APP_ID}}
+      AWS_SMTP_FROM: ${{secrets.AWS_SMTP_FROM}}
+      AWS_SMTP_HOST: ${{secrets.AWS_SMTP_HOST}}
+      AWS_SMTP_PORT: ${{secrets.AWS_SMTP_PORT}}
+      AWS_SMTP_USERNAME: ${{secrets.AWS_SMTP_USERNAME}}
+      AWS_SMTP_PASSWORD: ${{secrets.AWS_SMTP_PASSWORD}}

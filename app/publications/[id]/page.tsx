@@ -42,7 +42,7 @@ export default async function Page(props: { params: Promise<{ id: string, }>, })
         notFound();
     }
 
-    const url = (await ut.getFileUrls([file.key])).data[0]?.url;
+    const url = (await ut.getSignedURL(file.key)).url;
 
     return (
         <Card>

@@ -1,0 +1,37 @@
+services:
+  website:
+    image: vainnor/vzdc_website:1.0.0
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DEV_MODE: false
+      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
+      NEXT_PUBLIC_GOOGLE_CAPTCHA_SITE_KEY: ${NEXT_PUBLIC_GOOGLE_CAPTCHA_SITE_KEY}
+      GOOGLE_CAPTCHA_SECRET_KEY: ${GOOGLE_CAPTCHA_SECRET_KEY}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      VATSIM_CLIENT_ID: ${VATSIM_CLIENT_ID}
+      VATSIM_CLIENT_SECRET: ${VATSIM_CLIENT_SECRET}
+      VATUSA_FACILITY: ${VATUSA_FACILITY}
+      VATUSA_API_KEY: ${VATUSA_API_KEY}
+      UPLOADTHING_TOKEN: ${UPLOADTHING_TOKEN}
+      UPLOADTHING_SECRET: ${UPLOADTHING_SECRET}
+      UPLOADTHING_APP_ID: ${UPLOADTHING_APP_ID}
+      AWS_SMTP_FROM: ${AWS_SMTP_FROM}
+      AWS_SMTP_HOST: ${AWS_SMTP_HOST}
+      AWS_SMTP_PORT: ${AWS_SMTP_PORT}
+      AWS_SMTP_USERNAME: ${AWS_SMTP_USERNAME}
+      AWS_SMTP_PASSWORD: ${AWS_SMTP_PASSWORD}
+      TS_KEY: ${TS_KEY}
+  updater:
+    image: vainnor/vzdc_website_updater:1.0.1
+    depends_on:
+      - website
+    environment:
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+    volumes:
+    db_data: 

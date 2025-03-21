@@ -67,7 +67,7 @@ export const NAVIGATION: NavigationButton[] = [
                     icon: <Group/>,
                 },
                 {
-                    label: 'Visit ZDC',
+                    label: 'Visit ZJX',
                     link: '/visitor/new',
                     icon: <PersonAdd/>,
                 },

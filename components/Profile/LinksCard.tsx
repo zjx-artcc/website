@@ -14,7 +14,7 @@ export default function LinksCard() {
                 <Typography variant="h6" sx={{mb: 2,}}>Quick Links</Typography>
 
                 <List disablePadding>
-                    <Link href="https://wkf.ms/4fqZt3O" target="_blank"
+                    {/*<Link href="https://wkf.ms/4fqZt3O" target="_blank"
                           style={{color: 'inherit', textDecoration: 'none',}}>
                         <ListItemButton>
                             <ListItemIcon>
@@ -40,7 +40,7 @@ export default function LinksCard() {
                             </ListItemIcon>
                             <ListItemText primary="Web Systems Feedback"/>
                         </ListItemButton>
-                    </Link>
+                    </Link>*/}
                     <Link href="https://training.vzdc.org" target="_blank"
                           style={{color: 'inherit', textDecoration: 'none',}}>
                         <ListItemButton sx={{borderRadius: 8}}>

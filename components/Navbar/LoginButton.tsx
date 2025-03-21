@@ -187,12 +187,12 @@ export default function LoginButton({session, sidebar, sidebarButtonClicked,}: {
                 <DialogContent>
                     <Typography> The information contained on all pages of this website is to be used for flight simulation purposes only on the VATSIM
                         network. It is not intended nor should it be used for real world navigation. This site is not affiliated with the FAA, NATCA,
-                        the actual Washington ARTCC, or any governing aviation body. All content contained herein is approved only for use on the VATSIM network.
+                        the actual Jacksonville ARTCC, or any governing aviation body. All content contained herein is approved only for use on the VATSIM network.
                     </Typography>
                     <br/>
                     <FormControlLabel control={<Checkbox color="success" onClick={handleChange}/>} label={
                         <Typography>I understand that <b>we are a virtual organization</b> and do NOT have any
-                            affiliation with the FAA, ZDC, or any government agency.</Typography>
+                            affiliation with the FAA, ZJX, or any government agency.</Typography>
                     }/>
                 </DialogContent>
                 <DialogActions>

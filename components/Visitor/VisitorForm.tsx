@@ -69,7 +69,7 @@ export default function VisitorForm({user}: { user: User, }) {
                 </Grid2>
                 <Grid2 size={2}>
                     <TextField variant="filled" multiline rows={4} fullWidth name="whyVisit"
-                               label="Why would you like to visit the Virtual Washington ARTCC?"/>
+                               label="Why would you like to visit the Virtual Jacksonville ARTCC?"/>
                 </Grid2>
                 <Grid2 size={2}>
                     <Stack direction="column" spacing={1}>

@@ -49,7 +49,7 @@ export default async function Page() {
             <Card>
                 <CardContent>
                     <Typography variant="h5">Visitor Application</Typography>
-                    <Typography sx={{my: 1,}}>We appreciate your interest in visiting the Virtual Washington ARTCC. Fill
+                    <Typography sx={{my: 1,}}>We appreciate your interest in visiting the Virtual Jacksonville ARTCC. Fill
                         out the following form and a staff member will take a look at your application. This process
                         might take up to 7 business days.</Typography>
                     <VisitorForm user={session.user}/>

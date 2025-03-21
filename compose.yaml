@@ -1,6 +1,7 @@
 services:
   website:
-    image: vainnor/vzdc_website:1.0.0
+    build:
+      context: .
     restart: always
     ports:
       - "3000:3000"

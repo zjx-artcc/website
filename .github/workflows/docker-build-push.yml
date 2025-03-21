@@ -55,9 +55,16 @@ jobs:
             echo "package.json not found!"
             exit 1
           fi
-
-      - name: Rename .env.public to .env
-        run: mv .env.public .env
+          
+      - name: Create .env
+        uses: Infisical/secrets-action@v1.0.7
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          env-slug: "prod"
+          project-slug: "ids"
+          export-type: "file"
+          file-output-path: "/.env"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -67,4 +74,18 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ steps.extract_branch.outputs.branch }}-latest
-            ghcr.io/${{ github.repository }}:${{ steps.extract_branch.outputs.branch }}-${{ env.COMMIT_HASH }}
+            ghcr.io/${{ github.repository }}:${{ steps.extract_branch.outputs.branch }}
+
+deploy:
+    runs-on: self-hosted
+    needs: build-and-push
+    environment: Development
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Login to registry
+        run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull image
+        run: docker pull ghcr.io/zjx-artcc/ids:master
+      - name: Run container
+        run: docker compose up -d

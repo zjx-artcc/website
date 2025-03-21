@@ -33,5 +33,3 @@ services:
       - website
     environment:
       NEXTAUTH_URL: ${NEXTAUTH_URL}
-volumes:
-db_data: 

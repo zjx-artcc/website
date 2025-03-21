@@ -62,7 +62,7 @@ jobs:
           client-id: ${{ secrets.CLIENT_ID }}
           client-secret: ${{ secrets.CLIENT_SECRET }}
           env-slug: "prod"
-          project-slug: "ids"
+          project-slug: "new-website"
           export-type: "file"
           file-output-path: "/.env"
 

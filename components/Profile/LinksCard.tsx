@@ -82,7 +82,7 @@ export default function LinksCard() {
                             <ListItemText primary="ARTCC Staff"/>
                         </ListItemButton>
                     </Link>
-                    <Link href="https://github.com/vZDC-ARTCC/website/issues"
+                    <Link href="https://github.com/zjx-artcc/website/issues"
                           style={{color: 'inherit', textDecoration: 'none',}}>
                         <ListItemButton sx={{borderRadius: 8}}>
                             <ListItemIcon>

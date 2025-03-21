@@ -6,8 +6,8 @@ import {Metadata} from "next";
 import EventsMenu from '@/components/Admin/EventsMenu';
 
 export const metadata: Metadata = {
-    title: 'Events | vZDC',
-    description: 'vZDC events admin page',
+    title: 'Events | vZJX',
+    description: 'vZJX events admin page',
 };
 
 export default async function Layout({children}: { children: React.ReactNode }) {

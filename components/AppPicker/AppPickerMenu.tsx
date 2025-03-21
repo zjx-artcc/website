@@ -18,24 +18,21 @@ export default function AppPickerMenu() {
 
     return (
         <>
-            <Tooltip title="VZDC Apps">
+            <Tooltip title="VZJX Apps">
                 <IconButton color="inherit" onClick={(e) => open(e)}>
                     <Apps/>
                 </IconButton>
             </Tooltip>
             <Menu open={!!anchorEl} anchorEl={anchorEl} onClose={close}>
-                <Link href="https://www.vzdc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
+                <Link href="https://zjxartcc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
                     <MenuItem onClick={close}>
                         <Public sx={{mr: 1,}}/>Website
                     </MenuItem>
                 </Link>
-                <Link href="https://training.vzdc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
-                    <MenuItem onClick={close}><CalendarMonth sx={{mr: 1,}}/>Training Scheduler</MenuItem>
-                </Link>
-                <Link href="https://ids.vzdc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
+                <Link href="https://ids.zjxartcc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
                     <MenuItem onClick={close}><DeveloperBoard sx={{mr: 1,}}/>I.D.S</MenuItem>
                 </Link>
-                <Link href="https://asx.vzdc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
+                <Link href="https://asx.zjxartcc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
                     <MenuItem onClick={close}><Radar sx={{mr: 1,}}/>A.S.X</MenuItem>
                 </Link>
             </Menu>

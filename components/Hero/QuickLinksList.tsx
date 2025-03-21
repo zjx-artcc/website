@@ -46,7 +46,7 @@ export default function QuickLinksList() {
                     <ListItemText primary="Statistics"/>
                 </ListItemButton>
             </Link>
-            <Link href="https://github.com/vZDC-ARTCC/website/issues" target="_blank"
+            <Link href="https://github.com/zjx-artcc/website/issues" target="_blank"
                   style={{textDecoration: 'none', color: 'inherit',}}>
                 <ListItemButton>
                     <ListItemIcon>

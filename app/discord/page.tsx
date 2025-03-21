@@ -20,7 +20,7 @@ export default async function Page() {
                     <Typography variant="h6">Our Discord Server is open to all VATSIM members.</Typography>
                     <Typography variant="body1" sx={{my: 1,}}>Join our Discord server to get the latest information on
                         events, training, and more!</Typography>
-                    {session && <Button variant="contained" size="large" href='https://discord.com/invite/me9zury'>Join
+                    {session && <Button variant="contained" size="large" href='https://discord.gg/MuMR4wZeqT'>Join
                         Discord</Button>}
                     {!session &&
                         <Typography sx={{display: 'flex', alignItems: 'center', gap: 1,}}><Error color="error"/> Login

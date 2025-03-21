@@ -6,8 +6,8 @@ import {Metadata} from "next";
 import BroadcastViewer from "@/components/BroadcastViewer/BroadcastViewer";
 
 export const metadata: Metadata = {
-    title: 'Profile | vZDC',
-    description: 'vZDC profile page',
+    title: 'Profile | vZJX',
+    description: 'vZJX profile page',
 };
 
 export default async function Layout({children}: { children: React.ReactNode }) {

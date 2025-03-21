@@ -20,8 +20,8 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
 
 export const metadata: Metadata = {
-    title: "Virtual Washington ARTCC",
-    description: "The Virtual Washington ARTCC is a community of pilots and air traffic controllers on VATSIM who come together to enjoy the art of flight simulation.",
+    title: "Virtual Jacksonville ARTCC",
+    description: "The Virtual Jacksonville ARTCC is a community of pilots and air traffic controllers on VATSIM who come together to enjoy the art of flight simulation.",
 };
 
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;

@@ -7,8 +7,8 @@ import prisma from "@/lib/db";
 import {User} from "next-auth";
 
 export const metadata: Metadata = {
-    title: 'Statistics | vZDC',
-    description: 'vZDC stats page',
+    title: 'Statistics | vZJX',
+    description: 'vZJX stats page',
 };
 
 export default async function Layout({children}: { children: React.ReactNode }) {

@@ -14,18 +14,16 @@ export default function Footer() {
     const { publicRuntimeConfig } = getConfig();
 
     return (
-        <AppBar position="static" sx={{marginTop: 20}}>
+        <AppBar position="static" sx={{marginTop: 20}} color="secondary">
             <Toolbar>
                 <Container maxWidth="md" sx={{padding: 5,}}>
-                    <Typography textAlign="center">&copy; 2025 Virtual Washington Air Route Traffic Control Center, All
+                    <Typography textAlign="center">&copy; 2025 Virtual Jacksonville Air Route Traffic Control Center, All
                         Rights Reserved.</Typography>
                     <Typography textAlign="center" sx={{marginTop: 1,}}>A sub-division of VATUSA, a division of the
                         VATSIM network.</Typography>
-                    <Link href="/misc/AvDr/" style={{color: 'inherit',textDecoration: 'none'}}>
-                        <Typography textAlign="center" fontWeight={700} sx={{marginTop: 2,}}>NOT FOR REAL WORLD
+                    <Typography textAlign="center" fontWeight={700} sx={{marginTop: 2,}}>NOT FOR REAL WORLD
                         USE
-                        </Typography>
-                    </Link>
+                    </Typography>
                     <Stack direction={{xs: 'column', lg: 'row',}} spacing={5} justifyContent="center"
                            alignItems="center" sx={{marginTop: 3,}}>
                         <Link href="https://www.vatusa.net/" target="_blank">
@@ -46,14 +44,14 @@ export default function Footer() {
                         </Box>
                     </Tooltip>
                     <Stack direction="row" spacing={1} sx={{mt: 2,}} justifyContent="center">
-                        <Tooltip title={'vZDC Privicy Policy'}>
+                        <Tooltip title={'vZJX Privacy Policy'}>
                             <Link href="/privacy" style={{color: 'inherit',}}>
                                 <Typography textAlign="center">Privacy</Typography>
                             </Link>
                         </Tooltip>
                         <Typography>|</Typography>
-                        <Tooltip title={'vZDC Website Public Repository'}>
-                            <Link href="https://github.com/vZDC-ARTCC/website" style={{color: 'inherit',}}>
+                        <Tooltip title={'vZJX Website Public Repository'}>
+                            <Link href="https://github.com/zjx-artcc/website" style={{color: 'inherit',}}>
                                 <Typography textAlign="center">GitHub</Typography>
                             </Link>
                         </Tooltip>

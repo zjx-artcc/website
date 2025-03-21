@@ -6,8 +6,8 @@ import TrainingMenu from "@/components/Admin/TrainingMenu";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Training | vZDC',
-    description: 'vZDC training admin page',
+    title: 'Training | vZJX',
+    description: 'vZJX training admin page',
 };
 
 export default async function Layout({children}: { children: React.ReactNode }) {

@@ -9,5 +9,3 @@ services:
     image: vainnor/vzdc_website_updater:1.0.1
     depends_on:
       - website
-    env_file:
-      - .env

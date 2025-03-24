@@ -15,7 +15,7 @@ export default async function Page() {
                     <Typography variant="h5">Privacy & Terms</Typography>
                     <Typography>This website follows the guidelines of VATUSA and VATSIM.</Typography>
                     <Typography variant="subtitle2">If you have questions, do not hesitate to email
-                        zdc_staff@vatusa.net</Typography>
+                        zjx_staff@vatusa.net</Typography>
                 </CardContent>
             </Card>
 

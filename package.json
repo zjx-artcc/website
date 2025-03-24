@@ -1,7 +1,7 @@
 {
   "name": "vzdc_website",
   "version": "1.2.7",
-  "author": "Aneesh Reddy & vZDC",
+  "author": "Aneesh Reddy, vZDC, & vZJX",
   "private": true,
   "scripts": {
     "db:reset": "dotenv -e .env.local -- npx prisma migrate reset",

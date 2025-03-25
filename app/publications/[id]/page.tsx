@@ -24,7 +24,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string, }>
     }
 
     return {
-        title: `${file.name} | vZDC`,
+        title: `${file.name} | vZJX`,
     };
 }
 

@@ -15,6 +15,7 @@ import {Edit} from "@mui/icons-material";
 import {LOAStatus} from "@prisma/client";
 import AssignedMentorsCard from "@/components/Profile/AssignedMentorsCard";
 import ProgressionCard from "@/components/Profile/ProgressionCard";
+import TrainingQueueTable from '@/components/Profile/TrainingQueue';
 
 export default async function Page() {
 
@@ -122,7 +123,10 @@ export default async function Page() {
                 size={8}>
                 <TrainingCard user={user}/>
             </Grid2>
-
+            <Grid2 
+                size={8}>
+                <TrainingQueueTable/>
+            </Grid2>
         </Grid2>
     );
 }

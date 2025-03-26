@@ -13,14 +13,14 @@ export const assignmentPrimaryTrainer = async (student: User, primaryTrainer: Us
             <p>Feel free to communicate with this student via email or private message.</p>
             <a href={`mailto:${student.email}`}>Email Student</a>
             <br/>
-            <a href="https://vzdc.org/training/your-students">Your Students</a>
+            <a href="https://zjxartcc.org/training/your-students">Your Students</a>
             <p><a
-                href={`https://vzdc.org/training/assignments?filterField=student&filterValue=${student.cid}&filterOperator=equals`}>View
+                href={`https://zjxartcc.org/training/assignments?filterField=student&filterValue=${student.cid}&filterOperator=equals`}>View
                 Training Assignment</a> (other trainers, etc.)</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
-            <p>training@vzdc.org</p>
+            <p>The vZJX Training Team</p>
+            <p>training@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
-}
+}   

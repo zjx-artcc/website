@@ -7,11 +7,11 @@ export const newFeedback = (controller: User, feedback: Feedback) => {
     return renderReactToMjml(
         <SingleRecipientEmailWrapper recipient={controller} headerText="Feedback Released">
             <p>You have received new feedback; click <a
-                href={`https://vzdc.org/profile/feedback/${feedback.id}`}>here</a> to view it.</p>
+                href={`https://zjxartcc.org/profile/feedback/${feedback.id}`}>here</a> to view it.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Staff</p>
-            <p>staff@vzdc.org</p>
+            <p>The vZJX Staff</p>
+            <p>staff@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
 }

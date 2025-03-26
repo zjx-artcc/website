@@ -12,8 +12,8 @@ export const soloDeleted = (controller: User, solo: SoloCertification) => {
             <p>If you believe that this is an error, contact the vZDC Training Department.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
-            <p>training@vzdc.org</p>
+            <p>The vZJX Training Team</p>
+            <p>training@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     );
 }

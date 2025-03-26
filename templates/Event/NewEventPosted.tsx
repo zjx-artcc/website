@@ -14,13 +14,13 @@ export const newEventPosted = (controller: User, event: Event) => {
             <p>Event Start: <b>{formatZuluDate(event.start)}</b></p>
             <p>Event End: <b>{formatZuluDate(event.end)}</b></p>
             <br />
-            <p>For more information, and to sign up, <a href={`https://vzdc.org/events/${event.id}`}>click here</a>.</p>
+            <p>For more information, and to sign up, <a href={`https://zjxartcc.org/events/${event.id}`}>click here</a>.</p>
             <br />
             <p>Regards,</p>
-            <p>The vZDC Events Team</p>
-            <p>ec@vzdc.org</p>
+            <p>The vZJX Events Team</p>
+            <p>ec@zjxartcc.org</p>
             <br />
-            <p>To stop recieving these emails, turn off the 'Receive NEW event notifications' switch in <a href="https://vzdc.org/profile/edit">your profile settings</a></p>
+            <p>To stop recieving these emails, turn off the 'Receive NEW event notifications' switch in <a href="https://zjxartcc.org/profile/edit">your profile settings</a></p>
         </SingleRecipientEmailWrapper>
     )
 }

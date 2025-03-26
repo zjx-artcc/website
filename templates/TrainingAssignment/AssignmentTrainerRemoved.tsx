@@ -11,11 +11,11 @@ export const assignmentTrainerRemoved = async (student: User) => {
             <p>You are no longer required to train this student <strong>unless</strong> they book through the training
                 scheduler.</p>
             <br/>
-            <a href="https://vzdc.org/training/your-students">Your Students</a>
+            <a href="https://zjxartcc.org/training/your-students">Your Students</a>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
-            <p>training@vzdc.org</p>
+            <p>The vZJX Training Team</p>
+            <p>training@zjxartcc.org</p>
         </MultipleRecipientsEmailWrapper>
     )
 }

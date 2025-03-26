@@ -13,12 +13,12 @@ export const progressionAssigned = async (student: User, progression: TrainingPr
             <p>A staff member manually assigned this progression to you.</p>
                 <p>You accepted a visitor application or recently logged in as a home controller for the first time.</p>
             <br/>
-            <p>Your new progression is available on <a href="https://vzdc.org/profile/overview">your profile</a>.</p>
+            <p>Your new progression is available on <a href="https://zjxartcc.org/profile/overview">your profile</a>.</p>
             <p>If you have any questions, contact the training team.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
-            <p>training@vzdc.org</p>
+            <p>The vZJX Training Team</p>
+            <p>training@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
 }

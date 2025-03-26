@@ -12,12 +12,12 @@ export const loaApproved = (controller: User, loa: LOA) => {
             <p>If you control at any time
                 between <strong>{formatZuluDate(loa.start)}</strong> and <strong>{formatZuluDate(loa.end)}</strong>,
                 your L.O.A. will be automatically cancelled without email notice.</p>
-            <p>You can modify or delete your L.O.A. on your <a href={`https://vzdc.org/profile/overview`}>profile
+            <p>You can modify or delete your L.O.A. on your <a href={`https://zjxartcc.org/profile/overview`}>profile
                 page</a> at any time.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Staff</p>
-            <p>staff@vzdc.org</p>
+            <p>The vZJX Staff</p>
+            <p>staff@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
-}
+}       

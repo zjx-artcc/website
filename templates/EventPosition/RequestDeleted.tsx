@@ -8,15 +8,15 @@ export const positionRequestDeleted = (controller: User, event: Event) => {
         <SingleRecipientEmailWrapper recipient={controller} headerText="Event Position Notification">
             <p>You request to control for <strong>{event.name}</strong> was deleted.</p>
             <br/>
-            <p>If you believe this is an error, email the vZDC events department.</p>
+            <p>If you believe this is an error, email the vZJX events department.</p>
             <br/>
-            <p>For more information, check <a href="https://vzdc.org/profile/overview">your profile</a> or
+            <p>For more information, check <a href="https://zjxartcc.org/profile/overview">your profile</a> or
                 the <a
-                    href={`https://vzdc.org/events/${event.id}`}>event page</a>.</p>
+                    href={`https://zjxartcc.org/events/${event.id}`}>event page</a>.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Events Team</p>
-            <p>ec@vzdc.org</p>
+            <p>The vZJX Events Team</p>
+            <p>ec@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
 }

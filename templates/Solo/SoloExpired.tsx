@@ -9,11 +9,11 @@ export const soloExpired = (controller: User, solo: SoloCertification) => {
             <p>Your solo certification for <strong>{solo.position}</strong> has expired.</p>
             <p>DO NOT control this position until you get re-certified or gain another solo certification</p>
             <br/>
-            <p>If you believe that this is an error, contact the vZDC Training Department.</p>
+            <p>If you believe that this is an error, contact the vZJX Training Department.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
-            <p>training@vzdc.org</p>
+            <p>The vZJX Training Team</p>
+            <p>training@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     );
-}
+}   

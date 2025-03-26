@@ -10,11 +10,11 @@ export const loaExpired = (controller: User) => {
             <p>You are now <strong>required</strong> to control at least minimum hours outlined in vZDC, VATUSA, and
                 VATSIM policies.</p>
             <p>Feel free to submit a new L.O.A. request at any time on your <a
-                href={`https://vzdc.org/profile/overview`}>profile page</a>.</p>
+                href={`https://zjxartcc.org/profile/overview`}>profile page</a>.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Staff</p>
-            <p>staff@vzdc.org</p>
+            <p>The vZJX Staff</p>
+            <p>staff@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     );
 }

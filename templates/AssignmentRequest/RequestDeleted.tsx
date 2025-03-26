@@ -10,7 +10,7 @@ export const requestDeleted = async (student: User) => {
             <p>If you believe that this is an error, contact the training staff.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
+            <p>The vZJX Training Team</p>
         </SingleRecipientEmailWrapper>
     )
 }

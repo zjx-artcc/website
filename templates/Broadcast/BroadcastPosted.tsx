@@ -8,12 +8,12 @@ export const broadcastPosted = (broadcast: ChangeBroadcast) => {
             <p>Dear Controllers,</p>
             <br/>
             <p>A new broadcast has been posted on the website.</p>
-            <p>For more information, and to agree to it, <a href={`https://vzdc.org/profile/overview`}>click here</a>.
+            <p>For more information, and to agree to it, <a href={`https://zjxartcc.org/profile/overview`}>click here</a>.
             </p>
             <br/>
             <p>Thank you,</p>
-            <p>The vZDC Staff</p>
-            <p>staff@vzdc.org</p>
+            <p>The vZJX Staff</p>
+            <p>staff@zjxartcc.org</p>
         </MultipleRecipientsEmailWrapper>
     )
 }

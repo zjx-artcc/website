@@ -20,12 +20,12 @@ export const eventPositionAssigned = (controller: User, eventPosition: EventPosi
             <p><strong>Participation is mandatory</strong> unless you communicate with the events team prior to the
                 start time. Violations will result in potential disciplinary action.</p>
             <br/>
-            <p>For more information, check <a href="https://vzdc.org/profile/overview">your profile</a> or the <a
-                href={`https://vzdc.org/events/${event.id}`}>event page</a>.</p>
+            <p>For more information, check <a href="https://zjxartcc.org/profile/overview">your profile</a> or the <a
+                href={`https://zjxartcc.org/events/${event.id}`}>event page</a>.</p>
             <br/>
             <p>Thank you for your time,</p>
-            <p>The vZDC Events Team</p>
-            <p>ec@vzdc.org</p>
+            <p>The vZJX Events Team</p>
+            <p>ec@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     );
 }

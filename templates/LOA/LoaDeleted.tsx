@@ -10,8 +10,8 @@ export const loaDeleted = (controller: User) => {
             <p>Contact staff if you have any questions or believe that this is an error.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Staff</p>
-            <p>staff@vzdc.org</p>
+            <p>The vZJX Staff</p>
+            <p>staff@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     );
-}
+}   

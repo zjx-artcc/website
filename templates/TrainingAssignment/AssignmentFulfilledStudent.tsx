@@ -13,11 +13,11 @@ export const assignmentFulfilledStudent = async (student: User, primaryTrainer: 
                 <p key={trainer.id}><strong>{trainer.firstName} {trainer.lastName}</strong></p>
             ))}
             <br/>
-            <p>Please check <a href="https://vzdc.org/profile/overview">your profile</a> for more details.</p>
+            <p>Please check <a href="https://zjxartcc.org/profile/overview">your profile</a> for more details.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
-            <p>training@vzdc.org</p>
+            <p>The vZJX Training Team</p>
+            <p>training@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
 }

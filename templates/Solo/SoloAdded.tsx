@@ -15,11 +15,11 @@ export const soloAdded = (controller: User, solo: SoloCertification) => {
             <p>You <strong>must</strong> set your role to student in CRC when logging in to this position.</p>
             <br/>
             <p>The status of this solo certification can change at any time. Check <a
-                href={`https://vzdc.org/profile/overview`}>your profile</a> for the most up to date information</p>
+                href={`https://zjxartcc.org/profile/overview`}>your profile</a> for the most up to date information</p>
             <br/>
             <p>Enjoy,</p>
-            <p>The vZDC Training Team</p>
-            <p>training@vzdc.org</p>
+            <p>The vZJX Training Team</p>
+            <p>training@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
-}
+}   

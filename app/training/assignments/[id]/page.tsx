@@ -14,7 +14,7 @@ export default async function Page(props: { params: Promise<{ id: string, }> }) 
 
     const session = await getServerSession(authOptions);
 
-    if (!session || (!session.user.staffPositions.includes("TA") && !session.user.staffPositions.includes("ATA"))) {
+    if (!session || (!session.user.staffPositions.includes("TA") && !session.user.staffPositions.includes("ATA") && !session.user.staffPositions.includes("DATM") && !session.user.staffPositions.includes("ATM"))) {
         permanentRedirect('/training/assignments');
     }
 

@@ -33,7 +33,7 @@ export default async function Page(props: { params: Promise<{ id: string, }> }) 
 
     const session = await getServerSession(authOptions);
 
-    const isTaOrAta = session?.user.staffPositions.includes('TA') || session?.user.staffPositions.includes('ATA');
+    const isTaOrAta = session?.user?.staffPositions.includes('TA') || session?.user?.staffPositions.includes('ATA') || session?.user?.staffPositions.includes('DATM') || session?.user?.staffPositions.includes('ATM');;
 
     const allUsers = await prisma.user.findMany({
         where: {

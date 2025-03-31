@@ -1,5 +1,5 @@
 import {Card, CardContent, Grid2, IconButton, Stack, Tooltip, Typography} from "@mui/material";
-import {Roboto} from "next/font/google";
+import {Poppins} from "next/font/google";
 import prisma from "@/lib/db";
 import UpcomingEventsCarousel from "@/components/HomePage/UpcomingEventsCarousel";
 import {getDuration} from "@/lib/date";
@@ -11,7 +11,7 @@ import HeaderText from "@/components/Hero/HeaderText";
 import BackgroundImage from "@/components/Hero/BackgroundImage";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
 
-const headingFont = Roboto({subsets: ['latin'], weight: ['400']});
+const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
 

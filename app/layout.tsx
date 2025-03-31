@@ -1,12 +1,12 @@
 import {ReactNode} from "react";
 import type {Metadata} from "next";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v14-appRouter";
-import {Roboto} from 'next/font/google';
+import {Poppins} from 'next/font/google';
 import {Container, CssBaseline, ThemeProvider} from "@mui/material";
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import '@fontsource/poppins/300.css';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/700.css';
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import theme from "@/theme/theme";
@@ -26,11 +26,11 @@ export const metadata: Metadata = {
 
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
-const roboto = Roboto({
+const poppins = Poppins({
     weight: ['300', '400', '500', '700'],
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-roboto',
+    variable: '--font-poppins',
 });
 
 export default async function RootLayout({
@@ -43,7 +43,7 @@ export default async function RootLayout({
 
   return (
       <html lang="en" suppressHydrationWarning>
-      <body className={roboto.variable}>
+      <body className={poppins.variable}>
     <AppRouterCacheProvider>
         <ThemeProvider theme={theme}>
             <CssBaseline/>

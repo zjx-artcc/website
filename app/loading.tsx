@@ -1,7 +1,7 @@
 import React from 'react';
 import {Skeleton,} from "@mui/material";
 
-// const headingFont = Roboto({subsets: ['latin'], weight: ['400']});
+// const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default function Loading() {
 

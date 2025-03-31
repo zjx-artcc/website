@@ -9,21 +9,21 @@ import Footer from "@/components/Footer/Footer";
 import {ToastContainer} from "react-toastify";
 import ErrorCard from "@/components/Error/ErrorCard";
 import InitColorSchemeScript from "@mui/system/InitColorSchemeScript";
-import {Roboto} from "next/font/google";
+import {Poppins} from "next/font/google";
 
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
-const roboto = Roboto({
+const poppins = Poppins({
     weight: ['300', '400', '500', '700'],
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-roboto',
+    variable: '--font-poppins',
 });
 
 function GlobalError({error}: { error: Error & { digest?: string } }) {
     return (
         <html lang="en" suppressHydrationWarning>
-        <body className={roboto.variable}>
+        <body className={poppins.variable}>
         <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
                 <CssBaseline/>

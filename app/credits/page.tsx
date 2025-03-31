@@ -1,9 +1,9 @@
 import {Card, CardContent, Grid2, Stack, Typography} from "@mui/material";
 import Link from "next/link";
 import {GitHub} from "@mui/icons-material";
-import {Roboto} from "next/font/google";
+import {Poppins} from "next/font/google";
 
-const headingFont = Roboto({subsets: ['latin'], weight: ['400']});
+const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
 

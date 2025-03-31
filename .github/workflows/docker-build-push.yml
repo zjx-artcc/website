@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - next
-  workflow-dispatch:
+  workflow_dispatch:
   
 jobs:
   build-and-push:

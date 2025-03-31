@@ -3,7 +3,7 @@ import RosterTable from "@/components/Roster/RosterTable";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Home Roster | vZDC',
+    title: 'Home Roster | vZJX',
     description: 'vZDC home roster page',
 };
 

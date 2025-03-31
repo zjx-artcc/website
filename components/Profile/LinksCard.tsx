@@ -1,6 +1,6 @@
 import React from 'react';
 import {Card, CardContent, List, ListItemButton, ListItemIcon, ListItemText, Typography} from "@mui/material";
-import {AccessTime, Badge, BugReport, Feedback, Route, School, Shield} from "@mui/icons-material";
+import {AccessTime, Badge, BugReport, Route, Shield} from "@mui/icons-material";
 import Link from "next/link";
 /*
 
@@ -41,15 +41,6 @@ export default function LinksCard() {
                             <ListItemText primary="Web Systems Feedback"/>
                         </ListItemButton>
                     </Link>*/}
-                    <Link href="https://training.vzdc.org" target="_blank"
-                          style={{color: 'inherit', textDecoration: 'none',}}>
-                        <ListItemButton sx={{borderRadius: 8}}>
-                            <ListItemIcon>
-                                <School/>
-                            </ListItemIcon>
-                            <ListItemText primary="Schedule Training Session"/>
-                        </ListItemButton>
-                    </Link>
                     <Link href="/prd" target="_blank" style={{color: 'inherit', textDecoration: 'none',}}>
                         <ListItemButton sx={{borderRadius: 8}}>
                             <ListItemIcon>

@@ -11,6 +11,7 @@ import {
     Group,
     ListAlt,
     PersonAdd,
+    PlusOne,
     Radar,
     Route
 } from "@mui/icons-material";
@@ -80,6 +81,11 @@ export const NAVIGATION: NavigationButton[] = [
                     label: 'Preferred Routes Database',
                     link: '/prd',
                     icon: <Route/>,
+                },
+                {
+                    label: 'Sheetus Cheetus',
+                    link: 'https://docs.google.com/spreadsheets/d/1qCbtxKFFDbw-mgrPj1b_I71AI3aQXQN-ER0olcFCEtk/edit?gid=1029729582#gid=1029729582',
+                    icon: <PlusOne/>
                 }
             ],
         },

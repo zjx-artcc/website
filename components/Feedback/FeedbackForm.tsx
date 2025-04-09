@@ -13,57 +13,57 @@ import {checkCaptcha} from "@/lib/captcha";
 const groupedPositions = [
     {
         group: 'Center', options: [
-            'DC_32_CTR',
-            'DC_12_CTR',
-            'DC_19_CTR',
-            'DC_CTR',
+            'JAX_30_CTR',
+            'JAX_P_CTR',
+            'JAX_C_CTR',
+            'JAX_A_CTR',
+            'JAX_CTR',
         ]
     },
     {
         group: 'Approach/Departure', options:
-            ['PCT_APP',
-                'IAD_APP',
-                'DCA_APP',
-                'BWI_APP',
-                'ORF_APP',
-                'RIC_APP',
-                'RDU_APP',
-                'IAD_DEP',
-                'DCA_DEP',
-                'BWI_DEP',
-                'ORF_DEP',
-                'RIC_DEP',
-                'RDU_DEP',
+            [
+                'F11_APP',
+                'JAX_APP',
+                'MYR_APP',
+                'DAB_APP',
+                'SAV_APP',
+                'PNS_APP',
+                'TLH_APP',
+                'CHS_APP',
             ]
     },
     {
         group: 'Tower', options: [
-            'IAD_TWR',
-            'DCA_TWR',
-            'BWI_TWR',
-            'ORF_TWR',
-            'RIC_TWR',
-            'RDU_TWR',
+            'MCO_TWR',
+            'JAX_TWR',
+            'DAB_TWR',
+            'MYR_TWR',
+            'SAV_TWR',
+            'TLH_TWR',
+            'CHS_TWR',
         ]
     },
     {
         group: 'Ground', options: [
-            'IAD_GND',
-            'DCA_GND',
-            'BWI_GND',
-            'ORF_GND',
-            'RIC_GND',
-            'RDU_GND',
+            'MCO_GND',
+            'JAX_GND',
+            'DAB_GND',
+            'SAV_GND',
+            'PNS_GND',
+            'TLH_GND',
+            'CHS_GND',
         ]
     },
     {
         group: 'Delivery', options: [
-            'IAD_DEL',
-            'DCA_DEL',
-            'BWI_DEL',
-            'ORF_DEL',
-            'RIC_DEL',
-            'RDU_DEL',
+            'MCO_DEL',
+            'JAX_DEL',
+            'DAB_DEL',
+            'SAV_DEL',
+            'PNS_DEL',
+            'TLH_DEL',
+            'CHS_DEL',
         ]
     },
 ];

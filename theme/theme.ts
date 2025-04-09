@@ -30,7 +30,7 @@ const theme = createTheme({
         colorSchemeSelector: 'class',
     },
     typography: {
-        fontFamily: 'var(--font-roboto)',
+        fontFamily: 'var(--font-poppins)',
     },
     palette: {
         mode: 'dark',

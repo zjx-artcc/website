@@ -5,7 +5,7 @@ function EmailHead() {
     return (
         <MjmlHead>
             <MjmlAttributes>
-                <MjmlText font-family="Roboto, sans-serif" font-size="16px"/>
+                <MjmlText font-family="Poppins, sans-serif" font-size="16px"/>
                 <MjmlSection padding="20px 0"/>
                 <MjmlColumn padding="0"/>
             </MjmlAttributes>

@@ -9,8 +9,8 @@ import Placeholder from '@/public/img/logo_large.png';
 import { ExpandMore } from '@mui/icons-material';
 
 export const metadata: Metadata = {
-    title: 'Events | vZDC',
-    description: 'vZDC charts page',
+    title: 'Events | vZJX',
+    description: 'vZJX Event',
 };
 
 export default async function Page() {

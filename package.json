@@ -20,7 +20,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@faire/mjml-react": "^3.4.0",
-    "@fontsource/roboto": "^5.1.0",
+    "@fontsource/poppins": "^5.1.0",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",

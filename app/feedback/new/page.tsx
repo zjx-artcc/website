@@ -8,8 +8,8 @@ import ErrorCard from "@/components/Error/ErrorCard";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Feedback | vZDC',
-    description: 'vZDC feedback page',
+    title: 'Feedback | vZJX',
+    description: 'vZJX feedback page',
 };
 
 export default async function Page() {

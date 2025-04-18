@@ -8,6 +8,7 @@ import {log} from "@/actions/log";
 import {sendNewFeedbackEmail} from "@/actions/mail/feedback";
 import {User} from "next-auth";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
+import { sendDiscordEmbed } from "./discord";
 
 const operatorMapping: { [key: string]: keyof Prisma.IntFilter } = {
     '=': 'equals',
@@ -84,6 +85,7 @@ export const releaseFeedback = async (feedback: Feedback) => {
         },
     });
 
+    await sendDiscordEmbed(releasedFeedback.controller as User, releasedFeedback)
     await sendNewFeedbackEmail(releasedFeedback.controller as User, releasedFeedback);
 
     await log("UPDATE", "FEEDBACK", `Released feedback for ${releasedFeedback.controller.firstName} ${releasedFeedback.controller.lastName} (${releasedFeedback.controller.cid})`);

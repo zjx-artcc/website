@@ -90,7 +90,7 @@ export default async function Home() {
                 }}>
                 <Card sx={{height: 600,}}>
                     <CardContent>
-                        <Typography {...headingFont.style} variant="h5" sx={{mb: 1,}}>Upcoming Events</Typography>
+                        <Typography {...headingFont.style} variant="h5" sx={{mb: 1}}>Upcoming Events</Typography>
                         <UpcomingEventsCarousel events={upcomingEvents} imageUrls={imageUrls}/>
                     </CardContent>
                 </Card>

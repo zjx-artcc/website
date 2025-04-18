@@ -1,6 +1,7 @@
 # syntax=docker.io/docker/dockerfile:1
 
 FROM node:22.4.1-alpine AS base
+FROM python:latest
 
 # Install dependencies only when needed
 FROM base AS deps

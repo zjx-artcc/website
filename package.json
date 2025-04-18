@@ -16,6 +16,7 @@
   "dependencies": {
     "@auth/core": "^0.37.4",
     "@auth/prisma-adapter": "^2.7.4",
+    "@discordeno/types": "^21.0.0",
     "@emotion/cache": "^11.13.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -39,6 +40,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "discord.js": "^14.18.0",
+    "discordeno": "^21.0.0",
     "mjml": "^4.15.3",
     "next": "^15.1.7",
     "next-auth": "^4.24.10",

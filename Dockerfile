@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
 RUN npm i -g pnpm --legacy-peer-deps
 
-RUN pnpm install --strict-peer-deps
+RUN pnpm install --strict-peer-dependencies
 
 
 # Rebuild the source code only when needed

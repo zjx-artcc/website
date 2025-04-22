@@ -31,7 +31,7 @@ RUN npx prisma migrate deploy
 
 RUN npx prisma generate
 
-RUN npm run build
+RUN npx pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner

@@ -6,7 +6,7 @@ import {User} from "next-auth";
 export const removeVatusaController = async (staffUser: User, cid: string, visitor?: boolean) => {
 
     let purgeObj: { [key: string]: string | number } = {
-        'reason': `Removed by ${staffUser.fullName} via ZDC Dashboard Roster Purge on ${new Date().toISOString()}`,
+        'reason': `Removed by ${staffUser.fullName} via ZJX Dashboard Roster Purge on ${new Date().toISOString()}`,
         'by': Number(staffUser.cid),
     };
 

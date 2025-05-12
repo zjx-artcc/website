@@ -16,8 +16,8 @@ import {PreferredRoute} from "@/types";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'PRD | vZDC',
-    description: 'vZDC preferred route page',
+    title: 'PRD | ZJX ARTCC',
+    description: 'ZJX ARTCC preferred route page',
 };
 
 export default async function Page(

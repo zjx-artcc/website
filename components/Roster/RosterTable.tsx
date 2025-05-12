@@ -8,7 +8,7 @@ import {getChips} from "@/lib/staffPositions";
 import Link from "next/link";
 import {LOA} from "@prisma/client";
 
-const VATUSA_FACILITY = process.env.VATUSA_FACILITY || 'ZDC';
+const VATUSA_FACILITY = process.env.VATUSA_FACILITY || 'ZJX';
 
 export default async function RosterTable({membership, search, includeVatusa,}: {
     membership: 'home' | 'visit' | 'both',

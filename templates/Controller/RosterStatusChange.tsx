@@ -7,11 +7,11 @@ export const rosterStatusChange = (controller: User, reason?: string) => {
         <SingleRecipientEmailWrapper recipient={controller} headerText="Roster Status Change">
             <p>Your roster status has been update to <strong>{controller.controllerStatus}</strong></p>
             {reason && <p>Reason: {reason}</p>}
-            <p>If you believe this is an error, contact the vZDC staff immediately.</p>
+            <p>If you believe this is an error, contact the vZJX ARTCC staff immediately.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Staff</p>
-            <p>staff@vzdc.org</p>
+            <p>The vZJX ARTCC Staff</p>
+            <p>staff@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
 }

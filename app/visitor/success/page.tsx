@@ -4,8 +4,8 @@ import {CheckCircle} from "@mui/icons-material";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Visitor Request Success | vZDC',
-    description: 'vZDC visitor request page',
+    title: 'Visitor Request Success | vZJX',
+    description: 'vZJX visitor request page',
 };
 
 export default function Page() {

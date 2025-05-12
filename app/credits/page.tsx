@@ -14,7 +14,7 @@ export default async function Home() {
                     <CardContent>
                         <Typography variant="h3">Credit Information</Typography>
                         <Typography variant="body2">Full Commit History can be found on <Link
-                            href="https://github.com/vZDC-ARTCC/website" target="_blank"
+                            href="https://github.com/zjx-artcc/website" target="_blank"
                             style={{color: '#29B6F6', textDecoration: 'none',}}>our public GitHub.</Link></Typography>
                     </CardContent>
                 </Card>

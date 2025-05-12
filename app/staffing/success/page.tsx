@@ -3,8 +3,8 @@ import {Card, CardContent, Container, Stack, Typography} from "@mui/material";
 import {CheckCircle} from "@mui/icons-material";
 import {Metadata} from "next";
 export const metadata: Metadata = {
-    title: 'Staffing Request Success | vZDC',
-    description: 'vZDC staffing request success page',
+    title: 'Staffing Request Success | ZJX ARTCC',
+    description: 'ZJX ARTCC staffing request success page',
 };
 
 export default function Page() {

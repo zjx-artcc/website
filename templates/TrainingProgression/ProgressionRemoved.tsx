@@ -15,7 +15,7 @@ export const progressionRemoved = async (student: User) => {
             <p>If you have any questions, contact the training team.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Training Team</p>
+            <p>The ZJX ARTCC Training Team</p>
             <p>training@vzdc.org</p>
         </SingleRecipientEmailWrapper>
     )

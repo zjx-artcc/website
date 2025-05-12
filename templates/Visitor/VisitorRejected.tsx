@@ -9,11 +9,11 @@ export const visitorRejected = (user: User, application: VisitorApplication) => 
             <p>Unfortunately, you have not been approved to visit vZJX.</p>
             {application.reasonForDenial && <p>Reason for denial: {application.reasonForDenial}</p>}
             <br/>
-            <p>If you believe that this was an error, contact vZJX staff.</p>
+            <p>If you believe that this was an error, contact vZJX ARTCC staff.</p>
             <br/>
             <p>Regards,</p>
-            <p>The vZDC Staff</p>
-            <p>staff@vzdc.org</p>
+            <p>The vZJX ARTCC Staff</p>
+            <p>staff@zjxartcc.org</p>
         </SingleRecipientEmailWrapper>
     )
 }

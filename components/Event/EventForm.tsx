@@ -82,7 +82,7 @@ export default function EventForm({ event }: { event?: Event, }) {
         [event?.archived, event?.id, name, start, end, type, description, bannerUrl, featuredFields]
     );
 
-    const handleSubmit = async (formData: FormData) => {
+    const handleSubmit = async (formData: FormData): Promise<any> => {
 
         formData.set('name', name);
         formData.set('start', start?.toISOString() || '');

@@ -16,8 +16,8 @@ import {getRating} from "@/lib/vatsim";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Staff | vZJX',
-    description: 'vZJX staff page, get to know vZJX Staff!',
+    title: 'Staff | vZJX ARTCC',
+    description: 'vZJX ARTCC staff page, get to know vZJX Staff!',
 };
 
 const VATUSA_FACILITY = process.env.VATUSA_FACILITY;

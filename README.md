@@ -1,6 +1,6 @@
-# vZDC Website
+# vZJX Website
 ---
-The Virtual Washington ARTCC Website.
+The Virtual Jacksonville ARTCC Website.
 
 >[!WARNING]  
 > This repo and readme are still under development!

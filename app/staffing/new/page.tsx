@@ -6,8 +6,8 @@ import StaffingRequestFormWrapper from "@/components/StaffingRequest/StaffingReq
 import ErrorCard from "@/components/Error/ErrorCard";
 import {Metadata} from "next";
 export const metadata: Metadata = {
-    title: 'Request Staffing | vZDC',
-    description: 'vZDC staffing request page',
+    title: 'Request Staffing | ZJX ARTCC',
+    description: 'ZJX ARTCC staffing request page',
 };
 
 export default async function Page() {

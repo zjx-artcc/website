@@ -7,7 +7,7 @@ export const loaExpired = (controller: User) => {
         <SingleRecipientEmailWrapper recipient={controller} headerText="L.O.A. Expired">
             <p>Hello {controller.firstName} {controller.lastName},</p>
             <p>Your L.O.A. has expired.</p>
-            <p>You are now <strong>required</strong> to control at least minimum hours outlined in vZDC, VATUSA, and
+            <p>You are now <strong>required</strong> to control at least minimum hours outlined in ZJX, VATUSA, and
                 VATSIM policies.</p>
             <p>Feel free to submit a new L.O.A. request at any time on your <a
                 href={`https://zjxartcc.org/profile/overview`}>profile page</a>.</p>

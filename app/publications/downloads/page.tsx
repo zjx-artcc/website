@@ -5,8 +5,8 @@ import FileTable from "@/components/Files/FileTable";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Downloads | vZJX',
-    description: 'vZDC downloads page',
+    title: 'Downloads | ZJX ARTCC',
+    description: 'ZJX ARTCC downloads page',
 };
 
 export default async function Page() {

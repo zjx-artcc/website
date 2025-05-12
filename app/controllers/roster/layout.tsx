@@ -5,7 +5,7 @@ import RosterTabs from "@/components/Roster/RosterTabs";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Roster | vZJX',
+    title: 'Roster | vZJX ARTCC',
     description: 'vZJX roster page',
 };
 

@@ -4,8 +4,8 @@ import {Card, CardContent, Container, Stack, Typography} from "@mui/material";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Charts | vZJX',
-    description: 'vZJX charts page',
+    title: 'Charts | vZJX ARTCC',
+    description: 'vZJX ARTCC charts page',
 };
 
 

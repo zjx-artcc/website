@@ -214,7 +214,7 @@ export async function createOrUpdateTrainingSession(
 
         await log("UPDATE", "TRAINING_SESSION", `Updated training session with student ${trainingSession.student.cid} - ${trainingSession.student.firstName} ${trainingSession.student.lastName}`);
 
-        const updateStatus = await editVatusaTrainingSession(session.user.cid, start, trainingSession.tickets.map((tt) => tt.lesson.position).join(','), getDuration(trainingSession.start, trainingSession.end), `${ticketComment}\n\nRefer to your training ticket in the vZDC website to see the scoring rubric.`, getOtsStatus(trainingSession.tickets), trainingSession.vatusaId || '');
+        const updateStatus = await editVatusaTrainingSession(session.user.cid, start, trainingSession.tickets.map((tt) => tt.lesson.position).join(','), getDuration(trainingSession.start, trainingSession.end), `${ticketComment}\n\nRefer to your training ticket in the ZJX ARTCC website to see the scoring rubric.`, getOtsStatus(trainingSession.tickets), trainingSession.vatusaId || '');
 
         if (updateStatus !== 'OK') {
             await log("CREATE", "TRAINING_SESSION", `An error occurred when trying to save training ticket.`)
@@ -311,7 +311,7 @@ export async function createOrUpdateTrainingSession(
 
         await log("CREATE", "TRAINING_SESSION", `Created training session with student ${trainingSession.student.cid} - ${trainingSession.student.firstName} ${trainingSession.student.lastName}`);
 
-        const vatusaId = await createVatusaTrainingSession(trainingSession.tickets[0].lesson.location, trainingSession.student.cid, session.user.cid, start, trainingSession.tickets[0].lesson.position, getDuration(trainingSession.start, trainingSession.end), `${ticketComment}\n\nRefer to your training ticket in the vZDC website to see the scoring rubric.`, getOtsStatus(trainingSession.tickets));
+        const vatusaId = await createVatusaTrainingSession(trainingSession.tickets[0].lesson.location, trainingSession.student.cid, session.user.cid, start, trainingSession.tickets[0].lesson.position, getDuration(trainingSession.start, trainingSession.end), `${ticketComment}\n\nRefer to your training ticket in the vZJX website to see the scoring rubric.`, getOtsStatus(trainingSession.tickets));
 
         await prisma.trainingSession.update({
             where: {id: trainingSession.id},

@@ -104,13 +104,14 @@ export async function createOrUpdateTrainingSession(
         },
     });
 
+    /*
     if (fetchedPi && (!performanceIndicator || !performanceIndicator.categories.every((category) => category.criteria.every((criteria) => !!criteria.marker)))) {
         return {
             errors: [{
                 message: "You must fill out ALL the performance indicators to submit this ticket."
             }]
         };
-    }
+    }*/
 
     const session = await getServerSession(authOptions);
 

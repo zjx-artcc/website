@@ -22,7 +22,7 @@ export default async function Navbar() {
             <BackgroundImage/>
             <AppBar position='sticky' color="secondary" sx={{borderBottom: 2, borderBottomColor: 'secondary'}}>
                 
-                <Toolbar >
+                <Toolbar style={{backgroundColor: '#0080c2'}}>
                     <Stack direction="row" spacing={2} alignItems="center">
                         <RootSidebar session={session}/>
                         <Box sx={{display: {xs: 'none', xl: 'flex',},}}>

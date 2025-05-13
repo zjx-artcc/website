@@ -9,7 +9,7 @@ const SplitViewer: React.FC = () => {
     return (
         <div className="w-full h-full border-5">
             <Typography variant="h5">Active Center Split</Typography>
-            <Map/>
+            <Map split='high'/>
         </div>
     )
 }

@@ -8,30 +8,38 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
 import RootSidebar from "@/components/Sidebar/RootSidebar";
 import AppPickerMenu from "@/components/AppPicker/AppPickerMenu";
+import Image from 'next/image';
+import bg from "@/public/img/home-bg.jpg";
+import { width } from '@mui/system';
+import BackgroundImage from '../Hero/BackgroundImage';
 
 export default async function Navbar() {
 
     const session = await getServerSession(authOptions);
 
     return (
-        <AppBar position="sticky" color="secondary">
-            <Toolbar>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <RootSidebar session={session}/>
-                    <Logo/>
-                    <Box sx={{display: {xs: 'none', xl: 'flex',},}}>
-                        <NavButtons/>
+        <>
+            <BackgroundImage/>
+            <AppBar position='sticky' color="secondary" sx={{borderBottom: 2, borderBottomColor: 'secondary'}}>
+                
+                <Toolbar >
+                    <Stack direction="row" spacing={2} alignItems="center">
+                        <RootSidebar session={session}/>
+                        <Box sx={{display: {xs: 'none', xl: 'flex',},}}>
+                            <NavButtons/>
+                        </Box>
+                    </Stack>
+                    <span style={{flexGrow: 1,}}></span>
+                    <Box>
+                        <ColorModeSwitcher/>
+                        <AppPickerMenu/>
+                        <Box sx={{display: {xs: 'none', sm: 'inline-block',},}}>
+                            <LoginButton session={session}/>
+                        </Box>
                     </Box>
-                </Stack>
-                <span style={{flexGrow: 1,}}></span>
-                <Box>
-                    <ColorModeSwitcher/>
-                    <AppPickerMenu/>
-                    <Box sx={{display: {xs: 'none', sm: 'inline-block',},}}>
-                        <LoginButton session={session}/>
-                    </Box>
-                </Box>
-            </Toolbar>
-        </AppBar>
+                </Toolbar>
+            </AppBar>
+        </>
+        
     );
 }

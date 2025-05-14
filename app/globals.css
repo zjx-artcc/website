@@ -1,4 +1,5 @@
 /* For light mode */
+@import "tailwindcss";
 
 ::-webkit-scrollbar {
     width: 8px;

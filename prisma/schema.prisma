@@ -788,6 +788,12 @@ model TrainingSessionPerformanceIndicatorCriteria {
   categoryId String
 }
 
+model CenterSectors {
+  sectorId Int @id
+  sectorName String
+  activeCenterName String
+}
+
 enum PerformanceIndicatorMarker {
   OBSERVED
   NOT_OBSERVED

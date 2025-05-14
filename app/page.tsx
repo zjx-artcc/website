@@ -7,14 +7,14 @@ import {getRating} from "@/lib/vatsim";
 import Link from "next/link";
 import {StackedLineChart,} from "@mui/icons-material";
 import {getTop3Controllers} from "@/lib/hours";
-import HeaderText from "@/components/Hero/HeaderText";
-import BackgroundImage from "@/components/Hero/BackgroundImage";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
 import SplitViewer from '@/components/CenterSplit/SplitViewer'
+import { getSession } from "next-auth/react";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
+    const session = await getSession()
 
     const upcomingEvents = await prisma.event.findMany({
         where: {
@@ -190,7 +190,7 @@ export default async function Home() {
             </Grid2>
             <Card sx={{minHeight: 600, width: '100%'}}>
                 <CardContent>
-                    <SplitViewer/>
+                    <SplitViewer canEdit/>
                 </CardContent>
             </Card>
         </Grid2>)

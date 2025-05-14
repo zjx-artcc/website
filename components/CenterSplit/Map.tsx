@@ -12,15 +12,17 @@ const Map: React.FC<Props> = ({split}: Props) => {
         
     }
     return (
-        <MapContainer center={[31, -82.233]} zoom={6} style={{height: 600, width: '100%'}}>
-            <TileLayer
-            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='OpenStreetMap'
-            />
-            <AttributionControl/>
+        <div>
+            <MapContainer center={[31, -82.233]} zoom={6} style={{height: 600, width: '100%'}}>
+                <TileLayer
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='OpenStreetMap'
+                />
+                <AttributionControl/>
 
-            <GeoJsonPolygons split={split}/>
-        </MapContainer>
+                <GeoJsonPolygons split={split}/>
+            </MapContainer>
+        </div>
     )
 }
 

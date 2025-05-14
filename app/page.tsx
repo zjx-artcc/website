@@ -10,11 +10,14 @@ import {getTop3Controllers} from "@/lib/hours";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
 import SplitViewer from '@/components/CenterSplit/SplitViewer'
 import { getSession } from "next-auth/react";
+import { getSplitData } from "@/actions/centerSplit";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
     const session = await getSession()
+
+    const splitData = await getSplitData()
 
     const upcomingEvents = await prisma.event.findMany({
         where: {
@@ -190,7 +193,7 @@ export default async function Home() {
             </Grid2>
             <Card sx={{minHeight: 600, width: '100%'}}>
                 <CardContent>
-                    <SplitViewer canEdit/>
+                    <SplitViewer canEdit sectorData={splitData}/>
                 </CardContent>
             </Card>
         </Grid2>)

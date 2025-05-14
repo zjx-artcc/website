@@ -4,13 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import { Feature, GeoJsonObject, Geometry } from 'geojson'
 import { LatLngExpression, Layer } from 'leaflet'
 import GeoJsonPolygons from './GeoJsonPolygons'
+import { CenterSectors } from '@prisma/client'
+import { SplitSector } from '@/types/centerSplit.type'
 
-const Map: React.FC<Props> = ({split}: Props) => {
-    const mapGeoData = (feature: Feature<Geometry, any>, layer: Layer) => {
-        layer.bindPopup(feature.id ? feature.id.toString() : 'none')
-        feature.properties.color = 'green'
-        
-    }
+const Map: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: Props) => {
+
     return (
         <div>
             <MapContainer center={[31, -82.233]} zoom={6} style={{height: 600, width: '100%'}}>
@@ -20,7 +18,7 @@ const Map: React.FC<Props> = ({split}: Props) => {
                 />
                 <AttributionControl/>
 
-                <GeoJsonPolygons split={split}/>
+                <GeoJsonPolygons split={split} sectorData={sectorData} editMode={editMode} onChange={onChange} colors={colors}/>
             </MapContainer>
         </div>
     )
@@ -30,4 +28,8 @@ export default Map
 
 interface Props {
     split: 'high' | 'low'
+    editMode: boolean
+    onChange: (sectorId: number) => void
+    sectorData: CenterSectors[]
+    colors: string[]
 }

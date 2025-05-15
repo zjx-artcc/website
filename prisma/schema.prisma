@@ -790,8 +790,7 @@ model TrainingSessionPerformanceIndicatorCriteria {
 
 model CenterSectors {
   sectorId Int @id
-  sectorName String
-  activeCenterName String
+  activeSectorId Int?
 }
 
 enum PerformanceIndicatorMarker {

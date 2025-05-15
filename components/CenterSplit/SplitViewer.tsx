@@ -3,7 +3,7 @@ import { SplitSector } from "@/types/centerSplit.type"
 import { Typography } from "@mui/material"
 import { CenterSectors } from "@prisma/client"
 import dynamic from "next/dynamic"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import SectorSelector from "./SectorSelector"
 
 const Map = dynamic(() => import('./Map'), {ssr: false})
@@ -13,30 +13,36 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
     const [editMode, setEditMode] = useState<boolean>(false)
     const [localSectorData, setLocalSectorData] = useState<CenterSectors[]>([])
     const [selectedSector, setSelectedSector] = useState<number>(-1)
-    const [sectorColors, setSectorColors] = useState<string[]>([])
+    const [sectorColors, setSectorColors] = useState<number[]>([])
 
     const onSectorEdit = (sectorId: number) => {
         const copy = [...localSectorData]
-
+        
+    }
+    
+    const onSectorSelect = (sectorId: number) => {
+        setSelectedSector(sectorId)
     }
 
     useEffect(() => {
         setLocalSectorData(sectorData)
     })
-    
-    useEffect(() => {
-        let uniqueSectors: string[] = []
 
-        if (sectorData) {
-            sectorData.map((data) => {
-                if (uniqueSectors.indexOf(data.activeCenterName) == -1) {
-                    setSectorColors([...sectorColors, data.activeCenterName])
-                }
-            })
+    useMemo(() => {
+        // adds unique sectors to an array for coloring each sector into the SplitSelector and GeoJSON components
+        if (localSectorData) {
+            const uniqueColors = Array.from(
+                new Set(
+                    localSectorData
+                        .filter(data => data.activeSectorId)
+                        .map(data => data.activeSectorId)
+                )
+            );
+            setSectorColors(uniqueColors as number[]);
         } else {
-            setSectorColors([])
+            setSectorColors([]);
         }
-    }, [sectorData])
+    }, [localSectorData])
 
     return (
         <div className="w-full h-full">
@@ -56,9 +62,12 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
                 
 
             <Map split={split} sectorData={localSectorData} editMode={editMode} onChange={onSectorEdit} colors={sectorColors}/>
-
-            {canEdit ? <button className='p-2 bg-sky-500 mt-2' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
-            <SectorSelector sectorData={localSectorData} onChange={() => console.log('hi')}/>
+            
+            <div className='flex flex-col gap-y-2 mt-5'>
+                {editMode ? 'Select a sector to edit' : ''}
+                <SectorSelector colors={sectorColors} editMode={editMode} onChange={() => console.log('hi')}/>
+                {canEdit && !editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
+            </div>
         </div>
     )
 }

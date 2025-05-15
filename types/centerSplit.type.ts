@@ -1,4 +1,4 @@
 export type SplitSector = {
-    vatsimSectorName: string
+    activeSectorId: number
     ownedSectors: number[]
 }

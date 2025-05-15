@@ -1,25 +1,26 @@
 import { CenterSectors } from "@prisma/client"
 import { useEffect, useState } from "react"
+import { getActiveSectorId, getColor, getSectorColor } from "@/lib/sector"
 
-const SectorSelector: React.FC<Props> = ({sectorData, onChange}: Props) => {
-
-    
-
+const SectorSelector: React.FC<Props> = ({colors, editMode, onChange}: Props) => {
+    useEffect(() => {
+        colors.map((e) => console.log(e))
+    })
     return (
         <div>
-            <SectorMap sectors={sectorData}/>
+            <SectorMap colors={colors} editMode={editMode} onChange={onChange}/>
         </div>
     )
 }
 
-const SectorMap = ({sectors}: {sectors: CenterSectors[]}) => {
+const SectorMap = ({colors, editMode, onChange}: Props) => {
     const List: React.ReactElement[] = []
 
-    if (sectors.length > 0) {
-        sectors.map((data) => {
+    if (colors.length > 0) {
+        colors.map((data, i) => {
             List.push(
-                <button key={data.activeCenterName}>
-                    {data.activeCenterName}
+                <button disabled={!editMode} className={`p-2 rounded-md hover:border-2 transition`} style={{backgroundColor: getColor(i)}} key={data} onClick={() => onChange(data)}>
+                    ZJX Sector {data}
                 </button>
             )   
         })   
@@ -32,15 +33,16 @@ const SectorMap = ({sectors}: {sectors: CenterSectors[]}) => {
     }
 
     return (
-        <>
+        <div className='flex flex-row gap-x-2'>
             {List}
-        </>
+        </div>
     )
 }
 
 export default SectorSelector
 
 interface Props {
-    sectorData: CenterSectors[]
     onChange: (sectorId: number) => void
+    editMode: boolean
+    colors: number[]
 }

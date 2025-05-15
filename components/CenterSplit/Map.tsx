@@ -31,5 +31,5 @@ interface Props {
     editMode: boolean
     onChange: (sectorId: number) => void
     sectorData: CenterSectors[]
-    colors: string[]
+    colors: number[]
 }

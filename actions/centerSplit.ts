@@ -5,20 +5,20 @@ import { SplitSector } from "@/types/centerSplit.type"
 import { CenterSectors } from "@prisma/client"
 
 export const getSplitData = async(): Promise<CenterSectors[]> => {
-    return await prisma.centerSectors.findMany({orderBy: {activeCenterName: 'asc'}})
+    return await prisma.centerSectors.findMany({orderBy: {sectorId: 'asc'}})
     const sectors: CenterSectors[] = await prisma.centerSectors.findMany({
         orderBy: {
-            activeCenterName: 'desc'
+            sectorId: 'asc'
         }
     })
+
     const parsedSectors: SplitSector[] = []
 
     sectors.map((data) => {
-        console.log(parsedSectors)
-        if (parsedSectors.length == 0 || parsedSectors[parsedSectors.length - 1].vatsimSectorName != data.activeCenterName) {
+        if (data.activeSectorId && !parsedSectors[data.activeSectorId]) {
             parsedSectors.push({
-                vatsimSectorName: data.activeCenterName,
-                ownedSectors: []
+                activeSectorId: data.activeSectorId,
+                ownedSectors: [data.sectorId]
             })
         }
 

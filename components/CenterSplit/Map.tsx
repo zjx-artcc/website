@@ -5,12 +5,13 @@ import { Feature, GeoJsonObject, Geometry } from 'geojson'
 import { LatLngExpression, Layer } from 'leaflet'
 import GeoJsonPolygons from './GeoJsonPolygons'
 import { CenterSectors } from '@prisma/client'
-import { SplitSector } from '@/types/centerSplit.type'
+import { SectorData } from '@/types/centerSplit.type'
 
 const Map: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: Props) => {
 
     return (
         <div>
+            <h2>{editMode ? 'edit' : 'no edit'}</h2>
             <MapContainer center={[31, -82.233]} zoom={6} style={{height: 600, width: '100%'}}>
                 <TileLayer
                 url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -30,6 +31,6 @@ interface Props {
     split: 'high' | 'low'
     editMode: boolean
     onChange: (sectorId: number) => void
-    sectorData: CenterSectors[]
+    sectorData: Map<number, SectorData>
     colors: number[]
 }

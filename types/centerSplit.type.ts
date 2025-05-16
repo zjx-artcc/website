@@ -1,4 +1,3 @@
-export type SplitSector = {
-    activeSectorId: number
-    ownedSectors: number[]
+export interface SectorData {
+    activeSectorId: number | undefined
 }

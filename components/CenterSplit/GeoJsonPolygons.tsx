@@ -1,19 +1,26 @@
 'use client'
 import high from '@/public/geojson/high.json'
 import low from '@/public/geojson/low.json'
-import { JSX, useEffect, useMemo, useState } from "react"
+import { JSX, useEffect, useMemo, useState, useRef } from "react"
 import { GeoJSON } from "react-leaflet"
 import { Feature, FeatureCollection, GeoJsonObject, Geometry } from "geojson"
 import { Layer } from "leaflet"
-import { CenterSectors } from '@prisma/client'
 import { getActiveSectorId, getSectorColor } from '@/lib/sector'
+import { SectorData } from '@/types/centerSplit.type'
 
 const GeoJsonPolygons: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: Props) => {
-    const MappedPolygons: JSX.Element[] = []
     const [splitData, setSplitData] = useState<FeatureCollection | undefined>(undefined)
-    const [uniqueSectors, setUniqueSectors] = useState<string[]>([])
+    const [localColors, setLocalColors] = useState<Map<number, string>>(new Map())
 
-    useMemo(() => {
+    const editModeRef = useRef(editMode)
+    useEffect(() => {
+        editModeRef.current = editMode
+        console.log(editModeRef.current)
+    }, [editMode])
+
+    const MappedPolygons: JSX.Element[] = []
+
+    useEffect(() => {
         if (split == 'high') {
             setSplitData(high as FeatureCollection)
         }
@@ -23,35 +30,40 @@ const GeoJsonPolygons: React.FC<Props> = ({split, editMode, onChange, sectorData
     }, [split])
 
     useEffect(() => {
+        const newColors = new Map(localColors)
 
-    })
-    
+        for (let sector of sectorData) {
+            newColors.set(sector[0], getSectorColor(colors, sector[1].activeSectorId))
+        }
+
+        setLocalColors(newColors)
+    }, [colors, sectorData])
 
     const setMapData = (feature: Feature<Geometry, any>, layer: Layer) => {
         layer.addEventListener('click', (e: L.LeafletEvent) => {
-            if (editMode) {
-                layer.addEventListener('click', () => {
-                    onChange(feature.properties.id)
-                })
+            if (editModeRef.current) {
+                console.log('click event 2')
+                
+                onChange(feature.properties.id)
             }
         })
        //layer.bindPopup((feature.properties.id ? feature.properties.id.toString() : 'none') + (feature.properties.sector_name ? feature.properties.sector_name : ''))
     }
-
+        
     splitData?.features.map((f) => {
         if (f.geometry.type === "Polygon" && f.properties?.id && f.properties.id < 100) {
-            const activeSectorId = getActiveSectorId(sectorData, f.properties?.id)
-            console.log(`A: ${activeSectorId} S: ${f.properties?.id}`)
+            const activeSectorId = sectorData.get(f.properties.id)?.activeSectorId
 
             MappedPolygons.push(
-                <GeoJSON data={f as GeoJsonObject} key={f.properties?.id} style={{color: getSectorColor(colors, activeSectorId)}} onEachFeature={setMapData}>
-
-                </GeoJSON>
+                <GeoJSON data={f as GeoJsonObject} key={f.properties?.id} style={{color: localColors.get(f.properties.id) || 'gray'}} onEachFeature={setMapData}/>
+            )
+        } else {
+            MappedPolygons.push(
+                <GeoJSON data={f as GeoJsonObject} key={f.properties?.id} style={{color: 'gray'}}/>
             )
         }
     })
-    
-        console.log(MappedPolygons.length)
+
     return (
         <>
             {MappedPolygons}
@@ -65,6 +77,6 @@ interface Props {
     split: 'high' | 'low'
     editMode: boolean
     onChange: (sectorId: number) => void
-    sectorData: CenterSectors[]
+    sectorData: Map<number, SectorData>
     colors: number[]
 }

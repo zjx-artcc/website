@@ -6,33 +6,33 @@ import dynamic from "next/dynamic"
 import { useEffect, useMemo, useRef, useState } from "react"
 import SectorSelector from "./SectorSelector"
 import { parseInitialSectorData, updateSector } from "@/lib/sector"
+import { useActiveSectors, useCenterSplitActions, useSectorData } from "@/lib/centerSplit"
 
 const MapComponent = dynamic(() => import('./Map'), {ssr: false})
 
 const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
+    const localSectorData = useSectorData()
+    const availableSectors = useActiveSectors()
+    const {updateSectorData, updateActiveSectors} = useCenterSplitActions()
+
     const [split, setSplit] = useState<'high' | 'low'>('high')
     const [editMode, setEditMode] = useState<boolean>(false)
-    const [localSectorData, setLocalSectorData] = useState<Map<number, SectorData>>(new Map())
-    const [availableSectors, setAvailableSectors] = useState<number[]>([])
     const selectedSector = useRef<number | undefined>(undefined)
 
     const onSectorEdit = (sectorId: number) => {
-        console.log('func call')
         const newData = updateSector(localSectorData, availableSectors, sectorId, selectedSector.current)
-        setLocalSectorData(newData)
-        console.log('state updated')
+        updateSectorData(newData)
 
     }
     
     const onSectorSelect = (sectorId: number) => {
-        console.log('sector select - ' + sectorId)
         selectedSector.current = sectorId
     }
 
     useEffect(() => {
         const {newData, availableSectors} = parseInitialSectorData(sectorData)
-        setLocalSectorData(newData)
-        setAvailableSectors(availableSectors)
+        updateSectorData(newData)
+        updateActiveSectors(availableSectors)
     }, [])
 
     return (

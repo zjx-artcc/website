@@ -5,6 +5,7 @@ import { CenterSectors } from "@prisma/client"
 import dynamic from "next/dynamic"
 import { useEffect, useMemo, useRef, useState } from "react"
 import SectorSelector from "./SectorSelector"
+import { parseInitialSectorData, updateSector } from "@/lib/sector"
 
 const MapComponent = dynamic(() => import('./Map'), {ssr: false})
 
@@ -12,21 +13,15 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
     const [split, setSplit] = useState<'high' | 'low'>('high')
     const [editMode, setEditMode] = useState<boolean>(false)
     const [localSectorData, setLocalSectorData] = useState<Map<number, SectorData>>(new Map())
+    const [availableSectors, setAvailableSectors] = useState<number[]>([])
     const selectedSector = useRef<number | undefined>(undefined)
-    const [sectorColors, setSectorColors] = useState<number[]>([])
 
     const onSectorEdit = (sectorId: number) => {
-        const copy = new Map(Array.from(localSectorData))
-        
-        if (selectedSector.current) {
-            copy.set(sectorId, {
-                activeSectorId: selectedSector.current
-            })
-        }
+        console.log('func call')
+        const newData = updateSector(localSectorData, availableSectors, sectorId, selectedSector.current)
+        setLocalSectorData(newData)
+        console.log('state updated')
 
-        setLocalSectorData(copy)
-        console.log(sectorId)
-        console.log(localSectorData.get(sectorId)?.activeSectorId)
     }
     
     const onSectorSelect = (sectorId: number) => {
@@ -34,37 +29,11 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
         selectedSector.current = sectorId
     }
 
-    useMemo(() => {
-        console.log('memo')
-        const newMap = new Map(localSectorData)
-
-        sectorData.map((data) => {
-            newMap.set(data.sectorId, {
-                activeSectorId: data.activeSectorId || undefined
-            })
-        })
-
-        setLocalSectorData(newMap)
+    useEffect(() => {
+        const {newData, availableSectors} = parseInitialSectorData(sectorData)
+        setLocalSectorData(newData)
+        setAvailableSectors(availableSectors)
     }, [])
-
-    useMemo(() => {
-        console.log('memo - colors')
-
-        // adds unique sectors to an array for coloring each sector into the SplitSelector and GeoJSON components
-        if (localSectorData) {
-            const activeSectors: number[] = []
-
-            localSectorData.forEach((data, sectorId) => {
-                if (data.activeSectorId && activeSectors.indexOf(data.activeSectorId) == -1) {
-                    activeSectors.push(data.activeSectorId)
-                }
-            })
-
-            setSectorColors(activeSectors)
-        } else {
-            setSectorColors([]);
-        }
-    }, [sectorData])
 
     return (
         <div className="w-full h-full">
@@ -83,11 +52,11 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
             </div>
                 
 
-            <MapComponent split={split} sectorData={localSectorData} editMode={editMode} onChange={onSectorEdit} colors={sectorColors}/>
+            <MapComponent split={split} sectorData={localSectorData} editMode={editMode} onChange={onSectorEdit} colors={availableSectors}/>
             
             <div className='flex flex-col gap-y-2 mt-5'>
                 {editMode ? 'Select a sector to edit' : ''}
-                <SectorSelector colors={sectorColors} editMode={editMode} onChange={onSectorSelect}/>
+                <SectorSelector colors={availableSectors} editMode={editMode} onChange={onSectorSelect}/>
                 {canEdit && !editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
             </div>
         </div>

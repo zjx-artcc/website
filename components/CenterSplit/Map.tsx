@@ -8,7 +8,6 @@ import { CenterSectors } from '@prisma/client'
 import { SectorData } from '@/types/centerSplit.type'
 
 const Map: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: Props) => {
-
     return (
         <div>
             <h2>{editMode ? 'edit' : 'no edit'}</h2>
@@ -17,7 +16,6 @@ const Map: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: P
                 url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='OpenStreetMap'
                 />
-                <AttributionControl/>
 
                 <GeoJsonPolygons split={split} sectorData={sectorData} editMode={editMode} onChange={onChange} colors={colors}/>
             </MapContainer>

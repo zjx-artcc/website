@@ -24,8 +24,7 @@ const GeoObject: React.FC<Props> = ({featureData, sectorId, onChange}: Props) =>
         layer.addEventListener('click', (e: L.LeafletEvent) => {       
             if (onChange) {
         console.log('ran')
-                updateLocalRef()
-                onChange(feature.properties.id)
+                onChange(feature.properties.id, updateLocalRef)
             }
         })
         //layer.bindPopup((feature.properties.id ? feature.properties.id.toString() : 'none') + (feature.properties.sector_name ? feature.properties.sector_name : ''))
@@ -53,5 +52,5 @@ export default GeoObject
 interface Props {
     featureData: Feature<Geometry, GeoJsonProperties>
     sectorId?: number
-    onChange?: (sectorId: number) => void
+    onChange?: (sectorId: number, update: () => void) => void
 }

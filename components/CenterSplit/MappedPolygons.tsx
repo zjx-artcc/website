@@ -39,5 +39,5 @@ interface Props {
     splitData: FeatureCollection | undefined
     sectorData: Map<number, SectorData>
     editMode: boolean
-    onChange: (sectorId: number) => void
+    onChange: (sectorId: number, update: () => void) => void
 }

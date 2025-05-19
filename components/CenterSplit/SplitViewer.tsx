@@ -19,10 +19,10 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
     const [editMode, setEditMode] = useState<boolean>(false)
     const selectedSector = useRef<number | undefined>(undefined)
 
-    const onSectorEdit = (sectorId: number) => {
+    const onSectorEdit = (sectorId: number, update: () => void) => {
         const newData = updateSector(localSectorData, availableSectors, sectorId, selectedSector.current)
         updateSectorData(newData)
-
+        update()
     }
     
     const onSectorSelect = (sectorId: number) => {

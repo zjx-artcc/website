@@ -10,6 +10,13 @@ const useCenterSplitStore = create<CenterSplitStore>((set) => ({
         },
         updateActiveSectors: (data: number[]) => {
             set({activeSectors: data})
+        },
+        addSector: (id: number) => {
+            set((state) => {
+                return {
+                    activeSectors: [...state.activeSectors, id]
+                }
+            })
         }
     }
 }))
@@ -24,5 +31,6 @@ interface CenterSplitStore {
     actions: {
         updateSectorData: (data: Map<number, SectorData>) => void
         updateActiveSectors: (data: number[]) => void
+        addSector: (id: number) => void
     }
 }

@@ -28,7 +28,7 @@ export default Map
 interface Props {
     split: 'high' | 'low'
     editMode: boolean
-    onChange: (sectorId: number) => void
+    onChange: (sectorId: number, update: () => void) => void
     sectorData: Map<number, SectorData>
     colors: number[]
 }

@@ -21,14 +21,22 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
                 </button>
             )   
         })   
-    } else {
-        List.push(
-            <button key={-10}>
-                None
-            </button>
-        )
     }
 
+    // no selection
+    List.push(
+        <button 
+            type='button'
+            disabled={!editMode} 
+            className={'p-2 rounded-md bg-gray-500 ' + (editMode ? 'hover:border-2 transition' : '')} 
+            key={499} 
+            onClick={() => onChange(undefined)}
+        >
+            None
+        </button>
+    )
+
+    // plus sign
     List.push(
         <button onClick={() => addSector(12)} className='w-10 h-10 border-2'>
             <PlusOne/>
@@ -44,6 +52,6 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
 export default SectorSelector
 
 interface Props {
-    onChange: (sectorId: number) => void
+    onChange: (sectorId: number | undefined) => void
     editMode: boolean
 }

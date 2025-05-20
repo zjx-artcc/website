@@ -5,6 +5,8 @@ import dynamic from "next/dynamic"
 import { useEffect, useRef, useState } from "react"
 import SectorSelector from "./SectorSelector"
 import { useActiveSectors, useCenterSplitActions, useSectorData } from "@/lib/centerSplit"
+import { updateSplitData } from "@/actions/centerSplit"
+import { toast } from "react-toastify"
 
 const MapComponent = dynamic(() => import('./Map'), {ssr: false})
 
@@ -22,8 +24,15 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
         update() // callback to ./GeoObject component
     }
     
-    const onSectorSelect = (sectorId: number) => {
+    const onSectorSelect = (sectorId: number | undefined) => {
         selectedSector.current = sectorId
+    }
+
+    const sendSplitUpdate = () => {
+        setEditMode(false)
+        updateSplitData(localSectorData)
+        .then(() => toast.success('Split updated!'))
+        .catch((err) => toast.error('Split update failed ' + err))
     }
 
     useEffect(() => {
@@ -50,12 +59,12 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
             <MapComponent split={split} sectorData={localSectorData} editMode={editMode} onChange={onSectorEdit} colors={availableSectors}/>
             
             <div className='flex flex-col gap-y-2 mt-5'>
+                <Typography variant='h6'>Currently Selected: ZJX {selectedSector.current}</Typography>
                 {editMode ? 'Select a sector to edit' : ''}
                 <SectorSelector editMode={editMode} onChange={onSectorSelect}/>
                 {canEdit && !editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
+                {canEdit && editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={sendSplitUpdate}>Save</button> : ''}
             </div>
-
-            {availableSectors.map((data) => <p>{data}</p>)}
         </div>
     )
 }

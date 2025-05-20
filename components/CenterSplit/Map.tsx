@@ -6,7 +6,6 @@ import { SectorData } from '@/types/centerSplit.type'
 const Map: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: Props) => {
     return (
         <div>
-            <h2>{editMode ? 'edit' : 'no edit'}</h2>
             <MapContainer center={[31, -82.233]} zoom={6} style={{height: 600, width: '100%'}}>
                 <TileLayer
                 url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"

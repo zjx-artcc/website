@@ -1,37 +1,4 @@
-import { SectorData } from "@/types/centerSplit.type"
 import { CenterSectors } from "@prisma/client"
-
-export const parseInitialSectorData = (sectorData: CenterSectors[]): {newData: Map<number, SectorData>, availableSectors: number[]} => {
-    const uniqueSectors: number[] = []
-    const localData: Map<number, SectorData> = new Map<number, SectorData>()
-
-    sectorData.map((data) => {
-            // add to uniqueSectors
-            if (data.activeSectorId && uniqueSectors.indexOf(data.activeSectorId) == -1) {
-                uniqueSectors.push(data.activeSectorId)
-            }
-
-            localData.set(data.sectorId, {
-                color: getSectorColor(uniqueSectors, data.activeSectorId || undefined),
-                activeSectorId: data.activeSectorId || undefined
-            })
-    })
-
-    return {
-        newData: localData,
-        availableSectors: uniqueSectors
-    }
-}
-
-export const updateSector = (sectorData: Map<number, SectorData>,availableSectors: number[], sectorId: number, activeSectorId: number | undefined): Map<number, SectorData> => {
-    sectorData.set(sectorId, {
-        activeSectorId: activeSectorId,
-        color: getSectorColor(availableSectors, activeSectorId)
-    })
-
-    return sectorData
-
-}
 
 export const getSectorColor = (colors: number[], id: number | undefined): string => {
     if (!id) {

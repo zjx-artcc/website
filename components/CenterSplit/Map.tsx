@@ -1,10 +1,6 @@
 import 'leaflet/dist/leaflet.css'
-import { MapContainer, GeoJSON, TileLayer, AttributionControl, Polygon, } from "react-leaflet"
-import { useEffect, useRef, useState } from 'react'
-import { Feature, GeoJsonObject, Geometry } from 'geojson'
-import { LatLngExpression, Layer } from 'leaflet'
+import { MapContainer, TileLayer } from "react-leaflet"
 import GeoJsonPolygons from './GeoJsonPolygons'
-import { CenterSectors } from '@prisma/client'
 import { SectorData } from '@/types/centerSplit.type'
 
 const Map: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: Props) => {

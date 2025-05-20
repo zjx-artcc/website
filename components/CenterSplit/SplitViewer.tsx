@@ -1,11 +1,9 @@
 'use client'
-import { SectorData } from "@/types/centerSplit.type"
 import { Typography } from "@mui/material"
 import { CenterSectors } from "@prisma/client"
 import dynamic from "next/dynamic"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import SectorSelector from "./SectorSelector"
-import { parseInitialSectorData, updateSector } from "@/lib/sector"
 import { useActiveSectors, useCenterSplitActions, useSectorData } from "@/lib/centerSplit"
 
 const MapComponent = dynamic(() => import('./Map'), {ssr: false})
@@ -13,16 +11,15 @@ const MapComponent = dynamic(() => import('./Map'), {ssr: false})
 const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
     const localSectorData = useSectorData()
     const availableSectors = useActiveSectors()
-    const {updateSectorData, updateActiveSectors} = useCenterSplitActions()
+    const {parseInitialSectorData, updateSector} = useCenterSplitActions()
 
     const [split, setSplit] = useState<'high' | 'low'>('high')
     const [editMode, setEditMode] = useState<boolean>(false)
     const selectedSector = useRef<number | undefined>(undefined)
 
     const onSectorEdit = (sectorId: number, update: () => void) => {
-        const newData = updateSector(localSectorData, availableSectors, sectorId, selectedSector.current)
-        updateSectorData(newData)
-        update()
+        const newData = updateSector(sectorId, selectedSector.current)
+        update() // callback to ./GeoObject component
     }
     
     const onSectorSelect = (sectorId: number) => {
@@ -30,9 +27,7 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
     }
 
     useEffect(() => {
-        const {newData, availableSectors} = parseInitialSectorData(sectorData)
-        updateSectorData(newData)
-        updateActiveSectors(availableSectors)
+        parseInitialSectorData(sectorData)
     }, [])
 
     return (
@@ -56,9 +51,11 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
             
             <div className='flex flex-col gap-y-2 mt-5'>
                 {editMode ? 'Select a sector to edit' : ''}
-                <SectorSelector colors={availableSectors} editMode={editMode} onChange={onSectorSelect}/>
+                <SectorSelector editMode={editMode} onChange={onSectorSelect}/>
                 {canEdit && !editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
             </div>
+
+            {availableSectors.map((data) => <p>{data}</p>)}
         </div>
     )
 }

@@ -1,6 +1,4 @@
-import { CenterSectors } from "@prisma/client"
-import { useEffect, useState } from "react"
-import { getActiveSectorId, getColor, getSectorColor } from "@/lib/sector"
+import { getColor } from "@/lib/sector"
 import { useActiveSectors, useCenterSplitActions } from "@/lib/centerSplit"
 import { PlusOne } from "@mui/icons-material"
 
@@ -48,5 +46,4 @@ export default SectorSelector
 interface Props {
     onChange: (sectorId: number) => void
     editMode: boolean
-    colors: number[]
 }

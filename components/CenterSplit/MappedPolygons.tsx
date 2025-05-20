@@ -13,7 +13,6 @@ const MappedPolygons = ({splitData, onChange, editMode}: Props) => {
 
     splitData?.features.map((f, i) => {
         if (f.geometry.type === "Polygon" && f.properties?.id && f.properties.id < 100) {
-            console.log('ran 1')
             const sector = sectorData.get(f.properties.id)
 
             MappedPolygons.push(

@@ -9,16 +9,16 @@ import {StackedLineChart,} from "@mui/icons-material";
 import {getTop3Controllers} from "@/lib/hours";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
 import SplitViewer from '@/components/CenterSplit/SplitViewer'
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import { getSplitData } from "@/actions/centerSplit";
+import { authOptions } from "@/auth/auth";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
-    const session = await getSession()
+    const session = await getServerSession(authOptions)
 
     const splitData = await getSplitData()
-
     const upcomingEvents = await prisma.event.findMany({
         where: {
             start: {
@@ -193,7 +193,10 @@ export default async function Home() {
             </Grid2>
             <Card sx={{minHeight: 600, width: '100%'}}>
                 <CardContent>
-                    <SplitViewer canEdit sectorData={splitData}/>
+                    <SplitViewer 
+                    canEdit={(session?.user.rating && session.user.rating >= 5) || session?.user.roles.includes('STAFF')} 
+                    isEventStaff={session?.user.roles.includes('EVENT_STAFF') || session?.user.staffPositions.includes('WM') || session?.user.staffPositions.includes('ATM') || session?.user.staffPositions.includes('DATM') || process.env.NODE_ENV == 'development'} 
+                    sectorData={splitData}/>
                 </CardContent>
             </Card>
         </Grid2>)

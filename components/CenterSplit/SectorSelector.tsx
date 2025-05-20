@@ -1,6 +1,7 @@
 import { getColor } from "@/lib/sector"
 import { useActiveSectors, useCenterSplitActions } from "@/lib/centerSplit"
 import { PlusOne } from "@mui/icons-material"
+import { Typography } from "@mui/material"
 
 const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
     const List: React.ReactElement[] = []
@@ -36,15 +37,20 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
         </button>
     )
 
-    // plus sign
-    List.push(
-        <button onClick={() => addSector(12)} key={'add'} className='w-10 h-10 border-2'>
-            <PlusOne/>
-        </button>
-    )
+    if (editMode) {
+        // plus sign
+        List.push(
+            <button onClick={() => addSector(12)} key={'add'} className='w-10 h-10 border-2'>
+                <PlusOne/>
+            </button>
+        )
+    }
+    
     return (
-        <div className='flex flex-row gap-x-2'>
-            {List}
+        <div>
+            <div className='flex flex-row gap-x-2'>
+                {List}
+            </div>
         </div>
     )
 }

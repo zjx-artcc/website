@@ -9,8 +9,9 @@ import { getActiveSectorId, getSectorColor } from '@/lib/sector'
 import { SectorData } from '@/types/centerSplit.type'
 import MappedPolygons from './MappedPolygons'
 
-const GeoJsonPolygons: React.FC<Props> = ({split, editMode, onChange, sectorData, colors}: Props) => {
+const GeoJsonPolygons: React.FC<Props> = ({split, onChange, sectorData, colors}: Props) => {
     const [splitData, setSplitData] = useState<FeatureCollection | undefined>(undefined)
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (split == 'high') {
@@ -19,14 +20,16 @@ const GeoJsonPolygons: React.FC<Props> = ({split, editMode, onChange, sectorData
         else {
             setSplitData(low as FeatureCollection)
         }
+
+        setCount(count + 1)
     }, [split])
         
     return (
         <MappedPolygons
         splitData={splitData}
-        editMode={editMode}
         onChange={onChange}
         sectorData={sectorData}
+        key={count}
         />
     )
 }
@@ -35,7 +38,6 @@ export default GeoJsonPolygons
 
 interface Props {
     split: 'high' | 'low'
-    editMode: boolean
     onChange: (sectorId: number, update: () => void) => void
     sectorData: Map<number, SectorData>
     colors: number[]

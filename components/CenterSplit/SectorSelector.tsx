@@ -14,7 +14,7 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
                     type='button'
                     disabled={!editMode} 
                     className={'p-2 rounded-md ' + (editMode ? 'hover:border-2 transition' : '')} 
-                    style={{backgroundColor: getColor(i)}} key={data + 500} 
+                    style={{backgroundColor: getColor(i)}} key={data + 'select'} 
                     onClick={() => onChange(data)}
                 >
                     ZJX Sector {data}
@@ -29,7 +29,7 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
             type='button'
             disabled={!editMode} 
             className={'p-2 rounded-md bg-gray-500 ' + (editMode ? 'hover:border-2 transition' : '')} 
-            key={499} 
+            key={'-1 select'} 
             onClick={() => onChange(undefined)}
         >
             None
@@ -38,7 +38,7 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
 
     // plus sign
     List.push(
-        <button onClick={() => addSector(12)} className='w-10 h-10 border-2'>
+        <button onClick={() => addSector(12)} key={'add'} className='w-10 h-10 border-2'>
             <PlusOne/>
         </button>
     )

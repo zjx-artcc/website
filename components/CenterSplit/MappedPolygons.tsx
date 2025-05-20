@@ -1,26 +1,19 @@
 import { SectorData } from "@/types/centerSplit.type"
-import { Feature, FeatureCollection, GeoJsonObject, GeoJsonProperties, Geometry } from "geojson"
-import { Layer } from "leaflet"
-import { JSX, useEffect, useMemo, useRef } from "react"
-import { GeoJSON } from "react-leaflet"
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson"
+import { JSX} from "react"
 import GeoObject from "./GeoObject"
-import { useSectorData } from "@/lib/centerSplit"
 
-const MappedPolygons = ({splitData, onChange, editMode}: Props) => {
+const MappedPolygons = ({splitData, onChange}: Props) => {
     let MappedPolygons: JSX.Element[] = []
-
-    const sectorData = useSectorData()
 
     splitData?.features.map((f, i) => {
         if (f.geometry.type === "Polygon" && f.properties?.id && f.properties.id < 100) {
-            const sector = sectorData.get(f.properties.id)
-
             MappedPolygons.push(
-                <GeoObject featureData={f as Feature<Geometry, GeoJsonProperties>} sectorId={f.properties.id} onChange={onChange}/>
+                <GeoObject key={f.properties.id + 'geoobject'} featureData={f as Feature<Geometry, GeoJsonProperties>} sectorId={f.properties.id} onChange={onChange}/>
             )
         } else {
             MappedPolygons.push(
-                <GeoObject featureData={f as Feature<Geometry, GeoJsonProperties>}/>
+                <GeoObject key={i + 'static'} featureData={f as Feature<Geometry, GeoJsonProperties>}/>
             )
         }
     }) 
@@ -37,6 +30,5 @@ export default MappedPolygons
 interface Props {
     splitData: FeatureCollection | undefined
     sectorData: Map<number, SectorData>
-    editMode: boolean
     onChange: (sectorId: number, update: () => void) => void
 }

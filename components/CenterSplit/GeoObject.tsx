@@ -17,7 +17,8 @@ const GeoObject: React.FC<Props> = ({featureData, sectorId, onChange}: Props) =>
     }
     
     const setMapData = (feature: Feature<Geometry, any>, layer: Layer) => {
-        layer.addEventListener('click', (e: L.LeafletEvent) => {       
+        layer.addEventListener('click', (e: L.LeafletEvent) => {      
+            console.log(geoJsonRef.current)
             if (onChange) {
                 onChange(feature.properties.id, updateLocalRef)
             }

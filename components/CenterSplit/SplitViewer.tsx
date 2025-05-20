@@ -2,7 +2,7 @@
 import { Typography } from "@mui/material"
 import { CenterSectors } from "@prisma/client"
 import dynamic from "next/dynamic"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import SectorSelector from "./SectorSelector"
 import { useActiveSectors, useCenterSplitActions, useSectorData } from "@/lib/centerSplit"
 import { updateSplitData } from "@/actions/centerSplit"
@@ -17,12 +17,15 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
 
     const [split, setSplit] = useState<'high' | 'low'>('high')
     const [editMode, setEditMode] = useState<boolean>(false)
+    const editRef = useRef<boolean>(editMode)
     const selectedSector = useRef<number | undefined>(undefined)
 
-    const onSectorEdit = (sectorId: number, update: () => void) => {
-        const newData = updateSector(sectorId, selectedSector.current)
-        update() // callback to ./GeoObject component
-    }
+    const onSectorEdit = useCallback((sectorId: number, update: () => void) => {
+        if (editRef.current) {
+            const newData = updateSector(sectorId, selectedSector.current)
+            update() // callback to ./GeoObject component
+        }
+    }, [editMode])
     
     const onSectorSelect = (sectorId: number | undefined) => {
         selectedSector.current = sectorId
@@ -38,6 +41,10 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
     useEffect(() => {
         parseInitialSectorData(sectorData)
     }, [])
+
+    useMemo(() => {
+        editRef.current = editMode
+    }, [editMode])
 
     return (
         <div className="w-full h-full">
@@ -56,10 +63,10 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData}: Props) => {
             </div>
                 
 
-            <MapComponent split={split} sectorData={localSectorData} editMode={editMode} onChange={onSectorEdit} colors={availableSectors}/>
+            <MapComponent split={split} sectorData={localSectorData} onChange={onSectorEdit} colors={availableSectors}/>
             
             <div className='flex flex-col gap-y-2 mt-5'>
-                <Typography variant='h6'>Currently Selected: ZJX {selectedSector.current}</Typography>
+                <Typography variant='h6'>Currently Selected: {selectedSector.current ? `ZJX ${selectedSector.current}` : 'None'}</Typography>
                 {editMode ? 'Select a sector to edit' : ''}
                 <SectorSelector editMode={editMode} onChange={onSectorSelect}/>
                 {canEdit && !editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}

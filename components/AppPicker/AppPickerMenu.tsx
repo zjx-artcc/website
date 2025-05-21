@@ -32,12 +32,6 @@ export default function AppPickerMenu() {
                 <Link href="https://canvas.zjxartcc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
                     <MenuItem disabled onClick={close}><School sx={{mr: 1,}}/>Student Center</MenuItem>
                 </Link>
-                <Link href="https://ids.zjxartcc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
-                    <MenuItem disabled onClick={close}><DeveloperBoard sx={{mr: 1,}}/>I.D.S</MenuItem>
-                </Link>
-                <Link href="https://asx.zjxartcc.org" passHref style={{color: 'inherit', textDecoration: 'none',}}>
-                    <MenuItem disabled onClick={close}><Radar sx={{mr: 1,}}/>A.S.X</MenuItem>
-                </Link>
             </Menu>
         </>
     );

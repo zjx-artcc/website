@@ -20,8 +20,8 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
             toast.error('Entered value is not a number.')
         } else if (availableSectors.includes(int)) {
             toast.error(`Cannot add sector ${int} since it already exists.`)
-        } else if (availableSectors.length >= 12) { // i only have 12 colors in sector.ts
-            toast.error(`Cannot add more than 10 sectors.`)
+        } else if (availableSectors.length >= 9) { // i only have 12 colors in sector.ts
+            toast.error(`Cannot add more than 9 sectors.`)
         }
          else if (int > 100) {
             toast.error(`Sector does not exist`)
@@ -76,6 +76,7 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
             <Dialog
             open={modalOpen}
             onClose={() => setModalOpen(false)}
+            hideBackdrop
             >
                 <div className='flex flex-col gap-y-2' style={{padding: 10}}>
                     <Typography variant='h6'>Enter Sector Id</Typography>

@@ -7,7 +7,8 @@ const theme = createTheme({
             palette: {
                 mode: "light",
                 background: {
-                    default: '#e2fbff'
+                    default: '#e2fbff',
+                    paper: '#ffffff'
                 },
                 primary: {
                     main: '#3E8BCB',
@@ -23,7 +24,8 @@ const theme = createTheme({
             palette: {
                 mode: "dark",
                 background: {
-                    default: '#000a1d'
+                    default: '#004456',
+                    paper: '#00151B'
                 },
                 primary: {
                     main: '#3E8BCB',
@@ -46,7 +48,7 @@ const theme = createTheme({
         mode: 'dark',
         background: {
             default: '#000a1d',
-            paper: '024B5E'
+            paper: '#00151B'
         },
         primary: {
             main: '#3E8BCB',

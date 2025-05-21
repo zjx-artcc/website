@@ -13,7 +13,7 @@ import EventModeSelector from "./EventModeSelector"
 
 const MapComponent = dynamic(() => import('./Map'), {ssr: false})
 
-const SplitViewer: React.FC<Props> = ({canEdit, isEventStaff, sectorData, eventMode}: Props) => {
+const SplitViewer: React.FC<Props> = ({canEdit, sectorData, eventMode, isEventStaff}: Props) => {
     const localSectorData = useSectorData()
     const availableSectors = useActiveSectors()
     const {parseInitialSectorData, updateSector, resetSectors, reparseActiveSectors} = useCenterSplitActions()
@@ -65,6 +65,7 @@ const SplitViewer: React.FC<Props> = ({canEdit, isEventStaff, sectorData, eventM
     return (
         <div className="w-full h-full relative">
             <Typography variant="h5">Active Center Split</Typography>
+            {eventMode ? <Typography variant='h6'>Event mode is active .</Typography> : ''}
 
             <div>
                 <div className='flex flex-row gap-x-5 mb-5'>
@@ -89,11 +90,10 @@ const SplitViewer: React.FC<Props> = ({canEdit, isEventStaff, sectorData, eventM
 
                 <div className='flex flex-col gap-y-5'>
                     <SectorSelector editMode={editMode} onChange={onSectorSelect}/>
-                    {isEventStaff && editMode ? <EventModeSelector/> : ''}
                 </div>
                 
-                {canEdit && !editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
-                {canEdit && editMode ? 
+                {canEdit && !editMode && (!eventMode || (eventMode && isEventStaff)) ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
+                {canEdit && editMode && (!eventMode || (eventMode && isEventStaff)) ? 
                 <div className='flex flex-row gap-x-2'>
                     <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={sendSplitUpdate}>Save</button> 
                     <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={handleEditModeExit}>Exit</button> 
@@ -108,7 +108,7 @@ export default SplitViewer
 
 interface Props {
     canEdit?: boolean
-    isEventStaff?: boolean
     sectorData: CenterSectors[]
     eventMode: boolean
+    isEventStaff?: boolean
 }

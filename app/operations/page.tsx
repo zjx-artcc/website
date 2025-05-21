@@ -8,15 +8,15 @@ import Link from "next/link";
 const Page = async() => {
     const session = await getServerSession(authOptions);
     const splitData = await getSplitData()
-    const eventMode = await isEventMode()
+    const {eventMode, eventModeUntil} = await isEventMode()
     let canManage = false
 
-    if (session && session.user.roles.some(r => ["STAFF"].includes(r))) {
+    if (session && (session.user.rating >= 2 && (session.user.controllerStatus.includes('HOME') || session.user.controllerStatus.includes('VISITOR')) || session.user.roles.some(r => ["STAFF"].includes(r)))) {
         canManage = true
     }
 
     return (
-        <Grid2>
+        <Grid2 gap={10}>
             <div className='flex flex-row gap-x-5'>
                 <Typography variant='h4' sx={{marginBottom: 2}}>Operations Center</Typography>
                 {canManage ? <Link href='/operations/manage' className='bg-sky-500 w-max h-max p-2'>Manage</Link> : ''}

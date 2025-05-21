@@ -2,9 +2,8 @@
 
 import prisma from "@/lib/db"
 import { CenterSectors } from "@prisma/client"
-import { getController } from "./vatusa/controller"
 import { authOptions } from "@/auth/auth"
-import { getServerSession } from "next-auth"
+import { getServerSession, Session } from "next-auth"
 import { SectorData } from "@/types/centerSplit.type"
 
 export const getSplitData = async(): Promise<CenterSectors[]> => {
@@ -13,6 +12,10 @@ export const getSplitData = async(): Promise<CenterSectors[]> => {
 
 export const updateSplitData = async(sectors: Map<number, SectorData>): Promise<boolean> => {
     const session = await getServerSession(authOptions);
+
+    if ((await isEventMode()).eventMode && !(await canEditEvent(session))) {
+        return false
+    }
 
     if ((session?.user.rating && session?.user.rating >= 5) || session?.user.roles.includes('STAFF') ) {
         sectors.forEach(async(data, key) => {
@@ -37,7 +40,12 @@ export const updateSplitData = async(sectors: Map<number, SectorData>): Promise<
     return true
 }
 
-export const isEventMode = async() => {
+export const canEditEvent = async(session: Session | null | undefined): Promise<boolean> => {
+    const data = process.env.NODE_ENV == 'development' || session && (session.user.rating >= 2 && ((session.user.roles.includes('CONTROLLER')) || session.user.roles.includes('EVENT_STAFF') || session.user.staffPositions.includes('AWM') || session.user.staffPositions.includes('WM')))
+    return data ? true : false
+}
+
+export const isEventMode = async(): Promise<EventModeData> => {
     // cleans up eventmodes
     await prisma.eventMode.deleteMany({
         where: {
@@ -55,7 +63,23 @@ export const isEventMode = async() => {
         }
     })
 
-    return eventModes.length > 0
+    return {
+        eventMode: eventModes.length > 0,
+        eventModeUntil: eventModes.length > 0 ? eventModes[0].until : undefined
+    }
+}
+
+export const setEventMode = async(enabled: boolean, until: Date | undefined) => {
+    //remove current eventmodes
+    await prisma.eventMode.deleteMany()
+
+    if (enabled && until) {
+        const eventModes = await prisma.eventMode.create({
+            data: {
+                until: until
+            }
+        })
+    }
 }
 
 export const setAllSectors = async(sectorId: number | undefined | null) => {
@@ -75,4 +99,9 @@ export const getCenterSectorId = async(position: string): Promise<number | undef
     } else {
         return undefined
     }
+}
+
+interface EventModeData {
+    eventMode: boolean
+    eventModeUntil: Date | undefined
 }

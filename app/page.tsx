@@ -10,15 +10,16 @@ import {getTop3Controllers} from "@/lib/hours";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
 import SplitViewer from '@/components/CenterSplit/SplitViewer'
 import { getServerSession } from "next-auth";
-import { getSplitData } from "@/actions/centerSplit";
+import { getSplitData, isEventMode } from "@/actions/centerSplit";
 import { authOptions } from "@/auth/auth";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
     const session = await getServerSession(authOptions)
-
     const splitData = await getSplitData()
+    const {eventMode, eventModeUntil} = await isEventMode()
+
     const upcomingEvents = await prisma.event.findMany({
         where: {
             start: {
@@ -195,8 +196,8 @@ export default async function Home() {
                 <CardContent>
                     <SplitViewer 
                     canEdit={(session?.user.rating && session.user.rating >= 5) || session?.user.roles.includes('STAFF')} 
-                    isEventStaff={session?.user.roles.includes('EVENT_STAFF') || session?.user.staffPositions.includes('WM') || session?.user.staffPositions.includes('ATM') || session?.user.staffPositions.includes('DATM') || process.env.NODE_ENV == 'development'} 
-                    sectorData={splitData}/>
+                    sectorData={splitData}
+                    eventMode={eventMode}/>
                 </CardContent>
             </Card>
         </Grid2>)

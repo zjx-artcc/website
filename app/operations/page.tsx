@@ -1,10 +1,13 @@
+import { getSplitData } from "@/actions/centerSplit";
 import { authOptions } from "@/auth/auth";
-import { Typography } from "@mui/material";
+import SplitViewer from "@/components/CenterSplit/SplitViewer";
+import { Card, CardContent, Grid2, Typography } from "@mui/material";
 import { getServerSession } from "next-auth";
 
 const Page = async() => {
     const session = await getServerSession(authOptions);
-
+    const splitData = await getSplitData()
+    
     if (!session || !session.user.roles.some(r => ["STAFF"].includes(r))) {
         return (
             <Typography variant="h5" textAlign="center">You do not have access to this page.</Typography>
@@ -12,7 +15,15 @@ const Page = async() => {
     }
 
     return (
-        <h1>Operations center</h1>
+        <Grid2>
+            <Typography variant='h4' sx={{marginBottom: 2}}>Operations Center</Typography>
+            <Card sx={{minHeight: 600, width: '100%'}}>
+                <CardContent>
+                    <SplitViewer 
+                    sectorData={splitData}/>
+                </CardContent>
+            </Card>
+        </Grid2> 
     )
 }
 

@@ -36,3 +36,24 @@ export const updateSplitData = async(sectors: Map<number, SectorData>): Promise<
 
     return true
 }
+
+export const eventModeActive = async() => {
+    // cleans up eventmodes
+    await prisma.eventMode.deleteMany({
+        where: {
+            until: {
+                lt: new Date()
+            }
+        }
+    })
+
+    const eventModes = await prisma.eventMode.findMany({
+        where: {
+            until: {
+                gte: new Date()
+            }
+        }
+    })
+
+    return eventModes.length > 0
+}

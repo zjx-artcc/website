@@ -38,6 +38,9 @@ const COLORS = [
     'purple',
     'blue',
     'green',
-    'yellow',
-    'aquamarine'
+    'darkmagenta',
+    'aquamarine',
+    'darkslategray',
+    'deeppink',
+    'sienna'
 ]

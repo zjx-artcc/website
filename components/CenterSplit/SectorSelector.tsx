@@ -8,7 +8,7 @@ import { toast } from "react-toastify"
 const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
     const List: React.ReactElement[] = []
     const availableSectors = useActiveSectors()
-    const {addSector} = useCenterSplitActions()
+    const {addSector, clearSectors, resetSectors} = useCenterSplitActions()
     const [modalOpen, setModalOpen] = useState<boolean>(false)
     const [sectorInput, setSectorInput] = useState<string>('')
 
@@ -20,12 +20,16 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
             toast.error('Entered value is not a number.')
         } else if (availableSectors.includes(int)) {
             toast.error(`Cannot add sector ${int} since it already exists.`)
-        } else if (int > 100) {
+        } else if (availableSectors.length >= 12) { // i only have 12 colors in sector.ts
+            toast.error(`Cannot add more than 10 sectors.`)
+        }
+         else if (int > 100) {
             toast.error(`Sector does not exist`)
         } else {
             addSector(int)
             setModalOpen(false)
             setSectorInput('')
+            onChange(int)
         }
     }
 
@@ -39,7 +43,7 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
                     style={{backgroundColor: getColor(i)}} key={data + 'select'} 
                     onClick={() => onChange(data)}
                 >
-                    ZJX Sector {data}
+                    ZJX {data}
                 </button>
             )   
         })   
@@ -54,7 +58,7 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
             key={'-1 select'} 
             onClick={() => onChange(undefined)}
         >
-            None
+            OFFLINE
         </button>
     )
 
@@ -79,8 +83,24 @@ const SectorSelector: React.FC<Props> = ({editMode, onChange}: Props) => {
                     <button className='bg-sky-500' type='button' onClick={handleModalSubmit}>Enter</button>
                 </div>
             </Dialog>
-            <div className='flex flex-row gap-x-2'>
-                {List}
+            <div className='flex flex-col gap-y-5'>
+                <div className='flex flex-row gap-x-2'>
+                    {List}
+                </div>
+
+                <div className="flex flex-row gap-x-2">
+                    {editMode? 
+                    <>
+                        <button onClick={() => resetSectors()} key={'clear'} className='p-2 rounded-md  w-max h-10 bg-sky-500'>
+                            Reset all
+                        </button>
+
+                        <button onClick={() => clearSectors()} key={'clear'} className='p-2 rounded-md w-max h-10  bg-sky-500'>
+                            Clear all
+                        </button>
+                    </>   
+                    : ''}
+                </div>
             </div>
         </div>
     )

@@ -3,6 +3,7 @@ import {revalidatePath} from "next/cache";
 import {User} from "next-auth";
 import {ControllerLogMonth} from "@prisma/client";
 import {updateSyncTime} from "@/actions/lib/sync";
+import { isEventMode, setAllSectors } from "@/actions/centerSplit";
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ export async function GET() {
 
     const now = new Date();
     const syncTime = await prisma.syncTimes.findFirst();
+    const previousCenterControlers = await prisma.controllerPosition.count({where: {facility: 6, active: true}})
 
     if (syncTime?.stats && syncTime.stats?.getTime() > now.getTime() - 1000 * 10) {
         return Response.json({ ok: false, });
@@ -128,6 +130,23 @@ export async function GET() {
         });
     }
 
+    const currentCenterControllers = await prisma.controllerPosition.findMany({where: {facility: 6, active: true}})
+
+    // Update center split
+    if (!(await isEventMode())) {
+        console.log('event mode not active')
+        console.log(currentCenterControllers.length)
+        if ((currentCenterControllers.length != previousCenterControlers) && currentCenterControllers.length == 1) {
+            console.log('2')
+
+            await setAllSectors(await getCenterSectorId(currentCenterControllers[0].position))
+        } else if (currentCenterControllers.length == 0) {
+        console.log('no controllers')
+
+            await setAllSectors(null)
+        }
+    }
+
     await updateSyncTime({stats: new Date(),});
 
     revalidatePath('/', 'layout');
@@ -216,4 +235,8 @@ const getFacilityType = (facility: number) => {
         default:
             return 'UNK';
     }
+}
+
+function getCenterSectorId(position: string): number | null {
+    throw new Error("Function not implemented.");
 }

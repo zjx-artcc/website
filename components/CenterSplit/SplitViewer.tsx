@@ -13,10 +13,10 @@ import EventModeSelector from "./EventModeSelector"
 
 const MapComponent = dynamic(() => import('./Map'), {ssr: false})
 
-const SplitViewer: React.FC<Props> = ({canEdit, isEventStaff, sectorData}: Props) => {
+const SplitViewer: React.FC<Props> = ({canEdit, isEventStaff, sectorData, eventMode}: Props) => {
     const localSectorData = useSectorData()
     const availableSectors = useActiveSectors()
-    const {parseInitialSectorData, updateSector} = useCenterSplitActions()
+    const {parseInitialSectorData, updateSector, resetSectors, reparseActiveSectors} = useCenterSplitActions()
 
     const [split, setSplit] = useState<'high' | 'low'>('high')
     const [editMode, setEditMode] = useState<boolean>(false)
@@ -40,6 +40,14 @@ const SplitViewer: React.FC<Props> = ({canEdit, isEventStaff, sectorData}: Props
         updateSplitData(localSectorData)
         .then(() => toast.success('Split updated!'))
         .catch((err) => toast.error('Split update failed ' + err))
+
+        reparseActiveSectors()
+    }
+
+    const handleEditModeExit = () => {
+        setEditMode(false)
+        resetSectors()
+        reparseActiveSectors()
     }
 
     useEffect(() => {
@@ -85,7 +93,12 @@ const SplitViewer: React.FC<Props> = ({canEdit, isEventStaff, sectorData}: Props
                 </div>
                 
                 {canEdit && !editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={() => setEditMode(true)}>Edit</button> : ''}
-                {canEdit && editMode ? <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={sendSplitUpdate}>Save</button> : ''}
+                {canEdit && editMode ? 
+                <div className='flex flex-row gap-x-2'>
+                    <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={sendSplitUpdate}>Save</button> 
+                    <button className='p-2 bg-sky-500 mt-2 w-max rounded-md hover:bg-sky-800 transition' type='button' onClick={handleEditModeExit}>Exit</button> 
+                </div>
+                : ''}
             </div>
         </div>
     )
@@ -97,4 +110,5 @@ interface Props {
     canEdit?: boolean
     isEventStaff?: boolean
     sectorData: CenterSectors[]
+    eventMode: boolean
 }

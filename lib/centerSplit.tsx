@@ -4,6 +4,7 @@ import {create} from 'zustand'
 import { getSectorColor } from './sector'
 
 const useCenterSplitStore = create<CenterSplitStore>((set) => ({
+    initialData: [] as CenterSectors[],
     sectorData: new Map<number, SectorData>(),
     activeSectors: [] as number[],
     actions: {
@@ -16,11 +17,11 @@ const useCenterSplitStore = create<CenterSplitStore>((set) => ({
             })
         },
 
-        parseInitialSectorData: (sectorData: CenterSectors[]) => {
+        parseInitialSectorData: (initial: CenterSectors[]) => {
             const uniqueSectors: number[] = []
             const localData: Map<number, SectorData> = new Map<number, SectorData>()
         
-            sectorData.map((data) => {
+            initial.map((data) => {
                     // add to uniqueSectors
                     if (data.activeSectorId && uniqueSectors.indexOf(data.activeSectorId) == -1) {
                         uniqueSectors.push(data.activeSectorId)
@@ -33,6 +34,7 @@ const useCenterSplitStore = create<CenterSplitStore>((set) => ({
             })
         
             set(() => ({
+                initialData: initial,
                 sectorData: localData,
                 activeSectors: uniqueSectors
             }))
@@ -50,6 +52,46 @@ const useCenterSplitStore = create<CenterSplitStore>((set) => ({
                     sectorData: copy
                 }
             })
+        },
+
+        clearSectors: () => {
+            set((state) => {
+                const copy = new Map(state.sectorData)
+                copy.forEach((data, key) => {
+                    copy.set(key, {
+                        activeSectorId: undefined,
+                        color: getSectorColor([], undefined)
+                    })
+                })
+
+                return {
+                    sectorData: copy
+                }
+            })
+        },
+
+        resetSectors: () => {
+            set((state) => {
+                state.actions.parseInitialSectorData(state.initialData)
+
+                return {}
+            })
+        },
+
+        reparseActiveSectors: () => {
+            set((state) => {
+                const uniqueSectors: number[] = []
+                
+                state.sectorData.forEach((data, key) => {
+                    if (data.activeSectorId && uniqueSectors.indexOf(data.activeSectorId) == -1) {
+                        uniqueSectors.push(data.activeSectorId)
+                    }
+                })
+
+                return {
+                    activeSectors: uniqueSectors
+                }
+            })
         }
     }
 }))
@@ -59,11 +101,15 @@ export const useActiveSectors = () => useCenterSplitStore((state) => state.activ
 export const useCenterSplitActions = () => useCenterSplitStore((state) => state.actions)
 
 interface CenterSplitStore {
+    initialData: CenterSectors[]
     sectorData: Map<number, SectorData>
     activeSectors: number[]
     actions: {
         parseInitialSectorData: (sectorData: CenterSectors[]) => void
         updateSector: (sectorId: number, activeSectorId: number | undefined) => void
         addSector: (id: number) => void
+        resetSectors: () => void
+        clearSectors: () => void
+        reparseActiveSectors: () => void
     }
 }

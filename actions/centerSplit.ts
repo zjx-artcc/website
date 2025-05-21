@@ -37,7 +37,7 @@ export const updateSplitData = async(sectors: Map<number, SectorData>): Promise<
     return true
 }
 
-export const eventModeActive = async() => {
+export const isEventMode = async() => {
     // cleans up eventmodes
     await prisma.eventMode.deleteMany({
         where: {
@@ -56,4 +56,23 @@ export const eventModeActive = async() => {
     })
 
     return eventModes.length > 0
+}
+
+export const setAllSectors = async(sectorId: number | undefined | null) => {
+    await prisma.centerSectors.updateMany({
+        data: {
+            activeSectorId: sectorId
+        }
+    })
+}
+
+export const getCenterSectorId = async(position: string): Promise<number | undefined> => {
+    const split = position.split('_')
+    const int = position[1] ? parseInt(position[1]) : NaN
+    
+    if (!isNaN(int)) {
+        return int
+    } else {
+        return undefined
+    }
 }

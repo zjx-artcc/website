@@ -1,4 +1,4 @@
-import { canEditEvent, getSplitData, isEventMode } from "@/actions/centerSplit";
+import { canEditEvent, getCenterSectorId, getSplitData, isEventMode } from "@/actions/centerSplit";
 import { authOptions } from "@/auth/auth";
 import EventModeSelector from "@/components/CenterSplit/EventModeSelector";
 import SplitViewer from "@/components/CenterSplit/SplitViewer";
@@ -33,7 +33,7 @@ const Page = async() => {
                         canEdit={session?.user.rating && session.user.rating >= 5 || session?.user.roles.some(r => ["STAFF"].includes(r))}
                         sectorData={splitData}
                         eventMode={eventMode}
-                        isEventStaff={await canEditEvent(session)}
+                        isEventStaff={await canEditEvent()}
                         />
                     </CardContent>
                 </Card>

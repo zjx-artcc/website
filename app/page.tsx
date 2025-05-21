@@ -10,7 +10,7 @@ import {getTop3Controllers} from "@/lib/hours";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
 import SplitViewer from '@/components/CenterSplit/SplitViewer'
 import { getServerSession } from "next-auth";
-import { getSplitData, isEventMode } from "@/actions/centerSplit";
+import { canEditEvent, getSplitData, isEventMode } from "@/actions/centerSplit";
 import { authOptions } from "@/auth/auth";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
@@ -197,7 +197,8 @@ export default async function Home() {
                     <SplitViewer 
                     canEdit={(session?.user.rating && session.user.rating >= 5) || session?.user.roles.includes('STAFF')} 
                     sectorData={splitData}
-                    eventMode={eventMode}/>
+                    eventMode={eventMode}
+                    isEventStaff={await canEditEvent()}/>
                 </CardContent>
             </Card>
         </Grid2>)

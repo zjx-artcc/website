@@ -19,7 +19,7 @@ const Page = async() => {
         <Grid2 gap={10}>
             <div className='flex flex-row gap-x-5'>
                 <Typography variant='h4' sx={{marginBottom: 2}}>Operations Center</Typography>
-                {canManage ? <Link href='/operations/manage' className='bg-sky-500 w-max h-max p-2'>Manage</Link> : ''}
+                {canManage ? <Link href='/operations/manage' className='bg-sky-500 rounded-md w-max h-max p-2'>Manage</Link> : ''}
             </div>
             <Card sx={{minHeight: 600, width: '100%'}}>
                 <CardContent>

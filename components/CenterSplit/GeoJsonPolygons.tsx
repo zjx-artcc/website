@@ -21,7 +21,7 @@ const GeoJsonPolygons: React.FC<Props> = ({split, onChange, sectorData, colors}:
             setSplitData(low as FeatureCollection)
         }
 
-        setCount(count + 1)
+        setCount(c => c + 1)
     }, [split])
         
     return (

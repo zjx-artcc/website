@@ -13,7 +13,7 @@ export const getSplitData = async(): Promise<CenterSectors[]> => {
 export const updateSplitData = async(sectors: Map<number, SectorData>): Promise<boolean> => {
     const session = await getServerSession(authOptions);
 
-    if ((await isEventMode()).eventMode && !(await canEditEvent(session))) {
+    if ((await isEventMode()).eventMode && !(await canEditEvent())) {
         return false
     }
 
@@ -40,7 +40,9 @@ export const updateSplitData = async(sectors: Map<number, SectorData>): Promise<
     return true
 }
 
-export const canEditEvent = async(session: Session | null | undefined): Promise<boolean> => {
+export const canEditEvent = async(): Promise<boolean> => {
+    const session = await getServerSession(authOptions)
+
     const data = process.env.NODE_ENV == 'development' || session && (session.user.rating >= 2 && ((session.user.roles.includes('CONTROLLER')) || session.user.roles.includes('EVENT_STAFF') || session.user.staffPositions.includes('AWM') || session.user.staffPositions.includes('WM')))
     return data ? true : false
 }
@@ -91,9 +93,10 @@ export const setAllSectors = async(sectorId: number | undefined | null) => {
 }
 
 export const getCenterSectorId = async(position: string): Promise<number | undefined> => {
+    console.log(position)
     const split = position.split('_')
-    const int = position[1] ? parseInt(position[1]) : NaN
-    
+    const int = split[1] ? parseInt(split[1]) : NaN
+    console.log(split[1], int)
     if (!isNaN(int)) {
         return int
     } else {

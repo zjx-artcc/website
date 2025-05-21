@@ -29,7 +29,7 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData, eventMode, isEventSt
             const newData = updateSector(sectorId, selectedSectorRef.current)
             update() // callback to ./GeoObject component
         }
-    }, [editMode])
+    }, [updateSector])
     
     const onSectorSelect = (sectorId: number | undefined) => {
         setSelectedSector(sectorId)
@@ -52,7 +52,7 @@ const SplitViewer: React.FC<Props> = ({canEdit, sectorData, eventMode, isEventSt
 
     useEffect(() => {
         parseInitialSectorData(sectorData)
-    }, [])
+    }, [parseInitialSectorData, sectorData])
 
     useMemo(() => {
         editRef.current = editMode

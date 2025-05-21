@@ -6,6 +6,7 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import dayjs, { Dayjs } from "dayjs"
 import utc from "dayjs/plugin/utc"
+import { totalmem } from "os"
 dayjs.extend(utc)
 import { useState } from "react"
 import { toast } from "react-toastify"
@@ -19,8 +20,11 @@ const EventModeSelector: React.FC<Props> = ({eventMode, eventModeUntil}: Props) 
             await setEventMode(enabled, value.toDate())
             toast.success('Updated!')
             window.location.reload()
+        } else if (enabled && !value) {
+            toast.error('Must input end time.')
         } else {
             await setEventMode(false, undefined)
+            toast.success('Updated!')
         }
     }
 

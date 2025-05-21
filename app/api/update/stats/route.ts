@@ -3,6 +3,7 @@ import {revalidatePath} from "next/cache";
 import {User} from "next-auth";
 import {ControllerLogMonth} from "@prisma/client";
 import {updateSyncTime} from "@/actions/lib/sync";
+import { isEventMode, setAllSectors, getCenterSectorId } from "@/actions/centerSplit";
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ export async function GET() {
 
     const now = new Date();
     const syncTime = await prisma.syncTimes.findFirst();
+    const previousCenterControlers = await prisma.controllerPosition.count({where: {facility: 6, active: true}})
 
     if (syncTime?.stats && syncTime.stats?.getTime() > now.getTime() - 1000 * 10) {
         return Response.json({ ok: false, });
@@ -126,6 +128,18 @@ export async function GET() {
                 status: 'APPROVED',
             },
         });
+    }
+
+    const currentCenterControllers = await prisma.controllerPosition.findMany({where: {facility: 6, active: true}})
+
+    // Update center split
+    if (!(await isEventMode()).eventMode) {
+        if ((currentCenterControllers.length != previousCenterControlers) && currentCenterControllers.length == 1) {
+            const id = await getCenterSectorId(currentCenterControllers[0].position)
+            await setAllSectors(id)
+        } else if (currentCenterControllers.length == 0) {
+            await setAllSectors(null)
+        }
     }
 
     await updateSyncTime({stats: new Date(),});

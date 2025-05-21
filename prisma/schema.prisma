@@ -788,6 +788,16 @@ model TrainingSessionPerformanceIndicatorCriteria {
   categoryId String
 }
 
+model CenterSectors {
+  sectorId Int @id
+  activeSectorId Int?
+}
+
+model EventMode {
+  id String @id @default(cuid())
+  until DateTime
+}
+
 enum PerformanceIndicatorMarker {
   OBSERVED
   NOT_OBSERVED

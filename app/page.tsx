@@ -7,13 +7,18 @@ import {getRating} from "@/lib/vatsim";
 import Link from "next/link";
 import {StackedLineChart,} from "@mui/icons-material";
 import {getTop3Controllers} from "@/lib/hours";
-import HeaderText from "@/components/Hero/HeaderText";
-import BackgroundImage from "@/components/Hero/BackgroundImage";
 import QuickLinksList from "@/components/Hero/QuickLinksList";
+import SplitViewer from '@/components/CenterSplit/SplitViewer'
+import { getServerSession } from "next-auth";
+import { canEditEvent, getSplitData, isEventMode } from "@/actions/centerSplit";
+import { authOptions } from "@/auth/auth";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
 export default async function Home() {
+    const session = await getServerSession(authOptions)
+    const splitData = await getSplitData()
+    const {eventMode, eventModeUntil} = await isEventMode()
 
     const upcomingEvents = await prisma.event.findMany({
         where: {
@@ -75,20 +80,12 @@ export default async function Home() {
 
     return (
         (<Grid2 container columns={8} spacing={4}>
-            <BackgroundImage/>
-            <Grid2 size={8}>
-                <Card>
-                    <CardContent>
-                        <HeaderText/>
-                    </CardContent>
-                </Card>
-            </Grid2>
             <Grid2
                 size={{
                     xs: 8,
                     lg: 6
                 }}>
-                <Card sx={{height: 600,}}>
+                <Card sx={{height: 600}}>
                     <CardContent>
                         <Typography {...headingFont.style} variant="h5" sx={{mb: 1}}>Upcoming Events</Typography>
                         <UpcomingEventsCarousel events={upcomingEvents} imageUrls={imageUrls}/>
@@ -195,6 +192,15 @@ export default async function Home() {
                     </CardContent>
                 </Card>
             </Grid2>
+            <Card sx={{minHeight: 600, width: '100%'}}>
+                <CardContent>
+                    <SplitViewer 
+                    canEdit={(session?.user.rating && session.user.rating >= 5) || session?.user.roles.includes('STAFF')} 
+                    sectorData={splitData}
+                    eventMode={eventMode}
+                    isEventStaff={await canEditEvent()}/>
+                </CardContent>
+            </Card>
         </Grid2>)
     );
 }

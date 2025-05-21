@@ -114,6 +114,11 @@ export const NAVIGATION: NavigationButton[] = [
         },
     },
     {
+        label: 'Operations',
+        icon: <AirplanemodeActive/>,
+        link: '/operations',
+    },
+    {
         label: 'Community',
         icon: <Forum/>,
         link: '/discord',

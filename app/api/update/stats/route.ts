@@ -4,14 +4,13 @@ import {User} from "next-auth";
 import {ControllerLogMonth} from "@prisma/client";
 import {updateSyncTime} from "@/actions/lib/sync";
 import { isEventMode, setAllSectors, getCenterSectorId } from "@/actions/centerSplit";
+import { number } from "zod";
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-
     const now = new Date();
     const syncTime = await prisma.syncTimes.findFirst();
-    const previousCenterControlers = await prisma.controllerPosition.count({where: {facility: 6, active: true}})
 
     if (syncTime?.stats && syncTime.stats?.getTime() > now.getTime() - 1000 * 10) {
         return Response.json({ ok: false, });
@@ -134,11 +133,25 @@ export async function GET() {
 
     // Update center split
     if (!(await isEventMode()).eventMode) {
-        if ((currentCenterControllers.length != previousCenterControlers) && currentCenterControllers.length == 1) {
-            const id = await getCenterSectorId(currentCenterControllers[0].position)
-            await setAllSectors(id)
-        } else if (currentCenterControllers.length == 0) {
+        if (currentCenterControllers.length == 0) {
             await setAllSectors(null)
+        } else {
+            // check if current controllers have same sectorid (good for students/ins)
+            let uniqueIds: number[] = []
+
+            currentCenterControllers.map(async(data, i) => {
+                const position = await getCenterSectorId(currentCenterControllers[0].position)
+
+                if (position && uniqueIds.indexOf(position) == -1) {
+                    uniqueIds.push(position)
+                }
+            })
+
+            if (uniqueIds.length == 1) {
+                await setAllSectors(uniqueIds[0])
+            } else if (uniqueIds.length == 0) { // position was undefined, default to 30
+                await setAllSectors(30)
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 'use client';
 import React, {useState} from 'react';
 import {IconButton, Menu, MenuItem, Tooltip} from "@mui/material";
-import {Apps, DeveloperBoard, Public, Radar, School} from "@mui/icons-material";
+import {Apps, Public, School} from "@mui/icons-material";
 import Link from "next/link";
 
 export default function AppPickerMenu() {

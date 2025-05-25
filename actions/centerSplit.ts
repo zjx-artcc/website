@@ -93,10 +93,9 @@ export const setAllSectors = async(sectorId: number | undefined | null) => {
 }
 
 export const getCenterSectorId = async(position: string): Promise<number | undefined> => {
-    console.log(position)
     const split = position.split('_')
-    const int = split[1] ? parseInt(split[1]) : NaN
-    console.log(split[1], int)
+    const int = split[1] ? parseInt(split[1].substring(0, 2)) : NaN
+
     if (!isNaN(int)) {
         return int
     } else {

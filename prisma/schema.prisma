@@ -130,6 +130,7 @@ model TrainingAssignment {
   primaryTrainer   User   @relation(fields: [primaryTrainerId], references: [id], onDelete: Cascade, name: "TrainingAssignmentPrimaryTrainer")
   primaryTrainerId String
 
+  trainingType String?
   otherTrainers User[] @relation(name: "TrainingAssignmentOtherTrainers")
 }
 
@@ -141,6 +142,7 @@ model TrainingAssignmentRequest {
 
   submittedAt DateTime
 
+  trainingType String?
   interestedTrainers User[] @relation(name: "TrainingAssignmentRequestInterestedTrainers")
 }
 

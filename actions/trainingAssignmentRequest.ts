@@ -9,7 +9,7 @@ import {authOptions} from "@/auth/auth";
 import {log} from "@/actions/log";
 import {sendTrainingRequestDeletedEmail} from "@/actions/mail/training";
 
-export const submitTrainingAssignmentRequest = async () => {
+export const submitTrainingAssignmentRequest = async (type: string) => {
     const session = await getServerSession(authOptions);
 
     if (!session) {
@@ -32,6 +32,7 @@ export const submitTrainingAssignmentRequest = async () => {
 
     const request = await prisma.trainingAssignmentRequest.create({
         data: {
+            trainingType: type,
             studentId: session.user.id,
             submittedAt: new Date(),
         },
@@ -139,7 +140,7 @@ export const fetchRequests = async (pagination: GridPaginationModel, sort: GridS
                         },
                     },
                 },
-                interestedTrainers: true,
+                interestedTrainers: true
             },
         }),
     ]);

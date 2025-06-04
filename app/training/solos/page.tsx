@@ -18,7 +18,7 @@ export default async function Page() {
                         <Typography variant="h5">Active Solo Certifications</Typography>
                         <Typography>All times are in GMT</Typography>
                     </Stack>
-                    {session?.user.roles.includes("INSTRUCTOR") && <Link href="/training/solos/new">
+                    {(session?.user.roles.includes("INSTRUCTOR") || session?.user.roles.includes("MENTOR")) && <Link href="/training/solos/new">
                         <Button variant="contained" size="large" startIcon={<Add/>}>Grant Solo Certification</Button>
                     </Link>}
                 </Stack>

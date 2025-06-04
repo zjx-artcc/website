@@ -52,10 +52,10 @@ export default function TrainerAssignmentRequestsTable({manageMode}: { manageMod
             filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
         },
         {
-            field: 'rating',
+            field: 'trainingType',
             flex: 1,
-            headerName: 'Rating',
-            renderCell: (params) => getRating(params.row.student.rating),
+            headerName: 'Training Type',
+            renderCell: (params) => params.row.trainingType,
             filterable: false,
             filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
         },

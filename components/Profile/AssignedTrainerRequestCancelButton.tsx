@@ -1,7 +1,7 @@
 'use client';
 import React, {useState} from 'react';
 import {TrainingAssignmentRequest} from "@prisma/client";
-import {Button} from "@mui/material";
+import {Button, Typography} from "@mui/material";
 import {toast} from "react-toastify";
 import {cancelTrainingAssignmentRequest} from "@/actions/trainingAssignmentRequest";
 
@@ -29,6 +29,9 @@ export default function AssignedTrainerRequestCancelButton({request}: { request:
     }
 
     return (
-        <Button variant={clicked ? 'contained' : 'outlined'} color="error" onClick={submit}>Cancel</Button>
+        <div>
+            <p className='mb-2'>Requested Training: {request.trainingType ? request.trainingType : 'None'}</p>
+            <Button variant={clicked ? 'contained' : 'outlined'} color="error" onClick={submit}>Cancel</Button>
+        </div>
     );
 }

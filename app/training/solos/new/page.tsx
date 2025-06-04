@@ -15,7 +15,7 @@ export default async function Page() {
     });
     const session = await getServerSession(authOptions);
 
-    if (!session || !session?.user.roles.includes("INSTRUCTOR")) {
+    if (!session || !(session?.user.roles.includes("INSTRUCTOR") || session.user.roles.includes("MENTOR"))) {
         return (
             <Card>
                 <CardContent>

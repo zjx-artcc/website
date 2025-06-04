@@ -140,17 +140,19 @@ export async function GET() {
             let uniqueIds: number[] = []
 
             currentCenterControllers.map(async(data, i) => {
-                const position = await getCenterSectorId(currentCenterControllers[0].position)
+                const position = await getCenterSectorId(data.position)
+
+                console.log(position)
 
                 if (position && uniqueIds.indexOf(position) == -1) {
+                    console.log('pushed ' + position)
                     uniqueIds.push(position)
                 }
             })
 
+            console.log(uniqueIds.length)
             if (uniqueIds.length == 1) {
                 await setAllSectors(uniqueIds[0])
-            } else if (uniqueIds.length == 0) { // position was undefined, default to 30
-                await setAllSectors(30)
             }
         }
     }

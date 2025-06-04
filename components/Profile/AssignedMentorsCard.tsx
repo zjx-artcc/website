@@ -69,7 +69,7 @@ export default async function AssignedMentorsCard({user}: { user: User, }) {
             </CardContent>
             <CardActions>
                 {!trainingAssignment && !trainingAssignmentRequest && !user.noRequestTrainingAssignments &&
-                    <AssignedTrainerRequestButton/>
+                    <AssignedTrainerRequestButton rating={user.rating}/>
                 }
                 {trainingAssignment && !release && !user.noRequestTrainerRelease &&
                     <AssignedTrainerReleaseButton/>

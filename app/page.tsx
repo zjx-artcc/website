@@ -12,6 +12,7 @@ import SplitViewer from '@/components/CenterSplit/SplitViewer'
 import { getServerSession } from "next-auth";
 import { canEditEvent, getSplitData, isEventMode } from "@/actions/centerSplit";
 import { authOptions } from "@/auth/auth";
+import AssignedTrainerRequestButton from "@/components/Profile/AssignedTrainerRequestButton";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 

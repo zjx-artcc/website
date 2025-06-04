@@ -45,6 +45,14 @@ export default function TrainingQueueTable() {
             filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
         },
         {
+            field: 'trainingType',
+            flex: 1,
+            headerName: 'Training Type',
+            sortable: true,
+            renderCell: (params) => params.row.trainingType ? params.row.trainingType : 'Undefined',
+            filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
+        },
+        {
             field: 'rating',
             flex: 1,
             headerName: 'Rating',

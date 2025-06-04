@@ -1,16 +1,12 @@
 import React from 'react';
 import {AppBar, Box, Stack, Toolbar} from "@mui/material";
 import ColorModeSwitcher from "@/components/Navbar/ColorModeSwitcher";
-import Logo from "@/components/Logo/Logo";
 import NavButtons from "@/components/Navbar/NavButtons";
 import LoginButton from "@/components/Navbar/LoginButton";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
 import RootSidebar from "@/components/Sidebar/RootSidebar";
 import AppPickerMenu from "@/components/AppPicker/AppPickerMenu";
-import Image from 'next/image';
-import bg from "@/public/img/home-bg.jpg";
-import { width } from '@mui/system';
 import BackgroundImage from '../Hero/BackgroundImage';
 
 export default async function Navbar() {

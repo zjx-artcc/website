@@ -2,7 +2,7 @@
 import React from 'react';
 import {User} from "next-auth";
 import {GridActionsCellItem, GridColDef} from "@mui/x-data-grid";
-import {Visibility} from "@mui/icons-material";
+import {Upload, Visibility} from "@mui/icons-material";
 import DataTable, {containsOnlyFilterOperator, equalsOnlyFilterOperator} from "@/components/DataTable/DataTable";
 import {fetchRequests} from "@/actions/trainingAssignmentRequest";
 import {formatZuluDate} from "@/lib/date";
@@ -84,23 +84,6 @@ export default function TrainerAssignmentRequestsTable({manageMode}: { manageMod
             filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
         },
         {
-            field: 'interestedTrainers',
-            flex: 1,
-            headerName: 'Interested Trainers',
-            renderCell: (params) => (
-                <Stack direction="row" spacing={1}>
-                    {params.row.interestedTrainers.map((trainer: User) => (
-                        <Link key={trainer.id} href={`/training/controller/${trainer.cid}`} target="_blank">
-                            <Chip label={`${trainer.firstName} ${trainer.lastName} - ${getRating(trainer.rating)}`}
-                                  size="small"/>
-                        </Link>
-                    ))}
-                </Stack>
-            ),
-            sortable: false,
-            filterOperators: [...equalsOnlyFilterOperator, ...containsOnlyFilterOperator],
-        },
-        {
             field: 'submittedAt',
             flex: 1,
             headerName: 'Submitted At',
@@ -117,6 +100,12 @@ export default function TrainerAssignmentRequestsTable({manageMode}: { manageMod
                     icon={<Visibility/>}
                     label="View Request"
                     onClick={() => router.push(`/training/requests/${params.row.id}`)}
+                />,
+                <GridActionsCellItem
+                    key={params.row.id}
+                    icon={<Upload/>}
+                    label="Pickup Student"
+                    onClick={() => {}}
                 />,
                 manageMode ? <TrainerAssignmentRequestDeleteButton key={params.row.id} request={params.row}/> : <></>,
             ],

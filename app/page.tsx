@@ -13,6 +13,7 @@ import { getServerSession } from "next-auth";
 import { canEditEvent, getSplitData, isEventMode } from "@/actions/centerSplit";
 import { authOptions } from "@/auth/auth";
 import AssignedTrainerRequestButton from "@/components/Profile/AssignedTrainerRequestButton";
+import LiveOperationsCard from "@/components/Operations/LiveOperationsCard";
 
 const headingFont = Poppins({subsets: ['latin'], weight: ['400']});
 
@@ -81,6 +82,9 @@ export default async function Home() {
 
     return (
         (<Grid2 container columns={8} spacing={4}>
+            <Grid2 size={8}>
+                <LiveOperationsCard/>
+            </Grid2>
             <Grid2
                 size={{
                     xs: 8,
@@ -172,10 +176,10 @@ export default async function Home() {
                     xs: 8,
                     lg: 2
                 }}>
-                <Card sx={{minHeight: 600,}}>
+                <Card sx={{height: 600, overflowY: 'scroll'}}>
                     <CardContent>
-                        <Typography {...headingFont.style} variant="h5" sx={{mb: 1,}}>Solo Certifications</Typography>
-                        <Stack direction="column" spacing={1}>
+                        <Typography {...headingFont.style} variant="h5" sx={{mb: 1}}>Solo Certifications</Typography>
+                        <Stack direction="column" spacing={1} sx={{overflowY: 'scroll'}}>
                             {soloCertifications.length > 0 ? soloCertifications.map(solo => (
                                 <Card elevation={0} key={solo.id}>
                                     <CardContent>

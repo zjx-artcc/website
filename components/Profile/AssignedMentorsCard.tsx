@@ -45,6 +45,8 @@ export default async function AssignedMentorsCard({user}: { user: User, }) {
                     <>
                         <Chip color="warning" label="REQUEST PENDING"/>
                         <Typography sx={{my: 1,}}>Position: <b>{positionInQueue}</b></Typography>
+                        
+                        {trainingAssignmentRequest.trainingType && <Typography sx={{my: 1,}}>Training Type: <b>{trainingAssignmentRequest.trainingType}</b></Typography>}
                         <AssignedTrainerRequestCancelButton request={trainingAssignmentRequest}/>
                     </>
                 }
@@ -64,6 +66,8 @@ export default async function AssignedMentorsCard({user}: { user: User, }) {
                                             variant="body2">{trainer.firstName} {trainer.lastName} - {getRating(trainer.rating)}</Typography>
                             ))}
                         </Box>
+
+                        {trainingAssignment.trainingType && <Typography sx={{my: 1,}}>Training Type: <b>{trainingAssignment.trainingType}</b></Typography>}
                     </Stack>
                 )}
             </CardContent>

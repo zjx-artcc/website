@@ -11,17 +11,17 @@ export default async function Page() {
     const session = await getServerSession(authOptions);
 
     const isTaOrAta = session?.user?.staffPositions.includes('TA') || session?.user?.staffPositions.includes('ATA') || session?.user?.staffPositions.includes('DATM') || session?.user?.staffPositions.includes('ATM');
-
+    const isTrainingStaff = session?.user?.roles.includes('MENTOR') || session?.user?.roles.includes('INSTRUCTOR')
     return (
         <Card>
             <CardContent>
                 <Stack direction="row" justifyContent="space-between" spacing={1}>
                     <Typography variant="h5">Trainer Assignments</Typography>
-                    {isTaOrAta && <Link href="/training/assignments/new" passHref>
+                    {isTaOrAta || isTrainingStaff && <Link href="/training/assignments/new" passHref>
                         <Button variant="contained" startIcon={<Add/>}>Manual Training Assignment</Button>
                     </Link>}
                 </Stack>
-                <TrainingAssignmentTable manageMode={!!isTaOrAta}/>
+                <TrainingAssignmentTable manageMode={!!isTaOrAta} isTrainingStaff={isTrainingStaff}/>
             </CardContent>
         </Card>
     );

@@ -12,8 +12,9 @@ import {getRating} from "@/lib/vatsim";
 import Link from "next/link";
 import {Lesson} from "@prisma/client";
 import {formatZuluDate, getTimeAgo} from "@/lib/date";
+import TrainingAssignmentPickupButton from './TrainingAssignmentPickupButton';
 
-export default function TrainingAssignmentTable({manageMode}: { manageMode: boolean }) {
+export default function TrainingAssignmentTable({manageMode, isTrainingStaff}: { manageMode: boolean, isTrainingStaff: boolean | undefined }) {
 
     const router = useRouter();
 
@@ -151,7 +152,10 @@ export default function TrainingAssignmentTable({manageMode}: { manageMode: bool
                     label="Edit Assignment"
                     onClick={() => router.push(`/training/assignments/${params.row.id}`)}
                 />,
-                <TrainingAssignmentDeleteButton key={params.row.id} assignment={params.row}/>,
+                <div>
+                    <TrainingAssignmentDeleteButton key={params.row.id} assignment={params.row}/>
+                    <TrainingAssignmentPickupButton id={params.row.id}/>
+                </div>
             ] : [],
             flex: 1
         },

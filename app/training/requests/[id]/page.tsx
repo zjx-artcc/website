@@ -11,6 +11,7 @@ import TrainingAssignmentForm from "@/components/TrainingAssignment/TrainingAssi
 import {getRating} from "@/lib/vatsim";
 import TrainingAssignmentToggleExpressInterestButton
     from "@/components/TrainingAssignment/TrainingAssignmentToggleExpressInterestButton";
+import TrainingAssignmentPickupButton from '@/components/TrainingAssignment/TrainingAssignmentPickupButton';
 
 export default async function Page(props: { params: Promise<{ id: string, }> }) {
     const params = await props.params;
@@ -58,7 +59,7 @@ export default async function Page(props: { params: Promise<{ id: string, }> }) 
             </Card>
             <Card>
                 <CardContent>
-                    <Typography variant="h6">Interested Trainers</Typography>
+                    <Typography variant="h6">Trainers</Typography>
                     {request.interestedTrainers.length === 0 &&
                         <Typography>No trainers have shown interest yet.</Typography>}
                     <Stack direction="column" spacing={1}>
@@ -69,8 +70,7 @@ export default async function Page(props: { params: Promise<{ id: string, }> }) 
                     </Stack>
                 </CardContent>
                 <CardActions>
-                    <TrainingAssignmentToggleExpressInterestButton user={session.user} request={request}
-                                                                   hasAlreadyExpressedInterest={request.interestedTrainers.map(it => it.id).includes(session.user.id)}/>
+                    <TrainingAssignmentPickupButton id={request.id}/>
                 </CardActions>
             </Card>
             {isTaOrAta && <Card>

@@ -75,6 +75,15 @@ export default async function ProfileCard({user, admin, viewOnly}: {
                         <Typography variant="subtitle2">Receive Email</Typography>
                         <Typography variant="body2">{user.receiveEmail ? "Yes" : "No"}</Typography>
                     </Grid2>
+                    { /*TODO: Fix this to not be in the left column*/ }
+                    <Grid2 
+                        size={{
+                            xs: 2,
+                            sm: 1
+                        }}>
+                        <Typography variant="subtitle2">Discord Name</Typography>
+                        <Typography variant="body2">{user.discordName != undefined ? user.discordName : 'Not Linked'}</Typography>
+                    </Grid2>
                     <Grid2 size={2}>
                         <Typography variant="subtitle2">Bio</Typography>
                         <Typography variant="body2">{user.bio || 'None'}</Typography>

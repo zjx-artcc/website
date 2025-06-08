@@ -1,0 +1,1 @@
+// This directory is for custom authentication outside of next-auth

@@ -11,6 +11,9 @@ import {useRouter} from "next/navigation";
 import {writeDossier} from "@/actions/dossier";
 import FormSaveButton from "@/components/Form/FormSaveButton";
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { Icon } from "@iconify-icon/react";
+import Link from 'next/link';
+import prisma from '@/lib/db';
 
 export default function ProfileEditCard({user, sessionUser, admin = false}: {
     user: User,
@@ -90,6 +93,19 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
                                        helperText="Initials are automatically converted to uppercase on submit."
                                        defaultValue={user.operatingInitials || ''}/>
                         }
+
+                        {user.discordId == null ? 
+                            <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 items-center justify-center" href="https://discord.com/oauth2/authorize?client_id=1314239805751562311&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fcauth%2Fdiscord&scope=identify">
+                                <Icon icon="mdi:discord" className="text-3xl text-white pr-2"/>
+                                <p>Link Discord Account</p>
+                            </Link> 
+                        :   <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 items-center justify-center" href="/api/cauth/discord?unlink=true">
+                                <Icon icon="mdi:discord" className="text-3xl text-white pr-2"/>
+                                <p>Unlink Discord Account</p>
+                            </Link>
+                        }
+                        
+
                         <FormControlLabel name="newEventNotifications" control={<Switch defaultChecked={user.newEventNotifications} />} label="Receive NEW event notifications" />
                         <Tooltip  title={'As of now, this feature is DISABLED! Once implemented, toggling this off will remove you from any email notifications send from this site.'}  placement="top-start">
                             <FormControlLabel name="receiveEmail" checked disabled control={<Switch />} label="Receive non-urgent emails" />

@@ -13,7 +13,6 @@ WORKDIR /app
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN npm i -g pnpm --legacy-peer-deps

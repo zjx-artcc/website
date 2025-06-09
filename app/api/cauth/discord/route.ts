@@ -26,6 +26,10 @@ export async function GET(request: NextRequest) {
     redirect(`${process.env.NEXTAUTH_URL}/profile/edit`)
   }
 
+  if (request.nextUrl.searchParams.get('init')) {
+    redirect(process.env.DISCORD_AUTH_URL!)
+  }
+
   const encodedCredentials = btoa(`${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`);
 
   const data = {

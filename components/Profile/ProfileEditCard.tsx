@@ -95,7 +95,7 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
                         }
 
                         {user.discordId == null ? 
-                            <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 items-center justify-center" href="https://discord.com/oauth2/authorize?client_id=1314239805751562311&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fcauth%2Fdiscord&scope=identify">
+                            <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 items-center justify-center" href="/api/cauth/discord?init=true">
                                 <Icon icon="mdi:discord" className="text-3xl text-white pr-2"/>
                                 <p>Link Discord Account</p>
                             </Link> 

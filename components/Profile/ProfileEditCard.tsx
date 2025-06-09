@@ -11,9 +11,7 @@ import {useRouter} from "next/navigation";
 import {writeDossier} from "@/actions/dossier";
 import FormSaveButton from "@/components/Form/FormSaveButton";
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Icon } from "@iconify-icon/react";
-import Link from 'next/link';
-import prisma from '@/lib/db';
+import LinkDiscordButton from './LinkDiscordButton';
 
 export default function ProfileEditCard({user, sessionUser, admin = false}: {
     user: User,
@@ -94,17 +92,7 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
                                        defaultValue={user.operatingInitials || ''}/>
                         }
 
-                        {user.discordId == null ? 
-                            <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 items-center justify-center" href="/api/cauth/discord?init=true">
-                                <Icon icon="mdi:discord" className="text-3xl text-white pr-2"/>
-                                <p>Link Discord Account</p>
-                            </Link> 
-                        :   <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 items-center justify-center" href="/api/cauth/discord?unlink=true">
-                                <Icon icon="mdi:discord" className="text-3xl text-white pr-2"/>
-                                <p>Unlink Discord Account</p>
-                            </Link>
-                        }
-                        
+                        <LinkDiscordButton user={sessionUser}/>
 
                         <FormControlLabel name="newEventNotifications" control={<Switch defaultChecked={user.newEventNotifications} />} label="Receive NEW event notifications" />
                         <Tooltip  title={'As of now, this feature is DISABLED! Once implemented, toggling this off will remove you from any email notifications send from this site.'}  placement="top-start">

@@ -2,6 +2,7 @@ import {Button, Card, CardContent, Stack, Typography} from '@mui/material';
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
 import {Error} from "@mui/icons-material";
+import LinkDiscordButton from '@/components/Profile/LinkDiscordButton';
 
 
 export default async function Page() {
@@ -25,6 +26,10 @@ export default async function Page() {
                     {!session &&
                         <Typography sx={{display: 'flex', alignItems: 'center', gap: 1,}}><Error color="error"/> Login
                             to access Discord</Typography>}
+
+                    <div className='mt-5'>
+                        {session?.user ? <LinkDiscordButton user={session.user}/> : ''}
+                    </div>
                 </CardContent>
             </Card>
         </Stack>

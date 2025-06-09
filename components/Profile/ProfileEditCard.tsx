@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import {writeDossier} from "@/actions/dossier";
 import FormSaveButton from "@/components/Form/FormSaveButton";
 import FormControlLabel from '@mui/material/FormControlLabel';
+import LinkDiscordButton from './LinkDiscordButton';
 
 export default function ProfileEditCard({user, sessionUser, admin = false}: {
     user: User,
@@ -90,6 +91,9 @@ export default function ProfileEditCard({user, sessionUser, admin = false}: {
                                        helperText="Initials are automatically converted to uppercase on submit."
                                        defaultValue={user.operatingInitials || ''}/>
                         }
+
+                        <LinkDiscordButton user={sessionUser}/>
+
                         <FormControlLabel name="newEventNotifications" control={<Switch defaultChecked={user.newEventNotifications} />} label="Receive NEW event notifications" />
                         <Tooltip  title={'As of now, this feature is DISABLED! Once implemented, toggling this off will remove you from any email notifications send from this site.'}  placement="top-start">
                             <FormControlLabel name="receiveEmail" checked disabled control={<Switch />} label="Receive non-urgent emails" />

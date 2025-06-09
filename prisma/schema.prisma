@@ -73,6 +73,8 @@ model User {
   updatedAt          DateTime
   staffingRequests   StaffingRequest[]
   loas               LOA[]
+  discordId          String?
+  discordName        String?
 
   teamspeakUid String?
 

@@ -7,11 +7,10 @@ import { getRating } from '@/lib/vatsim';
 
 export default function AssignedTrainerRequestButton({rating}: Props) {
     const [loading, setLoading] = useState(false);
-    const [ratingRequest, setRatingRequest] = useState<string | undefined>('')
+    const [ratingRequest, setRatingRequest] = useState<string | undefined>(undefined)
 
     const submit = async () => {
         if (ratingRequest) {
-            console.log(ratingRequest);
             setLoading(true);
 
             const {errors} = await submitTrainingAssignmentRequest(ratingRequest)

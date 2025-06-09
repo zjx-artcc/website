@@ -5,7 +5,7 @@
 import prisma from "@/lib/db";
 import {log} from "@/actions/log";
 import {revalidatePath} from "next/cache";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {CommonMistake, Lesson, Prisma, RubricCriteraScore} from "@prisma/client";
 import {getServerSession, User} from "next-auth";
 import {authOptions} from "@/auth/auth";

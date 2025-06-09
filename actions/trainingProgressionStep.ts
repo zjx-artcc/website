@@ -5,7 +5,7 @@ import {Prisma, TrainingProgression} from "@prisma/client";
 import prisma from "@/lib/db";
 import {log} from "@/actions/log";
 import {revalidatePath} from "next/cache";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {OrderItem} from "@/components/Order/OrderList";
 
 export const createOrUpdateTrainingProgressionStep = async (formData: FormData) => {

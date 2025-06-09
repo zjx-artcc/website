@@ -3,7 +3,7 @@ import React from 'react';
 import {usePathname, useRouter} from "next/navigation";
 import {Box, Button, FormControlLabel, MenuItem, Stack, Switch, TextField} from "@mui/material";
 import {Search} from "@mui/icons-material";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {toast} from "react-toastify";
 
 const months = [

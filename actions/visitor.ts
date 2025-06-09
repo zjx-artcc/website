@@ -2,7 +2,7 @@
 
 import {Prisma, VisitorApplication, VisitorApplicationStatus} from "@prisma/client";
 import prisma from "@/lib/db";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {revalidatePath} from "next/cache";
 import {log} from "@/actions/log";
 import {User} from "next-auth";

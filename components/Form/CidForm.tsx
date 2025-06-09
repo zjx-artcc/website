@@ -1,7 +1,7 @@
 'use client';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useParams, useRouter} from "next/navigation";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {toast} from "react-toastify";
 import {Autocomplete, Stack, TextField} from "@mui/material";
 import {User} from "next-auth";

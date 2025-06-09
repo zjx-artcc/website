@@ -7,7 +7,7 @@ import { GridFilterItem } from "@mui/x-data-grid";
 import { GridPaginationModel } from "@mui/x-data-grid";
 import { GridSortModel } from "@mui/x-data-grid";
 import { EventType, Prisma } from "@prisma/client";
-import { SafeParseReturnType, z } from "zod";
+import { SafeParseReturnType, z } from "zod/v4";
 import { UTApi } from "uploadthing/server";
 import { revalidatePath } from "next/cache";
 import { sendEventPositionRemovalEmail } from "./mail/event";

@@ -1,7 +1,7 @@
 'use server';
 
 import {FROM_EMAIL, mailTransport} from "@/lib/email";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {log} from "@/actions/log";
 import {customEmail} from "@/templates/CustomEmail";
 

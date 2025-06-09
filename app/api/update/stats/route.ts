@@ -4,7 +4,7 @@ import {User} from "next-auth";
 import {ControllerLogMonth} from "@prisma/client";
 import {updateSyncTime} from "@/actions/lib/sync";
 import { isEventMode, setAllSectors, getCenterSectorId } from "@/actions/centerSplit";
-import { number } from "zod";
+import { number } from "zod/v4";
 
 export const dynamic = 'force-dynamic';
 

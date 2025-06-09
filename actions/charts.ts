@@ -1,5 +1,5 @@
 'use server';
-import {z} from "zod";
+import {z} from "zod/v4";
 import {Chart} from "@/types";
 
 export const fetchCharts = async (icao: string) => {

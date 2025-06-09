@@ -1,7 +1,7 @@
 'use client';
 import React, {useRef} from 'react';
 import {Stack, TextField} from "@mui/material";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {toast} from "react-toastify";
 import {writeDossier} from "@/actions/dossier";
 import FormSaveButton from "@/components/Form/FormSaveButton";

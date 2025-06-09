@@ -1,6 +1,6 @@
 'use server';
 
-import {z} from "zod";
+import {z} from "zod/v4";
 import prisma from "@/lib/db";
 import {log} from "@/actions/log";
 import {revalidatePath} from "next/cache";

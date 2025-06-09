@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import {useParams, useRouter} from "next/navigation";
 import {Autocomplete, Box, Button, Card, CardContent, MenuItem, Stack, TextField} from "@mui/material";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {toast} from "react-toastify";
 import {User} from "next-auth";
 

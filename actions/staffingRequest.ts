@@ -4,7 +4,7 @@ import prisma from "@/lib/db";
 import {Prisma, StaffingRequest} from "@prisma/client";
 import {log} from "@/actions/log";
 import {revalidatePath} from "next/cache";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
 
 export const createStaffingRequest = async (formData: FormData) => {

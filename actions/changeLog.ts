@@ -2,7 +2,7 @@
 
 'use server'
 import prisma from "@/lib/db";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {revalidatePath} from "next/cache";
 import {Prisma} from '@prisma/client'
 

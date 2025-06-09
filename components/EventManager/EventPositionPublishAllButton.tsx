@@ -7,7 +7,7 @@ import { Event, } from "@prisma/client";
 import { User } from "next-auth";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { ZodIssue } from "zod";
+import { ZodIssue } from "zod/v4";
 
 export default function EventPositionPublishAllButton({ event, positions, }: { event: Event, positions: EventPositionWithSolo[], }) {
 

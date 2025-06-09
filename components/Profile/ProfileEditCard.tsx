@@ -4,7 +4,7 @@ import {User} from "next-auth";
 import {Filter} from 'bad-words';
 import {Card, CardContent, Divider, Stack, Switch, TextField, Tooltip} from "@mui/material";
 import {getRating} from "@/lib/vatsim";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {toast} from "react-toastify";
 import {updateCurrentProfile} from "@/actions/profile";
 import {useRouter} from "next/navigation";

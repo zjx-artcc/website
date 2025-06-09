@@ -4,7 +4,7 @@ import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-gr
 import {Prisma} from "@prisma/client";
 import prisma from "@/lib/db";
 import {log} from "@/actions/log";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {revalidatePath} from "next/cache";
 
 export const createOrUpdateTrainingProgression = async (formData: FormData) => {

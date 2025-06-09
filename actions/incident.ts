@@ -1,6 +1,6 @@
 'use server';
 
-import {z} from "zod";
+import {z} from "zod/v4";
 import prisma from "@/lib/db";
 import {getServerSession, User} from "next-auth";
 import {authOptions} from "@/auth/auth";

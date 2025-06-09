@@ -6,7 +6,7 @@ import Link from "next/link";
 import {saveCertifications} from "@/actions/certifications";
 import {toast} from "react-toastify";
 import {getIconForCertificationOption} from "@/lib/certification";
-import {z} from "zod";
+import {z} from "zod/v4";
 import FormSaveButton from "@/components/Form/FormSaveButton";
 
 export default function CertificationForm({cid, certificationTypes, certifications, soloCertifications}: {

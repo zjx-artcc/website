@@ -9,7 +9,7 @@ import { GridFilterItem } from "@mui/x-data-grid";
 import { Prisma } from "@prisma/client";
 import { after } from "next/server";
 import { log } from "./log";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { revalidatePath } from "next/cache";
 
 export const fetchEventPresets = async (pagination: GridPaginationModel, sort: GridSortModel, filter?: GridFilterItem) => {

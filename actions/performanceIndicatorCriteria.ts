@@ -4,7 +4,7 @@ import {OrderItem} from "@/components/Order/OrderList";
 import prisma from "@/lib/db";
 import {after} from "next/server";
 import {log} from "@/actions/log";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {revalidatePath} from "next/cache";
 
 export const createOrUpdateCriteria = async (formData: FormData) => {

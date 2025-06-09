@@ -4,7 +4,7 @@ import {getServerSession, User} from "next-auth";
 import {authOptions} from "@/auth/auth";
 import prisma from "@/lib/db";
 import {revalidatePath} from "next/cache";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {writeDossier} from "@/actions/dossier";
 import {log} from "@/actions/log";
 import {getController} from "@/actions/vatusa/controller";

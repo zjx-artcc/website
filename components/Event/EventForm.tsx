@@ -15,7 +15,7 @@ import FormSaveButton from "../Form/FormSaveButton";
 import { upsertEvent, validateEvent } from "@/actions/event";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { SafeParseReturnType, ZodIssue } from "zod";
+import { SafeParseReturnType, ZodIssue } from "zod/v4";
 import Markdown from "react-markdown";
 import { ZodErrorSlimResponse } from "@/types";
 

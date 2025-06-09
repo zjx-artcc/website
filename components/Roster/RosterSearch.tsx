@@ -2,7 +2,7 @@
 import React from 'react';
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {Button, Stack, TextField} from "@mui/material";
-import {z} from "zod";
+import {z} from "zod/v4";
 
 export default function RosterSearch() {
 

@@ -17,12 +17,12 @@ export default function OperationDataCard({icao, longName, staffing}: Props) {
                     </Stack>
 
                     <Stack direction='row' spacing={2} justifyContent={'space-evenly'} alignItems={'center'}>
+                        {staffing ? 
+                        <Typography textAlign={'center'} sx={{width: '100px', backgroundColor: '#3E8BCB', padding: '5px', borderRadius: 1}}>{staffing}</Typography>
+                        : <Typography textAlign={'center'} sx={{width: '100px', backgroundColor: '#005982', padding: '5px', borderRadius: 1}}>OFFLINE</Typography>}
                         
-                        <Typography textAlign={'center'} sx={{width: '100px', backgroundColor: '#005982', padding: '5px', borderRadius: 1}}>{staffing}</Typography>
                         
                     </Stack>
-
-                    <Typography fontWeight={500} textAlign={'center'} sx={{width: '90%'}}>LANDING NORTH</Typography>
                 </Stack>
             </CardContent>
             
@@ -33,6 +33,6 @@ export default function OperationDataCard({icao, longName, staffing}: Props) {
 interface Props {
     icao: string
     longName: string
-    staffing: string
+    staffing?: string
 
 }

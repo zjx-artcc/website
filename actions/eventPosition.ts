@@ -5,7 +5,7 @@ import prisma from "@/lib/db";
 import { Event, EventPosition } from "@prisma/client";
 import { getServerSession, User } from "next-auth";
 import { after } from "next/server";
-import { SafeParseReturnType, z } from "zod";
+import { SafeParseReturnType, z } from "zod/v4";
 import { log } from "./log";
 import { revalidatePath } from "next/cache";
 import { sendEventPositionEmail, sendEventPositionRemovalEmail, sendEventPositionRequestDeletedEmail } from "./mail/event";

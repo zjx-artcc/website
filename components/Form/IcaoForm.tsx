@@ -1,7 +1,7 @@
 'use client';
 import {Button, Stack, TextField} from '@mui/material';
 import React from 'react';
-import {z} from "zod";
+import {z} from "zod/v4";
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
 import Form from "next/form";

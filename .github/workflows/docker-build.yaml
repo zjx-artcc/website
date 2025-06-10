@@ -1,8 +1,4 @@
 on:
-  push:
-    branches-ignore: 
-      - 'master'
-      - 'next'
   pull_request:
 
 jobs: 

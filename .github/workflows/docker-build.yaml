@@ -1,0 +1,22 @@
+on:
+  pull_request:
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+       
+      - name: Create .env
+        uses: Infisical/secrets-action@v1.0.7
+        with:
+          client-id: ${{ secrets.CLIENT_ID}}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          env-slug: "prod"
+          project-slug: "new-website"
+          export-type: "file"
+          file-output-path: "/.env"
+      
+      - name: Build Docker Image
+        run: docker build .

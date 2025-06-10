@@ -19,9 +19,14 @@ import BroadcastViewer from "@/components/BroadcastViewer/BroadcastViewer";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
 
+import * as Sentry from "@sentry/nextjs";
+
 export const metadata: Metadata = {
     title: "Virtual Jacksonville ARTCC",
     description: "The Virtual Jacksonville ARTCC is a community of pilots and air traffic controllers on VATSIM who come together to enjoy the art of flight simulation.",
+    other: {
+        ...Sentry.getTraceData(),
+    }
 };
 
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;

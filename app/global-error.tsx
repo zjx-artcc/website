@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import theme from "@/theme/theme";
 import {CssBaseline, ThemeProvider} from "@mui/material";
@@ -11,6 +11,8 @@ import ErrorCard from "@/components/Error/ErrorCard";
 import InitColorSchemeScript from "@mui/system/InitColorSchemeScript";
 import {Poppins} from "next/font/google";
 
+import * as Sentry from "@sentry/nextjs";
+
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
 const poppins = Poppins({
@@ -21,6 +23,11 @@ const poppins = Poppins({
 });
 
 function GlobalError({error}: { error: Error & { digest?: string } }) {
+    
+    useEffect(() => {
+        Sentry.captureException(error);
+    }, [error])
+
     return (
         <html lang="en" suppressHydrationWarning>
         <body className={poppins.variable}>

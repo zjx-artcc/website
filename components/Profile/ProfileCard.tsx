@@ -5,6 +5,7 @@ import {User} from "next-auth";
 import {Edit} from "@mui/icons-material";
 import Link from "next/link";
 import {getChips} from "@/lib/staffPositions";
+import LinkDiscordButton from './LinkDiscordButton';
 
 export default async function ProfileCard({user, admin, viewOnly}: {
     user: User,
@@ -83,6 +84,7 @@ export default async function ProfileCard({user, admin, viewOnly}: {
                         }}>
                         <Typography variant="subtitle2">Discord Name</Typography>
                         <Typography variant="body2">{user.discordName != undefined ? user.discordName : 'Not Linked'}</Typography>
+                        <LinkDiscordButton user={user}/>
                     </Grid2>
                     <Grid2 size={2}>
                         <Typography variant="subtitle2">Bio</Typography>

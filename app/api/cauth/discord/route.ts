@@ -58,6 +58,18 @@ export async function GET(request: NextRequest) {
 
   let discordUserData = await discordUserRequest.json()
 
+  // Remove all other instances of discord on other users
+  await prisma.user.updateMany({
+    data: {
+      discordId: null,
+      discordName: null
+    },
+    where: {
+      discordId: discordUserData.id,
+      discordName: `${discordUserData.username}`
+    }
+  })
+
   await prisma.user.update({
     where: {
       id: session?.user.id

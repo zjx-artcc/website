@@ -37,6 +37,7 @@
     "@mui/x-date-pickers": "^7.29.4",
     "@next/third-parties": "15.0.3",
     "@prisma/client": "^6.9.0",
+    "@sentry/nextjs": "^9.27.0",
     "@tailwindcss/postcss": "^4.1.8",
     "@types/mjml": "^4.7.4",
     "@types/mjml-core": "^4.15.2",

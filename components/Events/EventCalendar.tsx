@@ -18,6 +18,7 @@ export default function EventCalendar({events}: { events: any[], }) {
                 id: event.id,
                 title: event.name,
                 start: event.start,
+                end:event.end,
                 color: getEventColor(event.type),
             }))}
             eventClick={(info) => {

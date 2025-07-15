@@ -12,13 +12,13 @@ export default function EventCalendar({events}: { events: any[], }) {
     return (
         <FullCalendar
             plugins={[dayGridPlugin]}
-            timeZone="UTC"
+            timeZone="local"
             editable={false}
             events={events.map((event) => ({
                 id: event.id,
                 title: event.name,
                 start: event.start,
-                end: event.end,
+                end:event.end,
                 color: getEventColor(event.type),
             }))}
             eventClick={(info) => {

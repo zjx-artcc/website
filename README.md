@@ -10,7 +10,7 @@ The Virtual Jacksonville ARTCC Website.
 Environment Variables (all are required):
 - `DEV_MODE`: If set to `true`, disables the VATUSA roster check and grants access to all pages regardless of rating.
 - `DATABASE_URL`: URL for the database. Example: `postgres://dbuserhere:dbpasswordhere@localhost:5432/dbnamehere`
-- `NEXTAUTH_URL`: URL to specify where VATSIM should redirect users after a successful login.  This should just be the url without anything after `.com` `.org` etc.  Example: `https://vzdc.org`
+- `NEXTAUTH_URL`: URL to specify where VATSIM should redirect users after a successful login.  This should just be the url without anything after `.com` `.org` etc.  Example: `https://zjxartcc.org`
 - `NEXTAUTH_SECRET`: Secret key to encrypt tokens, this can be anything (hopefully secure).  Example: `anything`
 - `VATSIM_CLIENT_ID`: Client ID for VATSIM Connect.
 - `VATSIM_CLIENT_SECRET`: Client Secret for VATSIM Connect.
@@ -25,7 +25,7 @@ Environment Variables (all are required):
 - Node v18 or later
 - NPM 9.6 or later
 - Latest PNPM version
-- **EMPTY** Relational Database (preferably Postgres)
+- **EMPTY** Relational Database (preferably Postgres)
 - VATSIM Connect Keys https://auth-dev.vatsim.net/
 
 To begin contributing, **start by setting up your local environment** with the steps below.
@@ -117,5 +117,5 @@ The container will run on port 80, unlike the development server.
 
 
 ---
-### Developed by the vZDC ARTCC Web Team.
-##### README Version 0.1.0
+### Developed by the Jacksonville ARTCC Web Team.
+##### README Version 0.2.0

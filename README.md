@@ -9,110 +9,64 @@ The Virtual Jacksonville ARTCC Website.
 
 Environment Variables (all are required):
 - `DEV_MODE`: If set to `true`, disables the VATUSA roster check and grants access to all pages regardless of rating.
-- `DATABASE_URL`: URL for the database. Example: `postgres://postgres:password@localhost:5432/website-db`
-- `NEXTAUTH_URL`: URL to specify where VATSIM should redirect users after a successful login.  This should just be the url without anything after `.com` `.org` etc.  Example: `https://vzdc.org`
+- `DATABASE_URL`: URL for the database. Example: `postgres://dbuserhere:dbpasswordhere@localhost:5432/dbnamehere`
+- `NEXTAUTH_URL`: URL to specify where VATSIM should redirect users after a successful login.  This should just be the url without anything after `.com` `.org` etc.  Example: `https://zjxartcc.org`
 - `NEXTAUTH_SECRET`: Secret key to encrypt tokens, this can be anything (hopefully secure).  Example: `anything`
 - `VATSIM_CLIENT_ID`: Client ID for VATSIM Connect.
 - `VATSIM_CLIENT_SECRET`: Client Secret for VATSIM Connect.
-- `VATUSA_FACILITY`: Name of the facility. Example: `ZDC`
+- `VATUSA_FACILITY`: Name of the facility. Example: `ZJX`
 - `VATUSA_API_KEY`: Used to authenticate with the VATUSA API.
 
 # Development
-
-### Docker Compose (Development)
-
-[](https://github.com/vZDC-ARTCC/ids/edit/master/README.md#docker-compose-development)
-
-Build the docker image (if you change the tag name, make sure to update it in the `docker-compose/docker-compose.yaml` file):
-
-```shell
-docker build -t website .
-```
-
-Navigate to the `docker-compose` directory and create a `.env.local` file. Configure the environment variables for the website docker image based on `.env.example`.
-
-Warning
-
-Do not modify the `DATABASE_URL` and the `NEXTAUTH_URL` variables!
-
-Important
-
-Make sure the redirect URI for VATSIM OAuth2 is set to `http://localhost/api/auth/callback/vatsim` unless you changed the port in the environment variables.
-
-Run the `docker-compose.yaml` file:
-
-```shell
-docker-compose up
-```
-
-Make sure to seed the database by accessing `http://localhost/api/seed`.
-
-Important
-
-You need to do this everytime a new docker-compose instance is created since all data is wiped on shutdown.
-
-### Development Setup
-
-[](https://github.com/vZDC-ARTCC/ids/edit/master/README.md#development-setup)
-
 #### Prerequisites
 
 [](https://github.com/vZDC-ARTCC/ids/edit/master/README.md#prerequisites)
 
 - Node v18 or later
 - NPM 9.6 or later
-- **EMPTY** Relational Database (preferably Postgres)
-- VATSIM Connect Keys (Development or Production) (redirect url should be `{NEXTAUTH_URL}/api/auth/callback/vatsim` replace `NEXTAUTH_URL` with the actual url in the environment variables)
+- Latest PNPM version
+- **EMPTY** Relational Database (preferably Postgres)
+- VATSIM Connect Keys https://auth-dev.vatsim.net/
 
-#### Steps
+To begin contributing, **start by setting up your local environment** with the steps below.
 
-[](https://github.com/vZDC-ARTCC/ids/edit/master/README.md#steps)
-
+## Local Environment
 Clone this repository:
-
 ```shell
-git clone https://github.com/vZDC-ARTCC/website.git
+git clone https://github.com/zjx-artcc/website.git
 ```
 
 Change directories:
-
 ```shell
-cd website
+cd website-master
 ```
 
 Install dependencies:
-
 ```shell
-npm i
+pnpm i
 ```
 
-In the root of the project, create a file called `.env.local` and configure your environment variables.
-
-Migrate the database:
-
+Configure your environment variables by copying the .env.example file and renaming the copy to `.env.local`. Edit the values appropriately:
 ```shell
-npm run db:deploy
+cp .env.example .env.local
 ```
 
-Generate the Prisma Client:
-
+Verify that the local database is active and run migrations:
 ```shell
-npx prisma generate
+pnpm run db:deploy
 ```
 
-#### Development Server
-
-[](https://github.com/vZDC-ARTCC/ids/edit/master/README.md#development-server)
-
-Run the development server:
-
+Generate the prisma client:
 ```shell
-npm run dev
+pnpm prisma generate
 ```
 
-Navigate to [http://localhost:3000/api/seed](http://localhost:3000/api/seed)
+Finally, run the development server:
+```shell
+pnpm run dev
+```
+And you're all set! View the local site at http://localhost:3000/
 
-Navigate to [http://localhost:3000](http://localhost:3000/) and enjoy!
 
 
 # Production
@@ -163,5 +117,5 @@ The container will run on port 80, unlike the development server.
 
 
 ---
-### Developed by the vZDC ARTCC Web Team.
-##### README Version 0.1.0
+### Developed by the Jacksonville ARTCC Web Team.
+##### README Version 0.2.0

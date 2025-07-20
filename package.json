@@ -36,6 +36,8 @@
     "@mui/x-data-grid": "^7.29.5",
     "@mui/x-date-pickers": "^7.29.4",
     "@next/third-parties": "15.4.1",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
     "@prisma/client": "6.9.0",
     "@sentry/nextjs": "^9.39.0",
     "@tailwindcss/postcss": "^4.1.8",

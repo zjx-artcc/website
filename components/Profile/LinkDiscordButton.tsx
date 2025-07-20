@@ -14,7 +14,7 @@ export default function LinkDiscordButton({user}: Props) {
             )
         } else {
             return (
-                <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 items-center justify-center" href="/api/cauth/discord?unlink=true">
+                <Link className="rounded-sm bg-[#7289da] w-fit flex p-2 mr-2 items-center justify-center" href="/api/cauth/discord?unlink=true">
                     <Icon icon="mdi:discord" className="text-xl text-white pr-2"/>
                     <Typography variant='body2'>Unlink Discord Account</Typography>
                 </Link>

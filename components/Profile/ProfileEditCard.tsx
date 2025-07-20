@@ -170,6 +170,13 @@ export default function ProfileEditCard({
               />
             )}
 
+            {!admin && (
+              <div>
+                <LinkDiscordButton user={user} />
+                <p className="mt-2 text-sm text-gray-300">This allows the discord bot to update roles correctly.</p>
+              </div>
+            )}
+
             <FormControlLabel
               name="newEventNotifications"
               control={<Switch defaultChecked={user.newEventNotifications} />}

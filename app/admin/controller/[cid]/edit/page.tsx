@@ -25,6 +25,7 @@ export default async function Page(props: { params: Promise<{ cid: string }> }) 
     }
 
     return (
+        //Requred due to using use client
         <ProfileEditCard user={user as User} sessionUser={session.user} admin/>
     );
 }

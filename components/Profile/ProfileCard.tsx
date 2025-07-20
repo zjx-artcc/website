@@ -84,7 +84,6 @@ export default async function ProfileCard({user, admin, viewOnly}: {
                         }}>
                         <Typography variant="subtitle2">Discord Name</Typography>
                         <Typography variant="body2">{user.discordName != undefined ? user.discordName : 'Not Linked'}</Typography>
-                        <LinkDiscordButton user={user}/>
                     </Grid2>
                     <Grid2 size={2}>
                         <Typography variant="subtitle2">Bio</Typography>

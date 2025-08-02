@@ -10,8 +10,8 @@ export const emailFeedbackSubmitter = (pilot: User, feedback: Feedback) => {
                 View the information about your comment and our staff's comment below: </p>
             <br/>
             <ul>
-                <li>Your Name: {feedback.pilot.fullName}</li>
-                <li>Your CID: {feedback.pilot.cid}</li>
+                <li>Your Name: {feedback.pilot?.fullName ?? "N/A"}</li>
+                <li>Your CID: {feedback.pilot?.cid ?? "N/A"}</li>
                 <li>Your Callsign: {feedback.pilotCallsign}</li>
                 <li>Controller Position Staffed: {feedback.controllerPosition}</li>
                 <li>Date/Time You Submitted Feedback (UTC): {new Date(feedback.submittedAt).toUTCString()}</li>
@@ -20,10 +20,10 @@ export const emailFeedbackSubmitter = (pilot: User, feedback: Feedback) => {
             <br/>
 
             <p>
-                <b> Below are the comments that you left about your experience:</b> 
+                <b>Below are the comments that you left about your experience:</b>
                 <br />
                 <br/>
-                {feedback.staffComments} 
+                {feedback.comments} 
             </p> <br/>
             
             <p>

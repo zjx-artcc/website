@@ -36,6 +36,7 @@ export default async function FeedbackCard({user}: { user: User, }) {
         },
         include: {
             controller: true,
+            pilot: true,
         },
     });
 

@@ -34,6 +34,7 @@ export default async function Page() {
         },
         include: {
             controller: true,
+            pilot: true,
         },
         orderBy: {
             submittedAt: 'desc'

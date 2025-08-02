@@ -23,7 +23,7 @@ export const emailFeedbackSubmitter = (pilot: User, feedback: Feedback) => {
                 <b>Below are the comments that you left about your experience:</b>
                 <br />
                 <br/>
-                {feedback.pilotComments} 
+                {feedback.comments} 
             </p> <br/>
             
             <p>

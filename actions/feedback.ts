@@ -5,7 +5,7 @@ import {Feedback, FeedbackStatus, Prisma} from "@prisma/client";
 import prisma from "@/lib/db";
 import {revalidatePath} from "next/cache";
 import {log} from "@/actions/log";
-import {sendNewFeedbackEmail} from "@/actions/mail/feedback";
+import {sendNewFeedbackEmail, sendFeedbackSubmitter} from "@/actions/mail/feedback";
 import {User} from "next-auth";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
 import { sendDiscordEmbed } from "./discord";
@@ -82,9 +82,13 @@ export const releaseFeedback = async (feedback: Feedback) => {
         },
         include: {
             controller: true,
+            pilot: true,
         },
     });
 
+    if (releasedFeedback.staffComments && releasedFeedback.staffComments.trim() !== "") {
+        await sendFeedbackSubmitter(releasedFeedback.pilot as User, releasedFeedback)
+    }
     await sendDiscordEmbed(releasedFeedback.controller as User, releasedFeedback)
     await sendNewFeedbackEmail(releasedFeedback.controller as User, releasedFeedback);
 

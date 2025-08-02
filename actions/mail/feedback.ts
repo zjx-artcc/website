@@ -17,7 +17,7 @@ export const sendNewFeedbackEmail = async (controller: User, feedback: Feedback)
     });
 }
 
-export const sendFeedbackSubmitter = async (pilot: User, feedback: Feedback) => {
+export const sendEmailToFeedbackSubmitter = async (pilot: User, feedback: Feedback) => {
 
     const {html} = await emailFeedbackSubmitter(pilot, feedback);
 

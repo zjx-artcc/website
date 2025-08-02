@@ -24,6 +24,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         },
         include: {
             controller: true,
+            pilot: true,
         },
     });
 

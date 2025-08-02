@@ -71,7 +71,12 @@ export const submitFeedback = async (formData: FormData) => {
 }
 
 export const releaseFeedback = async (feedback: Feedback) => {
-    const releasedFeedback = await prisma.feedback.update({
+    type ReleasedFeedback = Feedback & {
+        controller: Prisma.UserGetPayload<{}>;
+        pilot: Prisma.UserGetPayload<{}>;
+    };
+
+    const releasedFeedback: ReleasedFeedback = await prisma.feedback.update({
         where: {
             id: feedback.id,
         },

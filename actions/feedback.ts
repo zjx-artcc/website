@@ -103,7 +103,12 @@ export const releaseFeedback = async (feedback: Feedback) => {
 }
 
 export const stashFeedback = async (feedback: Feedback) => {
-    const stashedFeedback = await prisma.feedback.update({
+    type StashedFeedback = Feedback & {
+        controller: Prisma.UserGetPayload<{}>;
+        pilot: Prisma.UserGetPayload<{}>;
+    };
+    
+    const stashedFeedback: StashedFeedback = await prisma.feedback.update({
         where: {
             id: feedback.id,
         },
@@ -113,8 +118,14 @@ export const stashFeedback = async (feedback: Feedback) => {
         },
         include: {
             controller: true,
+            pilot: true,
         },
     });
+
+    if (stashedFeedback.staffComments && stashedFeedback.staffComments.trim() !== "") {
+        await sendEmailToFeedbackSubmitter(stashedFeedback.controller as User, stashedFeedback);
+    }
+    
     await log("UPDATE", "FEEDBACK", `Stashed feedback for ${stashedFeedback.controller.firstName} ${stashedFeedback.controller.lastName} (${stashedFeedback.controller.cid})`);
     revalidatePath('/admin/feedback');
     revalidatePath(`/admin/feedback/${feedback.id}`);

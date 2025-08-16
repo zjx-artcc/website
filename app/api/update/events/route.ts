@@ -9,8 +9,8 @@ const ut = new UTApi();
 
 export async function GET() {
 
-    const in24Hours = new Date();
-    in24Hours.setHours(in24Hours.getHours() + 24);
+    const in1Hour = new Date();
+    in1Hour.setHours(in1Hour.getHours() + 1)
 
     const oneDayAgo = new Date();
     oneDayAgo.setHours(oneDayAgo.getHours() - 24);
@@ -19,7 +19,7 @@ export async function GET() {
         where: {
             manualPositionsOpen: false,
             start: {
-                lte: in24Hours,
+                lte: in1Hour,
             },
             positionsLocked: false,
         },

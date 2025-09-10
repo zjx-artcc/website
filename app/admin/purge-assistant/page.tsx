@@ -36,6 +36,18 @@ export default async function Page(
             controllerStatus: {
                 not: "NONE",
             },
+            OR: [
+            { 
+                rating: { 
+                    not: 0 
+                } 
+            },
+            {
+                rating: 0,
+                trainingAssignmentRequestStudentId: null,
+                trainingAssignmentStudentId: null,
+            },
+            ],
             ...(includeLoas === 'false' && {
                 OR: [
                     {

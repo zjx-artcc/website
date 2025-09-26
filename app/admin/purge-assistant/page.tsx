@@ -44,8 +44,8 @@ export default async function Page(
             },
             {
                 rating: 0,
-                trainingAssignmentRequestStudentId: null,
-                trainingAssignmentStudentId: null,
+                trainingAssignmentRequestStudent: null,
+                trainingAssignmentStudent: null,
             },
             ],
             ...(includeLoas === 'false' && {

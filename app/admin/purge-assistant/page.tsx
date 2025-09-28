@@ -39,14 +39,15 @@ export default async function Page(
             OR: [
             { 
                 rating: { 
+
                     not: 1 
                 } 
             },
-            {
+              {
                 rating: 1,
                 trainingAssignmentRequestStudent: null,
                 trainingAssignmentStudent: null,
-            },
+              },
             ],
             ...(includeLoas === 'false' && {
                 OR: [

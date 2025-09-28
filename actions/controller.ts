@@ -8,6 +8,10 @@ import {sendRosterRemovalEmail} from "@/actions/mail/controller";
 import {getServerSession, User} from "next-auth";
 import {authOptions} from "@/auth/auth";
 
+function wait(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export const purgeControllers = async (ids: string[]) => {
 
     const session = await getServerSession(authOptions);
@@ -45,6 +49,7 @@ export const purgeControllers = async (ids: string[]) => {
         await log("DELETE", "USER", `Purged user ${user.firstName} ${user.lastName} (${user.cid}) from roster.`);
         await removeVatusaController(session.user, user.cid, user.controllerStatus === "VISITOR");
         await sendRosterRemovalEmail(user as User);
+        await wait(500);
     }
 
     revalidatePath("/controllers/roster", "layout");

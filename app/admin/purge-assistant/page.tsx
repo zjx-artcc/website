@@ -39,11 +39,11 @@ export default async function Page(
             OR: [
             { 
                 rating: { 
-                    not: 0 
+                    not: 1 
                 } 
             },
             {
-                rating: 0,
+                rating: 1,
                 trainingAssignmentRequestStudent: null,
                 trainingAssignmentStudent: null,
             },
@@ -69,10 +69,19 @@ export default async function Page(
                 },
             },
             trainingSessionsGiven: true,
+            trainingAssignmentRequestStudent: true,
+            trainingAssignmentStudent: true,
         },
     });
 
-    let condensedControllers = controllers.map((controller) => {
+    const filteredControllers = controllers.filter(user => {
+     if (user.trainingAssignmentStudent) {
+       return user.trainingAssignmentStudent.studentId !== user.id;
+     }
+     return true;
+    });
+
+    let condensedControllers = filteredControllers.map((controller) => {
         const filteredMonths = controller.log?.months.filter(month => {
             const monthInBounds = month.month >= parseInt(startMonth) && month.month <= parseInt(endMonth);
             return monthInBounds && month.year === parseInt(year);

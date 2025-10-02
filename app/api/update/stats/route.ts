@@ -5,133 +5,58 @@ import {ControllerLogMonth} from "@prisma/client";
 import {updateSyncTime} from "@/actions/lib/sync";
 import { isEventMode, setAllSectors, getCenterSectorId } from "@/actions/centerSplit";
 import { number } from "zod";
+import { getPrefixes } from '@/actions/statisticsPrefixes';
+import { getRosteredCids } from '@/actions/user';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-    const now = new Date();
-    const syncTime = await prisma.syncTimes.findFirst();
+    const prefixes = await getPrefixes();
+    const cids = await getRosteredCids();
 
-    if (syncTime?.stats && syncTime.stats?.getTime() > now.getTime() - 1000 * 10) {
-        return Response.json({ ok: false, });
-    }
+    const params: URLSearchParams = new URLSearchParams()
+    params.append('from', new Date(Date.now() - 86400000).toLocaleDateString())
+    params.append('to', new Date(Date.now()).toLocaleDateString())
 
-    const allControllers = await prisma.user.findMany({
-        select: {
-            id: true,
-            cid: true,
-            log: {
-                include: {
-                    months: true,
-                },
-            },
-        },
-    });
-
-    const vatsimData = await fetchVatsimControllerData();
-
-    const prefixes = await prisma.statisticsPrefixes.findFirst();
-
-    for (const controller of allControllers) {
-        const vatsimUser = vatsimData.find((user) => user.cid + '' === controller.cid);
-
-        const activePosition = await prisma.controllerPosition.findFirst({
-            where: {
-                logId: controller.log?.id,
-                active: true,
-            },
-        });
-
-        if (!vatsimUser || !prefixes?.prefixes.some((prefix) => vatsimUser.callsign.startsWith(prefix + "_"))) {
-            // The controller is offline
-            if (activePosition) {
-                // The controller was active on a position, mark it as inactive
-                await prisma.controllerPosition.updateMany({
-                    where: {
-                        log: {
-                            userId: controller.id,
-                        },
-                        active: true,
-                    },
-                    data: {
-                        active: false,
-                        end: now,
-                    },
-                });
-
-                await addHours(controller as unknown as User, getFacilityType(activePosition.facility || 0), getHoursControlledSinceLastUpdate(now, activePosition.start), controller.log?.months.find((month) => month.month === now.getMonth() && month.year === now.getFullYear()));
-            }
-            continue;
-        }
-
-        if (activePosition && vatsimUser.callsign !== activePosition.position) {
-            // The controller is no longer active on this position
-            await prisma.controllerPosition.update({
-                where: {
-                    id: activePosition.id,
-                },
-                data: {
+    const sessions: StatsimSession[] = await (await fetch('https://api.statsim.net/api/atcsessions/dates?' + params, {next: {revalidate: 3600}})).json()
+    console.log(prefixes)
+    console.log(cids)
+    for (let session of sessions) {
+        if (prefixes?.indexOf(session.callsign.substring(0, 2)) != -1 && cids.indexOf(session.vatsimid) != -1) {
+            console.log(session)
+            console.log('add')
+            await prisma.controllerPosition.upsert({
+                create: {
+                    id: session.id.toString(),
+                    logId: session.id.toString(),
+                    position: session.callsign,
+                    start: session.loggedOn,
+                    end: session.loggedOff,
                     active: false,
-                    end: now,
+                    facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
                 },
-            });
-            await addHours(controller as unknown as User, getFacilityType(activePosition.facility || 0), getHoursControlledSinceLastUpdate(now, activePosition.start), controller.log?.months.find((month) => month.month === now.getMonth() && month.year === now.getFullYear()));
-            await prisma.controllerPosition.create({
-                data: {
-                    log: {
-                        connectOrCreate: {
-                            create: {
-                                userId: controller.id,
-                            },
-                            where: {
-                                userId: controller.id,
-                            },
-                        },
-                    },
-                    position: vatsimUser.callsign,
-                    start: vatsimUser.logon_time,
-                    facility: vatsimUser.facility,
-                    active: true,
+                update: {
+                    id: session.id.toString(),
+                    logId: session.id.toString(),
+                    position: session.callsign,
+                    start: session.loggedOn,
+                    end: session.loggedOff,
+                    active: false,
+                    facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
                 },
-            });
-        } else if (!activePosition) {
-            await prisma.controllerPosition.create({
-                data: {
-                    log: {
-                        connectOrCreate: {
-                            create: {
-                                userId: controller.id,
-                            },
-                            where: {
-                                userId: controller.id,
-                            },
-                        },
-                    },
-                    position: vatsimUser.callsign,
-                    start: vatsimUser.logon_time,
-                    facility: vatsimUser.facility,
-                    active: true,
-                },
-            });
+                where: {
+                    id: session.id.toString()
+                }
+            })
         }
-
-        await prisma.lOA.deleteMany({
-            where: {
-                userId: controller.id,
-                start: {
-                    lte: now,
-                },
-                end: {
-                    gte: now,
-                },
-                status: 'APPROVED',
-            },
-        });
     }
 
+    
+
+    /*
     const currentCenterControllers = await prisma.controllerPosition.findMany({where: {facility: 6, active: true}})
 
-    // Update center split
+     Update center split
     if (!(await isEventMode()).eventMode) {
         if (currentCenterControllers.length == 0) {
             await setAllSectors(null)
@@ -155,7 +80,7 @@ export async function GET() {
                 await setAllSectors(uniqueIds[0])
             }
         }
-    }
+    }*/
 
     await updateSyncTime({stats: new Date(),});
 
@@ -245,4 +170,33 @@ const getFacilityType = (facility: number) => {
         default:
             return 'UNK';
     }
+}
+
+const getFacilityLevel = (facility: string) => {
+    switch (facility) {
+        case 'OBS':
+            return 0;
+        case 'FSS':
+            return 1;
+        case 'DEL':
+            return 2;
+        case 'GND':
+            return 3;
+        case 'TWR':
+            return 4;
+        case 'APP':
+            return 6;
+        case 'CTR':
+            return 7;
+        default:
+            return 0;
+    }
+}
+
+interface StatsimSession {
+    id: number,
+    callsign: string
+    vatsimid: string
+    loggedOn: string
+    loggedOff: string
 }

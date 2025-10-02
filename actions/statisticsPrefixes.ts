@@ -41,3 +41,8 @@ export const updatePrefixes = async (formData: FormData) => {
 
     return {prefixes};
 }
+
+export async function getPrefixes() {
+    const prefixes = await prisma.statisticsPrefixes.findFirst();
+    return prefixes?.prefixes
+}

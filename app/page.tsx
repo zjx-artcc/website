@@ -197,6 +197,9 @@ export default async function Home() {
               <Typography {...headingFont.style} variant="h5" sx={{ mb: 1 }}>
                 Top 3 Controllers
               </Typography>
+              <Typography {...headingFont.style} variant="h6" sx={{ mb: 1 }}>
+                NOTE: Stats can take up to 24 hours to update.
+              </Typography>
               <Stack direction="column" spacing={1}>
                 {top3Controllers.map((controller, idx) => (
                   <Card elevation={0} key={controller.user.cid}>

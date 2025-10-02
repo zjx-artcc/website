@@ -118,3 +118,19 @@ export const refreshAccountData = async (user: User, silent?: boolean,) => {
 
     revalidatePath('/', "layout");
 }
+
+export async function getRosteredCids() {
+    const cids = [];
+
+    const roster = await prisma.user.findMany({
+        select: {
+            cid: true
+        }
+    })
+
+    for (let item of roster) {
+        cids.push(item.cid);
+    }
+
+    return cids;
+}

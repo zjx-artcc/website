@@ -27,46 +27,56 @@ export async function GET() {
         if (prefixes.has(session.callsign.substring(0, 3)) && cids.has(session.vatsimid)) {
             console.log(session)
             console.log('add')
-            const user = await prisma.user.findFirst({where: {cid: session.vatsimid}})
+            const user = await prisma.user.findFirst({
+                select: {
+                    id: true,
+                    log: true
+                },
+                where: {
+                    cid: session.vatsimid
+                }
+            }
+            )
             
             if (!user) {
                 continue;
             }
-            
-            await prisma.$transaction(
-                [
-                    prisma.controllerLog.create({
-                        data: {
-                            id: session.id.toString(),
-                            userId: user.id
-                        }
-                    }),
-                    prisma.controllerPosition.upsert({
-                    create: {
-                        id: session.id.toString(),
-                        logId: session.id.toString(),
-                        position: session.callsign,
-                        start: session.loggedOn,
-                        end: session.loggedOff,
-                        active: false,
-                        facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
-                    },
-                    update: {
-                        id: session.id.toString(),
-                        logId: session.id.toString(),
-                        position: session.callsign,
-                        start: session.loggedOn,
-                        end: session.loggedOff,
-                        active: false,
-                        facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
-                    },
-                    where: {
-                        id: session.id.toString()
+
+            if (!user.log) {
+                const log = await prisma.controllerLog.create({
+                    data: {
+                        userId: user.id
                     }
                 })
-            ]
-            )
-            
+
+                user.log = log
+            }
+
+
+            const facilityLevel = getFacilityLevel(session.callsign.substring(session.callsign.length - 3, session.callsign.length))
+            await prisma.controllerPosition.upsert({        
+                where: {
+                    id: session.id.toString()
+                },
+                update: {
+                    id: session.id.toString(),
+                    logId: user.log.id,
+                    position: session.callsign,
+                    start: session.loggedOn,
+                    end: session.loggedOff,
+                    active: false,
+                    facility: facilityLevel
+                },
+                create: {
+                    id: session.id.toString(),
+                    logId: user.log.id,
+                    position: session.callsign,
+                    start: session.loggedOn,
+                    end: session.loggedOff,
+                    active: false,
+                    facility: facilityLevel
+                }
+            })  
         }
     }
 
@@ -192,6 +202,7 @@ const getFacilityType = (facility: number) => {
 }
 
 const getFacilityLevel = (facility: string) => {
+    console.log(facility)
     switch (facility) {
         case 'OBS':
             return 0;

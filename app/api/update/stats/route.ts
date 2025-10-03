@@ -15,39 +15,58 @@ export async function GET() {
     const cids = await getRosteredCids();
 
     const params: URLSearchParams = new URLSearchParams()
-    params.append('from', new Date(Date.now() - 86400000).toLocaleDateString())
+    params.append('from', new Date(Date.now() - 86400000 * 5).toLocaleDateString())
     params.append('to', new Date(Date.now()).toLocaleDateString())
 
     const sessions: StatsimSession[] = await (await fetch('https://api.statsim.net/api/atcsessions/dates?' + params, {next: {revalidate: 3600}})).json()
     console.log(prefixes)
     console.log(cids)
     for (let session of sessions) {
-        if (prefixes?.indexOf(session.callsign.substring(0, 2)) != -1 && cids.indexOf(session.vatsimid) != -1) {
+        //console.log(session.callsign.substring(0, 3))
+        //console.log(cids.has(session.vatsimid))
+        if (prefixes.has(session.callsign.substring(0, 3)) && cids.has(session.vatsimid)) {
             console.log(session)
             console.log('add')
-            await prisma.controllerPosition.upsert({
-                create: {
-                    id: session.id.toString(),
-                    logId: session.id.toString(),
-                    position: session.callsign,
-                    start: session.loggedOn,
-                    end: session.loggedOff,
-                    active: false,
-                    facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
-                },
-                update: {
-                    id: session.id.toString(),
-                    logId: session.id.toString(),
-                    position: session.callsign,
-                    start: session.loggedOn,
-                    end: session.loggedOff,
-                    active: false,
-                    facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
-                },
-                where: {
-                    id: session.id.toString()
-                }
-            })
+            const user = await prisma.user.findFirst({where: {cid: session.vatsimid}})
+            
+            if (!user) {
+                continue;
+            }
+            
+            await prisma.$transaction(
+                [
+                    prisma.controllerLog.create({
+                        data: {
+                            id: session.id.toString(),
+                            userId: user.id
+                        }
+                    }),
+                    prisma.controllerPosition.upsert({
+                    create: {
+                        id: session.id.toString(),
+                        logId: session.id.toString(),
+                        position: session.callsign,
+                        start: session.loggedOn,
+                        end: session.loggedOff,
+                        active: false,
+                        facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
+                    },
+                    update: {
+                        id: session.id.toString(),
+                        logId: session.id.toString(),
+                        position: session.callsign,
+                        start: session.loggedOn,
+                        end: session.loggedOff,
+                        active: false,
+                        facility: getFacilityLevel(session.callsign.substring(session.callsign.length - 4, session.callsign.length - 1))
+                    },
+                    where: {
+                        id: session.id.toString()
+                    }
+                })
+            ]
+            )
+            
         }
     }
 

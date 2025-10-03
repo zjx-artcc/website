@@ -120,7 +120,7 @@ export const refreshAccountData = async (user: User, silent?: boolean,) => {
 }
 
 export async function getRosteredCids() {
-    const cids = [];
+    const cids = new Set<string>();
 
     const roster = await prisma.user.findMany({
         select: {
@@ -129,7 +129,7 @@ export async function getRosteredCids() {
     })
 
     for (let item of roster) {
-        cids.push(item.cid);
+        cids.add(item.cid);
     }
 
     return cids;

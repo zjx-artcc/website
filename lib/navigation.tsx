@@ -119,13 +119,14 @@ export const NAVIGATION: NavigationButton[] = [
         link: '/operations',
     },
     {
-        label: 'Community',
-        icon: <Forum/>,
-        link: '/discord',
-    },
-    {
         label: 'Feedback',
         icon: <AddComment/>,
         link: '/feedback/new',
+    },
+
+    {
+        label: 'Discord',
+        icon: <Forum/>,
+        link: '/discord',
     },
 ];

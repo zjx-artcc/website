@@ -15,6 +15,11 @@ import {
 import prisma from "@/lib/db";
 import {getMonth, getTimeAgo} from "@/lib/date";
 import {getMonthHours} from "@/lib/hours";
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'dayjs/locale/en';
+import ForceStatsUpdate from '@/components/Admin/ForceStatsUpdate';
 
 export default async function Page() {
 
@@ -174,6 +179,21 @@ export default async function Page() {
                         <Typography sx={{mb: 1,}}>LOA Sync</Typography>
                         <Chip label={syncTimes?.loas ? `${getMinutesAgo(syncTimes?.loas)}m ago` : 'NEVER'}
                               color={getChipColor(syncTimes?.loas)}/>
+                    </CardContent>
+                </Card>
+            </Grid2>
+
+            <Grid2
+                size={{
+                    xs: 20,
+                    md: 10,
+                    lg: 4
+                }}
+                >
+                <Card>
+                    <CardContent>
+                        <Typography sx={{mb: 1,}}>Manual Stats Update</Typography>
+                        <ForceStatsUpdate/>
                     </CardContent>
                 </Card>
             </Grid2>

@@ -151,7 +151,7 @@ export default async function Home() {
                           spacing={1}
                           justifyContent="space-between"
                         >
-                          <Typography>{position.facility}</Typography>
+                          <Typography>{position.callsign}</Typography>
                           <Typography>
                             {getDuration(position.start, new Date())}
                           </Typography>

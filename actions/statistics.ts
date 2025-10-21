@@ -5,6 +5,9 @@ import { updateSyncTime } from './lib/sync';
 import { getPrefixes } from './statisticsPrefixes';
 import { getRosteredCids } from './user';
 import { getRating } from '@/lib/vatsim';
+import { control } from 'leaflet';
+import { log } from './log';
+import { ControllerPosition } from '@prisma/client';
 
 export async function getAndComputeStats(from: Date, to: Date) {
     if (from.getTime() > to.getTime()) {
@@ -133,7 +136,7 @@ async function getControllerSessionsFromMonth(logId: string, month: number, year
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
 
-    const hours = await prisma.controllerPosition.findMany({
+    const hours: ControllerPosition[] = await prisma.controllerPosition.findMany({
         where: {
             logId: logId,
             start: {
@@ -207,19 +210,31 @@ async function getLogIdFromCid(vatsimid: string) {
 export async function getOnlineControllers() {
     const prefixes = await getPrefixes();
     const controllers = await fetchVatsimControllerData()
-    controllers.filter((controller) => isInPrefixes(prefixes, controller.callsign))
-
+    const filteredControllers = controllers.filter((controller) => isInPrefixes(prefixes, controller.callsign))
+    console.log('called')
     const sessions: ParsedControllerSession[] = []
 
-    for (let controller of controllers) {
+    for (let controller of filteredControllers) {
         const user = await prisma.user.findFirst({where: {
             cid: controller.cid.toString()
         }})
 
         if (!user) {
+            sessions.push({
+                cid: controller.cid,
+                callsign: controller.callsign,
+                facility: controller.facility,
+                frequency: controller.frequency,
+                start: new Date(controller.logon_time),
+                firstName: `Unknown User (${controller.cid})`,
+                lastName: '',
+                controllerRating: 'Unknown Rating'
+            })
+
             continue
         }
         
+        console.log()
         sessions.push({
             cid: controller.cid,
             callsign: controller.callsign,
@@ -236,7 +251,8 @@ export async function getOnlineControllers() {
 }
 
 function isInPrefixes(prefixes: Set<string>, callsign: string) {
-    return prefixes.has(callsign.substring(0, 3))
+    console.log(callsign.substring(0, 3) + " " + prefixes.has(callsign.substring(0, 3)))
+    return prefixes.has(callsign.substring(0, 3));
 }
 
 const fetchVatsimControllerData = async () => {

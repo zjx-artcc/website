@@ -25,9 +25,6 @@ export async function getAndComputeStats(from: Date, to: Date) {
     const sessions: StatsimSession[] = await (await fetch('https://api.statsim.net/api/atcsessions/dates?' + params, {next: {revalidate: 3600}})).json()
 
     for (let session of sessions) {
-        //console.log(session.callsign.substring(0, 3))
-        //console.log(cids.has(session.vatsimid))
-
         if (isInPrefixes(prefixes, session.callsign) && cids.has(session.vatsimid)) {
             const loggedOnDate = new Date(session.loggedOn)
 
@@ -70,7 +67,6 @@ export async function getAndComputeStats(from: Date, to: Date) {
 }
 
 const getFacilityLevel = (facility: string) => {
-    console.log(facility)
     switch (facility) {
         case 'OBS':
             return 0;
@@ -211,7 +207,6 @@ export async function getOnlineControllers() {
     const prefixes = await getPrefixes();
     const controllers = await fetchVatsimControllerData()
     const filteredControllers = controllers.filter((controller) => isInPrefixes(prefixes, controller.callsign))
-    console.log('called')
     const sessions: ParsedControllerSession[] = []
 
     for (let controller of filteredControllers) {
@@ -234,7 +229,6 @@ export async function getOnlineControllers() {
             continue
         }
         
-        console.log()
         sessions.push({
             cid: controller.cid,
             callsign: controller.callsign,
@@ -251,7 +245,6 @@ export async function getOnlineControllers() {
 }
 
 function isInPrefixes(prefixes: Set<string>, callsign: string) {
-    console.log(callsign.substring(0, 3) + " " + prefixes.has(callsign.substring(0, 3)))
     return prefixes.has(callsign.substring(0, 3));
 }
 

@@ -5,8 +5,6 @@ import { updateSyncTime } from './lib/sync';
 import { getPrefixes } from './statisticsPrefixes';
 import { getRosteredCids } from './user';
 import { getRating } from '@/lib/vatsim';
-import { control } from 'leaflet';
-import { log } from './log';
 import { ControllerPosition } from '@prisma/client';
 
 export async function getAndComputeStats(from: Date, to: Date) {

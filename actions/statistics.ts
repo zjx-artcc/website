@@ -6,12 +6,19 @@ import { getPrefixes } from './statisticsPrefixes';
 import { getRosteredCids } from './user';
 import { getRating } from '@/lib/vatsim';
 import { ControllerPosition } from '@prisma/client';
+import { User } from 'next-auth';
+import { log } from './log';
 
-export async function getAndComputeStats(from: Date, to: Date) {
+export async function getAndComputeStats(from: Date, to: Date, user?: User) {
     if (from.getTime() > to.getTime()) {
         return;
     }
 
+    if (user) {
+        log("UPDATE", "STATISTICS_MANUAL_UPDATE", `Manual stats update requested by ${user.firstName} ${user.lastName} (${user.cid})`);
+    } else {
+        log("UPDATE", "STATISTICS_AUTO_UPDATE", `Manual stats update requested by System`);
+    }
     const params: URLSearchParams = new URLSearchParams()
 
     params.append('from', from.toLocaleDateString())

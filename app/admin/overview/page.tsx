@@ -20,9 +20,13 @@ import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en';
 import ForceStatsUpdate from '@/components/Admin/ForceStatsUpdate';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth/auth';
+import { $Enums } from '@prisma/client';
+import { isWebTeamOrSeniorStaff } from '@/lib/staffPositions';
 
 export default async function Page() {
-
+    const user = await getServerSession(authOptions)
     const home = await prisma.user.count({
         where: {
             controllerStatus: "HOME",
@@ -136,7 +140,7 @@ export default async function Page() {
                     <CardContent>
                         <Typography sx={{mb: 1,}}>Statistics Sync</Typography>
                         <Chip label={syncTimes?.stats ? `${getMinutesAgo(syncTimes?.stats)}m ago` : 'NEVER'}
-                              color={getChipColor(syncTimes?.stats)}/>
+                              color={getStaticticsChipColor(syncTimes?.stats)}/>
                     </CardContent>
                 </Card>
             </Grid2>
@@ -183,7 +187,7 @@ export default async function Page() {
                 </Card>
             </Grid2>
 
-            <Grid2
+            {isWebTeamOrSeniorStaff(user?.user.staffPositions) ? <Grid2
                 size={{
                     xs: 20,
                     md: 10,
@@ -196,7 +200,7 @@ export default async function Page() {
                         <ForceStatsUpdate/>
                     </CardContent>
                 </Card>
-            </Grid2>
+            </Grid2> : ''}
             <Grid2 size={20}>
                 <Card>
                     <CardContent>
@@ -246,6 +250,18 @@ const getChipColor = (date?: Date | null): 'success' | 'warning' | 'error' => {
     if (minutesAgo <= 30) {
         return 'success'; // green
     } else if (minutesAgo <= 60) {
+        return 'warning'; // yellow
+    } else {
+        return 'error'; // red
+    }
+}
+
+function getStaticticsChipColor(date: Date | null | undefined): 'success' | 'warning' | 'error' {
+     if (!date) return 'error';
+    const minutesAgo = getMinutesAgo(date);
+    if (minutesAgo <= 400) {
+        return 'success'; // green
+    } else if (minutesAgo <= 500) {
         return 'warning'; // yellow
     } else {
         return 'error'; // red

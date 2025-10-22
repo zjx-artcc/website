@@ -1,6 +1,7 @@
 import {User} from "next-auth";
 import React, {ReactNode} from "react";
 import {Chip} from "@mui/material";
+import { $Enums } from '@prisma/client';
 
 const colorPriority = {
     'error': 1, // red
@@ -32,6 +33,16 @@ export const getChips = (user: User) => {
         );
     }
     return chips;
+}
+
+export function isWebTeamOrSeniorStaff(staffPositions: $Enums.StaffPosition[] | undefined) {
+    if (!staffPositions) return false;
+
+    return staffPositions.includes('WM') 
+    || staffPositions.includes('AWM')
+    || staffPositions.includes('ATM')
+    || staffPositions.includes('DATM')
+    || staffPositions.includes('TA');
 }
 
 const getColor = (position: string) => {

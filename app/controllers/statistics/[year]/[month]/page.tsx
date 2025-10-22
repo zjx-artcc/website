@@ -51,6 +51,7 @@ export default async function Page(props: { params: Promise<{ year: string, mont
                 <Card>
                     <CardContent>
                         <Typography variant="h4">{getMonth(parseInt(month))}, {year} Statistics</Typography>
+                        <Typography variant="h6">Please note that stats can take up to 24 hours to update.</Typography>
                     </CardContent>
                 </Card>
             </Grid2>

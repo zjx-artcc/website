@@ -22,6 +22,7 @@ import { canEditEvent, getSplitData, isEventMode } from "@/actions/centerSplit";
 import { authOptions } from "@/auth/auth";
 import AssignedTrainerRequestButton from "@/components/Profile/AssignedTrainerRequestButton";
 import Head from "next/head";
+import { getOnlineControllers } from '@/actions/statistics';
 
 const headingFont = Poppins({ subsets: ["latin"], weight: ["400"] });
 
@@ -54,18 +55,7 @@ export default async function Home() {
     })
   );
 
-  const onlineAtc = await prisma.controllerPosition.findMany({
-    where: {
-      active: true,
-    },
-    include: {
-      log: {
-        include: {
-          user: true,
-        },
-      },
-    },
-  });
+  const onlineAtc = await getOnlineControllers()
 
   const soloCertifications = await prisma.soloCertification.findMany({
     where: {
@@ -153,7 +143,7 @@ export default async function Home() {
                   onlineAtc.map((position) => (
                     <Card
                       elevation={0}
-                      key={position.position + position.log.userId}
+                      key={position.start.toISOString() + position.cid}
                     >
                       <CardContent>
                         <Stack
@@ -161,19 +151,19 @@ export default async function Home() {
                           spacing={1}
                           justifyContent="space-between"
                         >
-                          <Typography>{position.position}</Typography>
+                          <Typography>{position.callsign}</Typography>
                           <Typography>
                             {getDuration(position.start, new Date())}
                           </Typography>
                         </Stack>
                         <Link
-                          href={`/controllers/${position.log.user.cid}`}
+                          href={`/controllers/${position.cid}`}
                           style={{ textDecoration: "none", color: "inherit" }}
                         >
                           <Typography variant="subtitle2">
-                            {position.log.user.firstName}{" "}
-                            {position.log.user.lastName} -{" "}
-                            {getRating(position.log.user.rating)}
+                            {position.firstName}{" "}
+                            {position.lastName} -{" "}
+                            {position.controllerRating}
                           </Typography>
                         </Link>
                       </CardContent>

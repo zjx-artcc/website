@@ -4,10 +4,11 @@ import { Button, Grid2, Stack } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { ChangeEvent, useState } from 'react';
+import { User } from 'next-auth';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function ForceStatsUpdate() {
+export default function ForceStatsUpdate({user}: {user: User}) {
     const [startDate, setStartDate] = useState(dayjs(new Date().getTime() - 86400000))
     const [endDate, setEndDate] = useState(dayjs(new Date()))
 
@@ -17,7 +18,7 @@ export default function ForceStatsUpdate() {
             return
         }
 
-        await getAndComputeStats(startDate.toDate(), endDate.toDate());
+        await getAndComputeStats(startDate.toDate(), endDate.toDate(), user);
 
         toast('Completed!')
     }

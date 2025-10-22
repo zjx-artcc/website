@@ -187,7 +187,7 @@ export default async function Page() {
                 </Card>
             </Grid2>
 
-            {isWebTeamOrSeniorStaff(user?.user.staffPositions) ? <Grid2
+            {user && isWebTeamOrSeniorStaff(user.user.staffPositions) ? <Grid2
                 size={{
                     xs: 20,
                     md: 10,
@@ -197,7 +197,7 @@ export default async function Page() {
                 <Card>
                     <CardContent>
                         <Typography sx={{mb: 1,}}>Manual Stats Update</Typography>
-                        <ForceStatsUpdate/>
+                        <ForceStatsUpdate user={user.user}/>
                     </CardContent>
                 </Card>
             </Grid2> : ''}

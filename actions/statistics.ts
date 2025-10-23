@@ -15,9 +15,9 @@ export async function getAndComputeStats(from: Date, to: Date, user?: User) {
     }
 
     if (user) {
-        log("UPDATE", "STATISTICS_MANUAL_UPDATE", `Manual stats update requested by ${user.firstName} ${user.lastName} (${user.cid})`);
+        log("UPDATE", "STATISTICS_MANUAL_UPDATE", `Manual stats update requested by ${user.firstName} ${user.lastName} (${user.cid}) from ${from.toISOString()} to ${to.toISOString()}`);
     } else {
-        log("UPDATE", "STATISTICS_AUTO_UPDATE", `Manual stats update requested by System`);
+        log("UPDATE", "STATISTICS_AUTO_UPDATE", `Automatic stats update requested by System from ${from.toISOString()} to ${to.toISOString()}`);
     }
     const params: URLSearchParams = new URLSearchParams()
 

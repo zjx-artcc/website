@@ -138,7 +138,7 @@ export default async function Home() {
               <Typography {...headingFont.style} variant="h5" sx={{ mb: 1 }}>
                 Online ATC
               </Typography>
-              <Stack direction="column" spacing={1} sx={{ maxHeight: 600 }}>
+              <Stack direction="column" spacing={1} sx={{ maxHeight: 600, overflowY: 'scroll'}}>
                 {onlineAtc.length > 0 ? (
                   onlineAtc.map((position) => (
                     <Card

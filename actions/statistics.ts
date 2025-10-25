@@ -8,6 +8,7 @@ import { getRating } from '@/lib/vatsim';
 import { ControllerPosition } from '@prisma/client';
 import { User } from 'next-auth';
 import { log } from './log';
+import { clearCenterSectorsIfInactive, isEventMode } from './centerSplit';
 
 export async function getAndComputeStats(from: Date, to: Date, user?: User) {
     if (from.getTime() > to.getTime()) {
@@ -246,6 +247,7 @@ export async function getOnlineControllers() {
         })
     }
 
+    await clearCenterSectorsIfInactive(sessions)
     return sessions
 }
 
@@ -263,6 +265,8 @@ const fetchVatsimControllerData = async () => {
     return data.filter((controller) => !controller.frequency.startsWith('199'));
 }
 
+
+
 interface VatsimSession {
     cid: number,
     callsign: string,
@@ -272,7 +276,7 @@ interface VatsimSession {
     logon_time: string
 }
 
-interface ParsedControllerSession {
+export interface ParsedControllerSession {
     cid: number,
     callsign: string,
     facility: number,

@@ -5,6 +5,7 @@ import { CenterSectors } from "@prisma/client"
 import { authOptions } from "@/auth/auth"
 import { getServerSession, Session } from "next-auth"
 import { SectorData } from "@/types/centerSplit.type"
+import { ParsedControllerSession } from './statistics'
 
 export const getSplitData = async(): Promise<CenterSectors[]> => {
     return await prisma.centerSectors.findMany({orderBy: {sectorId: 'asc'}})
@@ -100,6 +101,25 @@ export const getCenterSectorId = async(position: string): Promise<number | undef
         return int
     } else {
         return undefined
+    }
+}
+
+export async function clearCenterSectorsIfInactive(controllerSesisons: ParsedControllerSession[]) {
+    const eventModeActive = isEventMode()
+    let centersOnline = false
+
+    for (let session of controllerSesisons) {
+        if (session.callsign.endsWith('CTR')) {
+            centersOnline = true
+        }
+    }
+
+    if (!centersOnline && !(await eventModeActive).eventMode) {
+        await prisma.centerSectors.updateMany({
+            data: {
+                activeSectorId: null
+            }
+        })
     }
 }
 

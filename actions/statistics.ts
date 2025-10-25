@@ -34,7 +34,7 @@ export async function getAndComputeStats(from: Date, to: Date, user?: User) {
         if (isInPrefixes(prefixes, session.callsign) && cids.has(session.vatsimid)) {
             const loggedOnDate = new Date(session.loggedOn)
 
-            const logId = await getLogIdFromCid(session.vatsimid)
+            const logId = await getOrCreateLogIdFromCid(session.vatsimid)
             const facilityLevel = getFacilityLevel(session.callsign.substring(session.callsign.length - 3, session.callsign.length))
 
             if (!logId) {
@@ -180,7 +180,7 @@ async function updateStatsInDatabase(logId: string, month: number, year: number,
     })
 }
 
-async function getLogIdFromCid(vatsimid: string) {
+async function getOrCreateLogIdFromCid(vatsimid: string) {
     const user = await prisma.user.findFirst({
         select: {
             id: true,
@@ -199,7 +199,7 @@ async function getLogIdFromCid(vatsimid: string) {
     if (!user.log) {
         const log = await prisma.controllerLog.create({
             data: {
-                userId: vatsimid
+                userId: user.id
             }
         })
 

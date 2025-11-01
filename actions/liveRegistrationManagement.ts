@@ -4,6 +4,8 @@ import prisma from "@/lib/db";
 import { z } from "zod";
 import { GridFilterItem, GridPaginationModel, GridSortModel } from "@mui/x-data-grid";
 import { redirect } from 'next/navigation';
+import { ZodErrorSlimResponse, SafeParseReturnType } from "zod";
+
 // Do this because formData is annoying
 
 const toBool = z.preprocess((t) => {

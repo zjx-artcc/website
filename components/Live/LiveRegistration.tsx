@@ -284,7 +284,7 @@ export default function LiveRegistration({ user }: { user: User }) {
               gap: 2,
             }}
           >
-            <Typography variant="h4">You're paying the attendance fee for Orlando Overload 2025</Typography>
+            <Typography variant="h4">You are paying the attendance fee for Orlando Overload 2025</Typography>
             <Typography variant="body1">
               This includes access to the main event, hotel information, and other perks. Please note that all registration fees are non-refundable.
               Once payment has been submitted, no refunds will be issued under any circumstances. All funds collected go directly toward covering the costs

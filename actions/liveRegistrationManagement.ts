@@ -5,7 +5,7 @@ import { z } from "zod";
 import { GridFilterItem, GridPaginationModel, GridSortModel } from "@mui/x-data-grid";
 import { redirect } from 'next/navigation';
 import { ZodErrorSlimResponse } from "@/types";
-import { SafeParseReturnType} from "zod";
+import { SafeParseReturnType } from "zod";
 
 // Do this because formData is annoying
 
@@ -16,26 +16,23 @@ const toBool = z.preprocess((t) => {
   return t;
 }, z.boolean());
 
-export const validateRegistrant = async (input: { [key: string]: any }, zodResponse?: boolean): Promise<ZodErrorSlimResponse | SafeParseReturnType<any, any>> => {
+export const validateRegistrant = async (
+  input: { [key: string]: any },
+  zodResponse?: boolean
+): Promise<ZodErrorSlimResponse | SafeParseReturnType<any, any>> => {
   const registrantZ = z.object({
     id: z.string().optional(),
-    fName: z.string().min(1, { message: "Must be between 1 and 255 characters" }).max(255, { message: "Name must be between 1 and 255 characters" }),
-    lName: z.string().min(1, { message: "Must be between 1 and 255 characters" }).max(255, { message: "Name must be between 1 and 255 characters" }),
+    fName: z.string().min(1, { message: "Must be between 1 and 255 characters" }).max(255),
+    lName: z.string().min(1, { message: "Must be between 1 and 255 characters" }).max(255),
     preferredName: z.preprocess((v) => {
-      if (typeof v === 'string' && v.trim() === '') {
-        return undefined;
-      }
+      if (typeof v === 'string' && v.trim() === '') return undefined;
       return v;
-    },
-      z.string()
-        .min(3, { message: "Must be between 1 and 255 characters" })
-        .max(255, { message: "Name must be between 1 and 255 characters" })
-        .optional()),
+    }, z.string().min(3).max(255).optional()),
     registrantType: z.nativeEnum(RegistrantType, { required_error: 'Please select your controller type' }),
     cid: z.string(),
     attendingLive: toBool,
     usingHotelLink: toBool,
-  })
+  });
 
   const data = registrantZ.safeParse(input);
 
@@ -43,13 +40,24 @@ export const validateRegistrant = async (input: { [key: string]: any }, zodRespo
     return data;
   }
 
-  return {
-    errors: Array.isArray(data.error?.errors) ? data.error.errors.map((e) => ({
-      path: e.path.join('.'),
-      message: e.message,
-    })) : [],
+  if (!data.success) {
+    // Return a slim error object with `success` for type safety
+    const slimErrors: ZodErrorSlimResponse = {
+      success: false,
+      errors: data.error.errors.map(e => ({
+        path: e.path.join('.'),
+        message: e.message,
+      })),
+    };
+    return slimErrors;
   }
-}
+
+  // Return success as SafeParseReturnType
+  return {
+    success: true,
+    data: data.data,
+  };
+};
 
 
 export const createRegistrant = async (formData: FormData) => {

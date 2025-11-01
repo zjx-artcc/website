@@ -5,7 +5,7 @@ import { z } from "zod";
 import { GridFilterItem, GridPaginationModel, GridSortModel } from "@mui/x-data-grid";
 import { redirect } from 'next/navigation';
 import { ZodErrorSlimResponse } from "@/types";
-import { SafeParseReturnType, z } from "zod";
+import { SafeParseReturnType} from "zod";
 
 // Do this because formData is annoying
 

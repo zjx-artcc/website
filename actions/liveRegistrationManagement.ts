@@ -1,14 +1,12 @@
 'use server';
-import { RegistrantType, Prisma } from "@prisma/client";
+import { RegistrantType } from "@prisma/client";
 import prisma from "@/lib/db";
-import { z } from "zod";
-import { GridFilterItem, GridPaginationModel, GridSortModel } from "@mui/x-data-grid";
+import { z, SafeParseReturnType } from "zod";
+import { GridPaginationModel, GridSortModel } from "@mui/x-data-grid";
 import { redirect } from 'next/navigation';
 import { ZodErrorSlimResponse } from "@/types";
-import { SafeParseReturnType } from "zod";
 
-// Do this because formData is annoying
-
+// Helper to parse booleans from strings, numbers, or booleans
 const toBool = z.preprocess((t) => {
   if (typeof t === 'boolean') return t;
   if (typeof t === 'string') return t.toLowerCase() === 'true';
@@ -16,6 +14,7 @@ const toBool = z.preprocess((t) => {
   return t;
 }, z.boolean());
 
+// Validate registrant input
 export const validateRegistrant = async (
   input: { [key: string]: any },
   zodResponse?: boolean
@@ -36,12 +35,9 @@ export const validateRegistrant = async (
 
   const data = registrantZ.safeParse(input);
 
-  if (zodResponse) {
-    return data;
-  }
+  if (zodResponse) return data;
 
   if (!data.success) {
-    // Return a slim error object with `success` for type safety
     const slimErrors: ZodErrorSlimResponse = {
       success: false,
       errors: data.error.errors.map(e => ({
@@ -52,16 +48,14 @@ export const validateRegistrant = async (
     return slimErrors;
   }
 
-  // Return success as SafeParseReturnType
   return {
     success: true,
     data: data.data,
   };
 };
 
-
+// Create a registrant in the database
 export const createRegistrant = async (formData: FormData) => {
-
   const result = await validateRegistrant({
     id: formData.get('id') ?? undefined,
     fName: formData.get('fName') ?? '',
@@ -74,7 +68,14 @@ export const createRegistrant = async (formData: FormData) => {
   }, true) as SafeParseReturnType<any, any>;
 
   if (!result.success) {
-    return { errors: result.errors };
+    const slimErrors: ZodErrorSlimResponse = {
+      success: false,
+      errors: result.error.errors.map(e => ({
+        path: e.path.join('.'),
+        message: e.message,
+      })),
+    };
+    return slimErrors;
   }
 
   const data = result.data;
@@ -90,29 +91,30 @@ export const createRegistrant = async (formData: FormData) => {
         attendingLive: data.attendingLive,
         usingHotelLink: data.usingHotelLink,
         paymentSuccessful: false,
-      }
-    })
+      },
+    });
     return { registrant };
-  }
-  catch (e: any) {
+  } catch (e: any) {
     if (e.code === 'P2002') {
       redirect(`/live/error?cid=${data.cid}`);
     }
     throw e;
   }
-}
+};
+
+// Confirm payment status for a registrant
 export const confirmPaymentStatus = async (registrantId: string) => {
   console.log("Updating payment status for registrant:", registrantId);
   const updatePaymentStatus = await prisma.liveRegistrant.update({
-    where: { id: registrantId, },
-    data: { paymentSuccessful: true, },
+    where: { id: registrantId },
+    data: { paymentSuccessful: true },
   });
   console.log("Update result:", updatePaymentStatus);
-}
+};
 
+// Fetch registrants with pagination and sorting
 export const fetchRegistrants = async (pagination: GridPaginationModel, sort: GridSortModel) => {
   const { page, pageSize } = pagination;
-
   const orderBy = sort.map(s => ({ [s.field]: s.sort }));
 
   const [total, users] = await Promise.all([
@@ -125,7 +127,4 @@ export const fetchRegistrants = async (pagination: GridPaginationModel, sort: Gr
   ]);
 
   return [total, users];
-
-}
-
-
+};

@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 
 import { confirmPaymentStatus } from '@/actions/liveRegistrationManagement';
 
-export async function POST(request) {
+export async function POST(request: Request) {
     try {
         const body = await request.text();
         const headersList = await headers();

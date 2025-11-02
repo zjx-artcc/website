@@ -15,7 +15,7 @@ export async function POST(request: Request) {
             throw new Error('STRIPE_WEBHOOK_SECRET is not defined');
         }
 
-        const event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET);
+        const event = stripe.webhooks.constructEvent(body, signature!, process.env.STRIPE_WEBHOOK_SECRET!);
         if (event.type === 'payment_intent.succeeded') {
             const paymentIntent = event.data.object as Stripe.PaymentIntent;
             const registrantId = paymentIntent.metadata?.registrant_id;
@@ -29,8 +29,12 @@ export async function POST(request: Request) {
 
 
         return NextResponse.json({ received: true }, { status: 200 });
-    } catch (e) {
-        console.error(`Webhook Error: ${e.message}`);
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            console.error(`Webhook Error: ${e.message}`);
+        } else {
+            console.error(`Webhook Error: ${String(e)}`);
+        }
         return NextResponse.json({ received: true }, { status: 400 });
     }
 }

@@ -118,8 +118,8 @@ export default function LiveRegistration({ user }: { user: User }) {
     formData.set('cid', user.cid ?? '');
     formData.set('preferredName', preferredName);
     formData.set('registrantType', registrantType || 'HOME');
-    formData.set('attendingLive', attendingLive);
-    formData.set('usingHotelLink', usingHotelLink);
+    formData.set('attendingLive', String(attendingLive));
+    formData.set('usingHotelLink', String(usingHotelLink));
 
     if (attendingLive) {
       if (!agreesAlcohol) {
@@ -133,12 +133,14 @@ export default function LiveRegistration({ user }: { user: User }) {
       }
     }
 
-    const { registrant: newRegistrant, errors } = await createRegistrant(formData);
+    const result = await createRegistrant(formData);
 
-    if (errors) {
-      toast.error(errors.map((error) => error.message).join('.  '));
-      return false;
+    if ('errors' in result) {
+      toast.error(result.errors.map((error) => error.message).join('.  '));
+      return;
     }
+
+    const newRegistrant = result.registrant;
 
     if (newRegistrant?.id) {
       setRegistrantId(newRegistrant.id);
@@ -181,6 +183,7 @@ export default function LiveRegistration({ user }: { user: User }) {
         <>
           <Typography variant="h5" gutterBottom>Register for Orlando Live 2026!</Typography>
           <Form
+            action="#"
             onSubmit={async (e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);

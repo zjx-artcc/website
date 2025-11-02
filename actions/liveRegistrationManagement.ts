@@ -112,8 +112,22 @@ export const confirmPaymentStatus = async (registrantId: string) => {
   console.log("Update result:", updatePaymentStatus);
 };
 
-// Fetch registrants with pagination and sorting
-export const fetchRegistrants = async (pagination: GridPaginationModel, sort: GridSortModel) => {
+interface Registrant {
+  id: string;
+  cid: string;
+  preferredName: string | null;
+  fName: string;
+  lName: string;
+  registrantType: RegistrantType;
+  attendingLive: boolean;
+  usingHotelLink: boolean;
+  paymentSuccessful: boolean;
+}
+
+export const fetchRegistrants = async (
+  pagination: GridPaginationModel,
+  sort: GridSortModel
+): Promise<[number, Registrant[]]> => {
   const { page, pageSize } = pagination;
   const orderBy = sort.map(s => ({ [s.field]: s.sort }));
 

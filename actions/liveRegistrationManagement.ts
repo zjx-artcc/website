@@ -1,0 +1,144 @@
+'use server';
+import { RegistrantType } from "@prisma/client";
+import prisma from "@/lib/db";
+import { z, SafeParseReturnType } from "zod";
+import { GridPaginationModel, GridSortModel } from "@mui/x-data-grid";
+import { redirect } from 'next/navigation';
+import { ZodErrorSlimResponse } from "@/types";
+
+// Helper to parse booleans from strings, numbers, or booleans
+const toBool = z.preprocess((t) => {
+  if (typeof t === 'boolean') return t;
+  if (typeof t === 'string') return t.toLowerCase() === 'true';
+  if (typeof t === 'number') return t === 1;
+  return t;
+}, z.boolean());
+
+// Validate registrant input
+export const validateRegistrant = async (
+  input: { [key: string]: any },
+  zodResponse?: boolean
+): Promise<ZodErrorSlimResponse | SafeParseReturnType<any, any>> => {
+  const registrantZ = z.object({
+    id: z.string().optional(),
+    fName: z.string().min(1, { message: "Must be between 1 and 255 characters" }).max(255),
+    lName: z.string().min(1, { message: "Must be between 1 and 255 characters" }).max(255),
+    preferredName: z.preprocess((v) => {
+      if (typeof v === 'string' && v.trim() === '') return undefined;
+      return v;
+    }, z.string().min(3).max(255).optional()),
+    registrantType: z.nativeEnum(RegistrantType, { required_error: 'Please select your controller type' }),
+    cid: z.string(),
+    attendingLive: toBool,
+    usingHotelLink: toBool,
+  });
+
+  const data = registrantZ.safeParse(input);
+
+  if (zodResponse) return data;
+
+  if (!data.success) {
+    const slimErrors: ZodErrorSlimResponse = {
+      success: false,
+      errors: data.error.errors.map(e => ({
+        path: e.path.join('.'),
+        message: e.message,
+      })),
+    };
+    return slimErrors;
+  }
+
+  return {
+    success: true,
+    data: data.data,
+  };
+};
+
+// Create a registrant in the database
+export const createRegistrant = async (formData: FormData) => {
+  const result = await validateRegistrant({
+    id: formData.get('id') ?? undefined,
+    fName: formData.get('fName') ?? '',
+    lName: formData.get('lName') ?? '',
+    preferredName: formData.get('preferredName') ?? undefined,
+    attendingLive: formData.get('attendingLive') ?? 'false',
+    usingHotelLink: formData.get('usingHotelLink') ?? 'false',
+    registrantType: formData.get('registrantType') ?? '',
+    cid: formData.get('cid') ?? '',
+  }, true) as SafeParseReturnType<any, any>;
+
+  if (!result.success) {
+    const slimErrors: ZodErrorSlimResponse = {
+      success: false,
+      errors: result.error.errors.map(e => ({
+        path: e.path.join('.'),
+        message: e.message,
+      })),
+    };
+    return slimErrors;
+  }
+
+  const data = result.data;
+
+  try {
+    const registrant = await prisma.liveRegistrant.create({
+      data: {
+        fName: data.fName,
+        lName: data.lName,
+        cid: data.cid,
+        preferredName: data.preferredName ?? '',
+        registrantType: data.registrantType,
+        attendingLive: data.attendingLive,
+        usingHotelLink: data.usingHotelLink,
+        paymentSuccessful: false,
+      },
+    });
+    return { registrant };
+  } catch (e: any) {
+    if (e.code === 'P2002') {
+      redirect(`/live/error?cid=${data.cid}`);
+    }
+    throw e;
+  }
+};
+
+// Confirm payment status for a registrant
+export const confirmPaymentStatus = async (registrantId: string) => {
+  console.log("Updating payment status for registrant:", registrantId);
+  const updatePaymentStatus = await prisma.liveRegistrant.update({
+    where: { id: registrantId },
+    data: { paymentSuccessful: true },
+  });
+  console.log("Update result:", updatePaymentStatus);
+};
+
+interface Registrant {
+  id: string;
+  cid: string;
+  preferredName: string | null;
+  fName: string;
+  lName: string;
+  registrantType: RegistrantType;
+  attendingLive: boolean;
+  usingHotelLink: boolean;
+  paymentSuccessful: boolean;
+}
+
+export const fetchRegistrants = async (
+  pagination: GridPaginationModel,
+  sort: GridSortModel
+): Promise<[number, Registrant[]]> => {
+  const { page, pageSize } = pagination;
+  const orderBy = sort.map(s => ({ [s.field]: s.sort }));
+
+  const [total, users] = await Promise.all([
+    prisma.liveRegistrant.count(),
+    prisma.liveRegistrant.findMany({
+      skip: page * pageSize,
+      take: pageSize,
+      orderBy,
+    }),
+  ]);
+
+  return [total, users];
+};

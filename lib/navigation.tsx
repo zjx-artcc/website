@@ -13,7 +13,8 @@ import {
     PersonAdd,
     PlusOne,
     Radar,
-    Route
+    Route,
+    Celebration
 } from "@mui/icons-material";
 
 export type NavigationButton = {
@@ -100,6 +101,11 @@ export const NAVIGATION: NavigationButton[] = [
         icon: <CalendarMonth/>,
         dropdown: {
             buttons: [
+                {
+                    label: 'ORLO2026',
+                    link: '/live',
+                    icon: <Celebration />,
+                },
                 {
                     label: 'Request Staffing',
                     link: '/staffing/new',

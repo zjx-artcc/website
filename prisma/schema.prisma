@@ -631,6 +631,33 @@ model TrainingProgressionStep {
   @@unique([lessonId, progressionId])
 }
 
+model LiveRegistrant {
+  id                String @id @default(cuid())
+  cid               String @unique
+  fName             String
+  lName             String
+  preferredName     String?
+  registrantType    RegistrantType
+  attendingLive     Boolean
+  usingHotelLink    Boolean
+  paymentSuccessful Boolean @default(false)
+}
+
+enum RegistrantType {
+  HOME
+  VISITING
+  ACE_TEAM
+}
+
+enum LiveShirtSize {
+  S 
+  M 
+  L 
+  XL 
+  XXL 
+  XXXL
+}
+
 model Event {
   id   String    @id @default(cuid())
   name String

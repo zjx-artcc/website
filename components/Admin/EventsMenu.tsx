@@ -1,4 +1,4 @@
-import { Home, ListAlt, QuestionAnswer, RecentActors } from "@mui/icons-material";
+import { Home, ListAlt, QuestionAnswer, RecentActors, Celebration } from "@mui/icons-material";
 import { Badge, Card } from "@mui/material";
 
 import { CalendarMonth } from "@mui/icons-material";
@@ -32,6 +32,14 @@ export default async function EventMenu() {
                         <Home/>
                     </ListItemIcon>
                     <ListItemText primary="Overview"/>
+                </ListItemButton>
+            </Link>
+            <Link href="/events/admin/live" style={{textDecoration: 'none', color: 'inherit',}}>
+                <ListItemButton>
+                    <ListItemIcon>
+                        <Celebration />
+                    </ListItemIcon>
+                    <ListItemText primary="ORLO2026"/>
                 </ListItemButton>
             </Link>
             <Link href="/events/admin/events" style={{textDecoration: 'none', color: 'inherit',}}>

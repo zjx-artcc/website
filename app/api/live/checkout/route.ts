@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing registrantId' }, { status: 400 });
         }
 
-        const amount = attendingLive ? 0 : 0;
+        const amount = attendingLive ? 50 : 50;
 
         const paymentIntent = await stripe.paymentIntents.create({
             amount,

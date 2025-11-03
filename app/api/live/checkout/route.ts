@@ -19,7 +19,16 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing registrantId' }, { status: 400 });
         }
 
-        const amount = attendingLive ? 5000 : 0;
+        let amount = 0;
+        if (attendingLive) {
+            if (session.user.staffPositions.includes('WM')) {
+                const amount = 0;
+            }
+            else {
+                const amount = 5000;
+            }
+        }
+
 
         const paymentIntent = await stripe.paymentIntents.create({
             amount,

@@ -20,7 +20,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing registrantId' }, { status: 400 });
         }
 
-        const amount = 5000;
+        const amount = 100;
 
 
 
@@ -30,8 +30,8 @@ export async function POST(req: Request) {
 
         if (!user) throw new Error("User not found");
 
-        const userFullName = user.fullName ?? ""; 
-        const userEmail = user.email ?? "";  
+        const userFullName = user.fullName ?? "";
+        const userEmail = user.email ?? "";
 
         if (!user) throw new Error("User not found");
 
@@ -53,19 +53,20 @@ export async function POST(req: Request) {
         const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency: 'usd',
-            customer: customerId,
+            customer: customerId!,
             metadata: {
-                registrant_id: registrantId,
+                registrant_id: registrantId.toString(),
                 event: 'ORLO2026',
             },
             description: "ORLO2026 Registration Fee",
             payment_method_types: ["card"],
-            receipt_email: email.toString(),
+            receipt_email: email!,
         });
 
         return NextResponse.json({ clientSecret: paymentIntent.client_secret });
     } catch (error: any) {
         console.error("Error creating PaymentIntent:", error);
+        console.error("Missing or invalid parameter:", error.param);
         return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }

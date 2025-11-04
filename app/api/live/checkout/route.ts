@@ -22,16 +22,30 @@ export async function POST(req: Request) {
 
         const amount = 5000;
 
-        let customerId = session.user.stripeCustomerId;
+
+
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+        });
+
+        if (!user) throw new Error("User not found");
+
+        const userFullName = user.fullName ?? ""; 
+        const userEmail = user.email ?? "";  
+
+        if (!user) throw new Error("User not found");
+
+        let customerId = user.stripeCustomerId;
         if (!customerId) {
             const customer = await stripe.customers.create({
-                name: session.user.fullName,
-                email: session.user.email,
+                metadata: { fullName: userFullName },
+                name: userFullName,
+                email: userEmail,
             });
             customerId = customer.id;
 
             await prisma.user.update({
-                where: { id: session.user.id },
+                where: { id: user.id },
                 data: { stripeCustomerId: customerId },
             });
         }

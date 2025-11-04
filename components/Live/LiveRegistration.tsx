@@ -133,7 +133,7 @@ export default function LiveRegistration({ user }: { user: User }) {
       }
     }
 
-    const result = await createRegistrant(formData);
+    const result = await createRegistrant(formData, user.id);
 
     if ('errors' in result) {
       toast.error(result.errors.map((error) => error.message).join('.  '));

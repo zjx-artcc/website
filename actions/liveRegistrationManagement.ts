@@ -55,7 +55,7 @@ export const validateRegistrant = async (
 };
 
 // Create a registrant in the database
-export const createRegistrant = async (formData: FormData) => {
+export const createRegistrant = async (formData: FormData, userId: string) => {
   const result = await validateRegistrant({
     id: formData.get('id') ?? undefined,
     fName: formData.get('fName') ?? '',
@@ -91,6 +91,7 @@ export const createRegistrant = async (formData: FormData) => {
         attendingLive: data.attendingLive,
         usingHotelLink: data.usingHotelLink,
         paymentSuccessful: false,
+        userId: userId,
       },
     });
     return { registrant };
@@ -102,7 +103,7 @@ export const createRegistrant = async (formData: FormData) => {
   }
 };
 
-// Confirm payment status for a registrant
+
 export const confirmPaymentStatus = async (registrantId: string) => {
   console.log("Updating payment status for registrant:", registrantId);
   const updatePaymentStatus = await prisma.liveRegistrant.update({
@@ -137,6 +138,9 @@ export const fetchRegistrants = async (
       skip: page * pageSize,
       take: pageSize,
       orderBy,
+      include: {
+        user: true,
+      },
     }),
   ]);
 

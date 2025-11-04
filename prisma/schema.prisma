@@ -635,7 +635,7 @@ model TrainingProgressionStep {
 model LiveRegistrant {
   id                String @id @default(cuid())
   cid               String @unique
-  userId            String?
+  userId            String? 
   user              User?   @relation(fields: [userId], references: [id])
   fName             String
   lName             String

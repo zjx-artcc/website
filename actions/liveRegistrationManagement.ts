@@ -55,7 +55,7 @@ export const validateRegistrant = async (
 };
 
 // Create a registrant in the database
-export const createRegistrant = async (formData: FormData, userId: String) => {
+export const createRegistrant = async (formData: FormData, userId: string) => {
   const result = await validateRegistrant({
     id: formData.get('id') ?? undefined,
     fName: formData.get('fName') ?? '',

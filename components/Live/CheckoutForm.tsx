@@ -13,8 +13,7 @@ import { Button, CircularProgress } from '@mui/material';
 import { StripePaymentElementOptions, Appearance } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-const DOMAIN = process.env.NEXTAUTH_URL!;
-
+const DOMAIN = String(process.env.NEXTAUTH_URL!);
 function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
@@ -35,7 +34,7 @@ function PaymentForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${DOMAIN}/live/payment-confirmation`,
+        return_url: 'https://zjxartcc.org/live/payment-confirmation',
       },
     });
     if (error.type === "card_error" || error.type === "validation_error") {

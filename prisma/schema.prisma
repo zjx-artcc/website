@@ -121,6 +121,9 @@ model User {
   changesUnseen ChangeBroadcast[] @relation("unseenByUsers")
   changesSeen   ChangeBroadcast[] @relation("seenByUsers")
   changesAgreed ChangeBroadcast[] @relation("agreedByUsers")
+
+  stripeCustomerId String?  
+  liveRegistrants  LiveRegistrant[]
 }
 
 model TrainingAssignment {
@@ -632,6 +635,8 @@ model TrainingProgressionStep {
 model LiveRegistrant {
   id                String @id @default(cuid())
   cid               String @unique
+  userId            String?
+  user              User?   @relation(fields: [userId], references: [id])
   fName             String
   lName             String
   preferredName     String?

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { authOptions } from '@/auth/auth';
 import { getServerSession } from "next-auth";
+import prisma from '@/lib/db';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -19,13 +20,29 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing registrantId' }, { status: 400 });
         }
 
-        const amount = attendingLive ? 100 : 100;
+        const amount = 5000;
+
+        let customerId = session.user.stripeCustomerId;
+        if (!customerId) {
+            const customer = await stripe.customers.create({
+                name: session.user.fullName,
+                email: session.user.email,
+            });
+            customerId = customer.id;
+
+            await prisma.user.update({
+                where: { id: session.user.id },
+                data: { stripeCustomerId: customerId },
+            });
+        }
 
         const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency: 'usd',
+            customer: customerId,
             metadata: {
                 registrant_id: registrantId,
+                event: 'ORLO2026',
             },
             description: "ORLO2026 Registration Fee",
             payment_method_types: ["card"],

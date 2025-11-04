@@ -12,7 +12,8 @@ import { loadStripe } from '@stripe/stripe-js'
 import { Button, CircularProgress } from '@mui/material';
 import { StripePaymentElementOptions, Appearance } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const DOMAIN = process.env.NEXTAUTH_URL!;
 
 function PaymentForm() {
   const stripe = useStripe();
@@ -34,7 +35,7 @@ function PaymentForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/live/payment-confirmation",
+        return_url: "{$DOMAIN}/live/payment-confirmation",
       },
     });
     if (error.type === "card_error" || error.type === "validation_error") {

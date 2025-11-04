@@ -20,7 +20,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing registrantId' }, { status: 400 });
         }
 
-        const amount = 100;
+        const amount = 5000;
 
 
 

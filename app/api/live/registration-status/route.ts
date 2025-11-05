@@ -21,6 +21,10 @@ export async function GET() {
 
     if (!registrant) return NextResponse.json({ status: 'not_registered' });
 
+    if (!registrant?.attendingLive) {
+        return NextResponse.json({ status: 'fully_registered' });
+    }
+
     const paymentIntentId = registrant.stripePaymentIntentId;
 
     try {

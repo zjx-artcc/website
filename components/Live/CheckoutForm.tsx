@@ -33,7 +33,7 @@ function PaymentForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:3000/live/payment-confirmation',
+        return_url: 'https://zjxartcc.org/live/payment-confirmation',
       },
     });
     if (error.type === "card_error" || error.type === "validation_error") {
@@ -85,4 +85,5 @@ export default function CheckoutForm({ clientSecret }: CheckoutFormProps) {
       <PaymentForm />
     </Elements>
   )
+
 }

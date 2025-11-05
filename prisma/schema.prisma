@@ -635,17 +635,18 @@ model TrainingProgressionStep {
 }
 
 model LiveRegistrant {
-  id                String @id @default(cuid())
-  cid               String @unique
-  userId            String? 
-  user              User?   @relation(fields: [userId], references: [id])
-  fName             String
-  lName             String
-  preferredName     String?
-  registrantType    RegistrantType
-  attendingLive     Boolean
-  usingHotelLink    Boolean
-  paymentSuccessful Boolean @default(false)
+  id                    String @id @default(cuid())
+  cid                   String @unique
+  userId                String? 
+  user                  User?   @relation(fields: [userId], references: [id])
+  fName                 String
+  lName                 String
+  preferredName         String?
+  registrantType        RegistrantType
+  attendingLive         Boolean
+  usingHotelLink        Boolean
+  paymentSuccessful     Boolean @default(false)
+  stripePaymentIntentId String?
 }
 
 enum RegistrantType {

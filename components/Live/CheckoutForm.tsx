@@ -13,7 +13,6 @@ import { Button, CircularProgress } from '@mui/material';
 import { StripePaymentElementOptions, Appearance } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-const DOMAIN = String(process.env.NEXTAUTH_URL!);
 function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
@@ -86,4 +85,5 @@ export default function CheckoutForm({ clientSecret }: CheckoutFormProps) {
       <PaymentForm />
     </Elements>
   )
+
 }

@@ -1,40 +1,47 @@
-import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
-import { stripe } from '@/lib/stripe';
-import Stripe from 'stripe';
-
-import { confirmPaymentStatus } from '@/actions/liveRegistrationManagement';
-
-export async function POST(request: Request) {
-    try {
-        const body = await request.text();
-        const headersList = await headers();
-        const signature = headersList.get('stripe-signature');
-
-        if (!process.env.STRIPE_WEBHOOK_SECRET) {
-            throw new Error('STRIPE_WEBHOOK_SECRET is not defined');
-        }
-
-        const event = stripe.webhooks.constructEvent(body, signature!, process.env.STRIPE_WEBHOOK_SECRET!);
-        if (event.type === 'payment_intent.succeeded') {
-            const paymentIntent = event.data.object as Stripe.PaymentIntent;
-            const registrantId = paymentIntent.metadata?.registrant_id;
-
-            if (registrantId) {
-                await confirmPaymentStatus(registrantId);
-            } else {
-                console.warn('No registrant_id found in PaymentIntent metadata');
-            }
-        }
+import { error } from "next/dist/build/output/log"
+import { NextRequest, NextResponse } from "next/server"
 
 
-        return NextResponse.json({ received: true }, { status: 200 });
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Webhook Error: ${e.message}`);
-        } else {
-            console.error(`Webhook Error: ${String(e)}`);
-        }
-        return NextResponse.json({ received: true }, { status: 400 });
-    }
-}
+export const POST = async (req: NextRequest, res: NextResponse) => {
+//     const logger = getLogger()
+//     const body = await req.text()
+//     const sig = req.headers.get("stripe-signature")
+
+//     let event: Stripe.Event
+
+//     logger.info("[Stripe] Processing webhook")
+
+//     try {
+//         event = stripe.webhooks.constructEvent(body, sig as string, STRIPE_WEBHOOK_SECRET)
+
+//         logger.info({ type: event.type }, `[Stripe] Listening to Webhook Event!`)
+//     } catch (err) {
+//         error(err as string)
+//         return new Response(`Webhook Error: ${(err as Error).message}`, {
+//             status: 400,
+//         })
+//     }
+
+//     try {
+//         // Handle the event
+//         switch (event.type) {
+//             case "payment_intent.succeeded":
+//                 const paymentIntent = event.data.object as Stripe.PaymentIntent;
+//                 const registrantId = paymentIntent.metadata?.registrant_id;
+//                 if (registrantId) { await confirmPaymentStatus(registrantId); }
+//                 else {
+//                     console.warn('No registrant_id in PaymentIntent metadata');
+//                 }
+//                 break
+//         }
+//     } catch (err) {
+//         logger.error({ err }, `[Stripe] Webhook Error`)
+//         return new Response("Webhook handler failed. View logs.", {
+//             status: 400,
+//         })
+//     }
+
+//     logger.info(`[Stripe] Successfully ran Webhook!`)
+
+//     return NextResponse.json({ success: true })
+ }

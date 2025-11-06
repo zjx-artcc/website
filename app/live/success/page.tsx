@@ -15,7 +15,7 @@ export default function Page() {
                 <CardContent>
                     <Stack direction="row" spacing={1} alignItems="center" justifyContent="center" sx={{ mb: 2, }}>
                         <CheckCircle color="success" fontSize="large" />
-                        <Typography variant="h5">ORLO2026 Registration Receieved!</Typography>
+                        <Typography variant="h5">ORLO2026 Registration Received!</Typography>
                     </Stack>
                     <Container maxWidth="sm">
                         <Typography>Your ORLO2026 registration was succesfully received. You should have received an email
@@ -26,4 +26,5 @@ export default function Page() {
         </Container>
 
     );
+
 }

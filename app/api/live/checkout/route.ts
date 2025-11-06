@@ -33,8 +33,13 @@ export async function POST(req: Request) {
 
         if (registrant?.stripePaymentIntentId) {
             const existingIntent = await stripe.paymentIntents.retrieve(registrant.stripePaymentIntentId);
-            if (existingIntent.status !== 'succeeded') {
+
+            if (['requires_payment_method', 'requires_confirmation'].includes(existingIntent.status)) {
                 return NextResponse.json({ clientSecret: existingIntent.client_secret });
+            }
+
+            if (!['succeeded', 'canceled'].includes(existingIntent.status)) {
+                await stripe.paymentIntents.cancel(existingIntent.id);
             }
         }
 

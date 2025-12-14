@@ -162,7 +162,7 @@ export const upsertEvent = async (formData: FormData) => {
         return { errors: result.error.errors };
     }
 
-    const { data } = result.data;
+    const { data } = result;
     const existingEvent = await prisma.event.findUnique({
         where: {
             id: data.id,

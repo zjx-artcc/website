@@ -82,10 +82,30 @@ export default function LiveRegistrantsTable() {
         {
             field: 'stripeCustomerId',
             flex: 1,
-            headerName: 'Stripe Customer ID',
+            headerName: 'Customer ID',
             renderCell: (params) => {
                 return (
                     <Chip label={params.row.user?.stripeCustomerId || 'Not Set'} size="small" color="primary" />
+                )
+            }
+        },
+        {
+            field: 'stripePaymentIntentId',
+            flex: 1,
+            headerName: 'Payment ID',
+            renderCell: (params) => {
+                return (
+                    <Chip label={params.row.stripePaymentIntentId || 'Not Set'} size="small" color="primary" />
+                )
+            }
+        },
+        {
+            field: 'paymentSuccessful',
+            flex: 1,
+            headerName: 'Payment Successful',
+            renderCell: (params) => {
+                return (
+                    <Checkbox checked={Boolean(params.row.paymentSuccessful)} readOnly color={params.value ? 'success' : 'error'} />
                 )
             }
         },

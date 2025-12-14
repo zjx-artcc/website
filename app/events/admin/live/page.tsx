@@ -5,6 +5,7 @@ import Link from "next/link";
 import {Card, CardContent, Typography} from "@mui/material";
 import {Button, Stack} from "@mui/material";
 import LiveRegistrantsTable from '@/components/Live/LiveRegistrantsTable';
+import CheckPaymentStatusButton from '@/components/Live/CheckPaymentStatusButton';
 export default async function Page() {
     const session = await getServerSession(authOptions);
 
@@ -14,6 +15,7 @@ export default async function Page() {
                 <Typography variant="h5">Overload 2026 Registrants</Typography>
             </Stack>
             <LiveRegistrantsTable />
+            <CheckPaymentStatusButton />
         </>
     );
 }

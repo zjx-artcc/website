@@ -50,8 +50,31 @@ export default function LiveRegistration({ user }: { user: User }) {
   const [open, setOpen] = useState<number>(0);
   const [phase, setPhase] = useState<'form' | 'payment' | 'done'>('form');
   const [registrantId, setRegistrantId] = useState<string | null>(null);
+  const [registrantStatus, setRegistrantStatus] = useState<null | string>(null);
+
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch("/api/live/registration-status");
+        const data = await res.json();
+        setRegistrantStatus(data.status);
+        if (data.registrantId) {
+          setRegistrantId(data.registrantId);
+        }
+      } catch (err) {
+        console.error("Failed to fetch registration status:", err);
+      }
+    };
+
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+
 
   const [status, setStatus] = useState<ReactNode[]>([
     <CircularProgress key={1} color="inherit" size={20} />,
@@ -96,21 +119,37 @@ export default function LiveRegistration({ user }: { user: User }) {
     [fName, lName, preferredName, registrantType, attendingLive, usingHotelLink, bringingEquipment]
   )
 
-  useEffect(() => {
-    if (!registrantId || !attendingLive) return;
-
-    const fetchClientSecret = async () => {
+  const fetchClientSecret = async (id: string) => {
+    setIsCreatingSession(true);
+    try {
       const res = await fetch('/api/live/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ registrantId, attendingLive, email }),
+        body: JSON.stringify({ registrantId: id, email }),
       });
       const data = await res.json();
       setClientSecret(data.clientSecret);
-    };
+    } catch (err) {
+      console.error("Failed to fetch client secret:", err);
+    } finally {
+      setIsCreatingSession(false);
+    }
+  };
 
-    fetchClientSecret();
-  }, [registrantId, attendingLive]);
+
+  useEffect(() => {
+    if (!registrantStatus) return;
+
+    if (registrantStatus === "not_registered") {
+      setPhase("form");
+    } else if (registrantStatus === "registered_unpaid") {
+      setPhase("payment");
+      if (registrantId) fetchClientSecret(registrantId);
+    } else if (registrantStatus === "fully_registered") {
+      setPhase("done");
+      router.push("/live/success");
+    }
+  }, [registrantStatus, registrantId]);
 
   const handleSubmit = async (formData: FormData): Promise<any> => {
     formData.set('fName', user.firstName ?? '');
@@ -147,14 +186,6 @@ export default function LiveRegistration({ user }: { user: User }) {
     }
 
     const requiresPayment = attendingLive;
-
-    if (requiresPayment) {
-      toast.success("Registration submitted successfully! Moving on to payment...");
-      setTimeout(() => setPhase('payment'), 2500);
-    }
-    else {
-      router.push("/live/success");
-    }
 
   }
 
@@ -272,7 +303,7 @@ export default function LiveRegistration({ user }: { user: User }) {
         </>
       )}
 
-      {phase === 'payment' && (
+      {phase === 'payment' && clientSecret && (
         <Grid2 container sx={{ minHeight: '80vh' }} >
           <Grid2
             size={{ xs: 12, md: 6 }}

@@ -22,7 +22,26 @@ export async function POST(req: Request) {
 
         const amount = 5000;
 
+        const registrant = await prisma.liveRegistrant.findFirst({
+            where: {
+                OR: [
+                    { userId: session.user?.id },
+                    { cid: session.user?.id },
+                ],
+            },
+        });
 
+        if (registrant?.stripePaymentIntentId) {
+            const existingIntent = await stripe.paymentIntents.retrieve(registrant.stripePaymentIntentId);
+
+            if (['requires_payment_method', 'requires_confirmation'].includes(existingIntent.status)) {
+                return NextResponse.json({ clientSecret: existingIntent.client_secret });
+            }
+
+            if (!['succeeded', 'canceled'].includes(existingIntent.status)) {
+                await stripe.paymentIntents.cancel(existingIntent.id);
+            }
+        }
 
         const user = await prisma.user.findUnique({
             where: { id: session.user.id },
@@ -61,6 +80,11 @@ export async function POST(req: Request) {
             description: "ORLO2026 Registration Fee",
             payment_method_types: ["card"],
             receipt_email: email!,
+        });
+
+        await prisma.liveRegistrant.update({
+            where: { id: registrant?.id },
+            data: { stripePaymentIntentId: paymentIntent.id },
         });
 
         return NextResponse.json({ clientSecret: paymentIntent.client_secret });

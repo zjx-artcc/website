@@ -5653,6 +5653,7 @@ packages:
   next@15.4.1:
     resolution: {integrity: sha512-eNKB1q8C7o9zXF8+jgJs2CzSLIU3T6bQtX6DcTnCq1sIR1CJ0GlSyRs1BubQi3/JgCnr9Vr+rS5mOMI38FFyQw==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0

@@ -5,7 +5,7 @@ import {MjmlColumn, MjmlImage, MjmlSection, MjmlText} from "@faire/mjml-react";
 function EmailFooter({recipient}: { recipient?: User }) {
     return (
         <>
-            <MjmlSection background-color="#500E0E" padding="20px">
+            <MjmlSection background-color="#0080C2" padding="20px">
                 <MjmlColumn>
                     <MjmlText color="white" align="center">
                         &copy; 2025 Virtual Jacksonville ARTCC. All rights reserved.
@@ -14,7 +14,7 @@ function EmailFooter({recipient}: { recipient?: User }) {
                                alt="Virtual Jacksonville ARTCC" width="150px"/>
                 </MjmlColumn>
             </MjmlSection>
-            <MjmlSection background-color="#500E0E">
+            <MjmlSection background-color="#0080C2">
                 <MjmlColumn>
                     <MjmlText color="white" font-size="12px" align="center">
                         {recipient &&

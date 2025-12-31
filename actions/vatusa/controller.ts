@@ -30,8 +30,8 @@ export const addVatusaSolo = async (cid: string, position: string, expires: Date
     });
 
     const data = await res.json();
-    if (data.data.status === 'error') {
-        console.log(data.data.msg)
+    if (data.status === 'error') {
+        console.log(data.msg)
     }
 
     return data.cid;

@@ -68,7 +68,7 @@
     "stripe": "^19.2.0",
     "tailwindcss": "^4.1.8",
     "uploadthing": "^7.7.2",
-    "webpack": "^5.99.9",
+    "webpack": "^5.104.1",
     "zod": "^3.25.50",
     "zustand": "^5.0.5"
   },

@@ -28,7 +28,11 @@ export async function getAndComputeStats(from: Date, to: Date, user?: User) {
     const prefixes = await getPrefixes();
     const cids = await getRosteredCids();
 
-    const sessions: StatsimSession[] = await (await fetch('https://api.statsim.net/api/atcsessions/dates?' + params, {next: {revalidate: 3600}})).json()
+    const sessions: StatsimSession[] = await (await fetch('https://api.statsim.net/api/atcsessions/dates?' + params, {headers: {
+      "X-Api-Key": process.env.STATSIM_API_KEY || ""
+    }})).json()
+
+    console.log(sessions)
 
     for (let session of sessions) {
         if (isInPrefixes(prefixes, session.callsign) && cids.has(session.vatsimid)) {

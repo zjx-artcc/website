@@ -1,8 +1,8 @@
 import { error } from "next/dist/build/output/log"
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
 //     const logger = getLogger()
 //     const body = await req.text()
 //     const sig = req.headers.get("stripe-signature")
@@ -44,4 +44,4 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 //     logger.info(`[Stripe] Successfully ran Webhook!`)
 
 //     return NextResponse.json({ success: true })
- }
+}

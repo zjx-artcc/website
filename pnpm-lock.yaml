@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@auth/core':
         specifier: ^0.37.4
-        version: 0.37.4(nodemailer@6.10.1)
+        version: 0.37.4(nodemailer@8.0.5)
       '@auth/prisma-adapter':
         specifier: ^2.11.2
-        version: 2.11.2(@prisma/client@6.9.0(prisma@6.9.0(typescript@5.9.3))(typescript@5.9.3))(nodemailer@6.10.1)
+        version: 2.11.2(@prisma/client@6.9.0(prisma@6.9.0(typescript@5.9.3))(typescript@5.9.3))(nodemailer@8.0.5)
       '@emotion/cache':
         specifier: ^11.14.0
         version: 11.14.0
@@ -124,10 +124,10 @@ importers:
         version: 15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       next-auth:
         specifier: ^4.24.14
-        version: 4.24.14(@auth/core@0.37.4(nodemailer@6.10.1))(next@15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(nodemailer@6.10.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 4.24.14(@auth/core@0.37.4(nodemailer@8.0.5))(next@15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(nodemailer@8.0.5)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       nodemailer:
-        specifier: ^6.10.1
-        version: 6.10.1
+        specifier: ^8.0.5
+        version: 8.0.5
       nodemailer-trap-plugin:
         specifier: ^4.0.0
         version: 4.0.0
@@ -5290,8 +5290,8 @@ packages:
     resolution: {integrity: sha512-RgEvA30pJcGNa2aJRsr0ZQ0R5GqvY+MnIEhgjYqvg8L4eNuP81XFrRnJziNiGzp5YUqCJQz+sb+cO23/uOTkEg==}
     engines: {node: '>=10'}
 
-  nodemailer@6.10.1:
-    resolution: {integrity: sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==}
+  nodemailer@8.0.5:
+    resolution: {integrity: sha512-0PF8Yb1yZuQfQbq+5/pZJrtF6WQcjTd5/S4JOHs9PGFxuTqoB/icwuB44pOdURHJbRKX1PPoJZtY7R4VUoCC8w==}
     engines: {node: '>=6.0.0'}
 
   nopt@7.2.1:
@@ -6607,7 +6607,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@auth/core@0.37.4(nodemailer@6.10.1)':
+  '@auth/core@0.37.4(nodemailer@8.0.5)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 5.10.0
@@ -6615,9 +6615,9 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
     optionalDependencies:
-      nodemailer: 6.10.1
+      nodemailer: 8.0.5
 
-  '@auth/core@0.41.2(nodemailer@6.10.1)':
+  '@auth/core@0.41.2(nodemailer@8.0.5)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.2.3
@@ -6625,11 +6625,11 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
     optionalDependencies:
-      nodemailer: 6.10.1
+      nodemailer: 8.0.5
 
-  '@auth/prisma-adapter@2.11.2(@prisma/client@6.9.0(prisma@6.9.0(typescript@5.9.3))(typescript@5.9.3))(nodemailer@6.10.1)':
+  '@auth/prisma-adapter@2.11.2(@prisma/client@6.9.0(prisma@6.9.0(typescript@5.9.3))(typescript@5.9.3))(nodemailer@8.0.5)':
     dependencies:
-      '@auth/core': 0.41.2(nodemailer@6.10.1)
+      '@auth/core': 0.41.2(nodemailer@8.0.5)
       '@prisma/client': 6.9.0(prisma@6.9.0(typescript@5.9.3))(typescript@5.9.3)
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
@@ -13422,7 +13422,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next-auth@4.24.14(@auth/core@0.37.4(nodemailer@6.10.1))(next@15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(nodemailer@6.10.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  next-auth@4.24.14(@auth/core@0.37.4(nodemailer@8.0.5))(next@15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(nodemailer@8.0.5)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@babel/runtime': 7.29.7
       '@panva/hkdf': 1.2.1
@@ -13437,8 +13437,8 @@ snapshots:
       react-dom: 19.2.7(react@19.2.7)
       uuid: 8.3.2
     optionalDependencies:
-      '@auth/core': 0.37.4(nodemailer@6.10.1)
-      nodemailer: 6.10.1
+      '@auth/core': 0.37.4(nodemailer@8.0.5)
+      nodemailer: 8.0.5
 
   next@15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
@@ -13492,7 +13492,7 @@ snapshots:
       escape-string-regexp: 4.0.0
       string-format: 2.0.0
 
-  nodemailer@6.10.1: {}
+  nodemailer@8.0.5: {}
 
   nopt@7.2.1:
     dependencies:

@@ -54,7 +54,7 @@
     "mjml-core": "^4.18.0",
     "next": "^15.5.19",
     "next-auth": "^4.24.14",
-    "nodemailer": "^6.10.1",
+    "nodemailer": "^8.0.5",
     "nodemailer-trap-plugin": "^4.0.0",
     "postcss": "^8.5.15",
     "react": "^19.2.7",

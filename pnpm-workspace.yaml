@@ -1,3 +1,12 @@
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  '@sentry/cli': true
+  core-js: true
+  msgpackr-extract: true
+  prisma: true
+  sharp: true
+  unrs-resolver: true
 ignoredBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'

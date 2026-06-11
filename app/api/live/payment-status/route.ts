@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
-import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth/auth";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { getStripe } from "@/lib/stripe";
 
 export async function POST() {
 
@@ -24,6 +22,7 @@ export async function POST() {
     }
 
     try {
+        const stripe = getStripe();
         const registrants = await prisma.liveRegistrant.findMany({
             where: {
                 attendingLive: true,

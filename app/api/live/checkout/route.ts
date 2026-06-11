@@ -1,11 +1,9 @@
 // app/api/checkout/route.ts
 import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { authOptions } from '@/auth/auth';
 import { getServerSession } from "next-auth";
 import prisma from '@/lib/db';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { getStripe } from '@/lib/stripe';
 
 export async function POST(req: Request) {
     try {
@@ -30,6 +28,8 @@ export async function POST(req: Request) {
                 ],
             },
         });
+
+        const stripe = getStripe();
 
         if (registrant?.stripePaymentIntentId) {
             const existingIntent = await stripe.paymentIntents.retrieve(registrant.stripePaymentIntentId);

@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth/auth';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { getStripe } from '@/lib/stripe';
 
 export async function GET() {
     const session = await getServerSession(authOptions);
@@ -26,6 +24,7 @@ export async function GET() {
     }
 
     const paymentIntentId = registrant.stripePaymentIntentId;
+    const stripe = getStripe();
 
     try {
         if (!registrant.paymentSuccessful && paymentIntentId) {

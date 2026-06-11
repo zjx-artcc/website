@@ -93,5 +93,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd infrastructure/legacy-site
-            docker pull ghcr.io/${{ github.repository }}:latest
+            docker compose pull
             docker compose up -d

@@ -24,9 +24,6 @@ RUN pnpm install
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npx prisma migrate deploy
-RUN npx prisma generate
-
 RUN pnpm build
 
 # Production image, copy all the files and run next
@@ -58,4 +55,4 @@ ENV PORT=3000
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+CMD ["npx prisma generate &&", "node", "server.js"]

@@ -8,7 +8,6 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: primary-server
     permissions:
       contents: read
       packages: write

@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-and-push:
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -88,7 +89,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOSTNAME }}
-          username: ${{ env.SSH_USERNAME }}
+          username: ${{ vars.SSH_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd infrastructure/legacy-site

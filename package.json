@@ -15,7 +15,7 @@
     "postinstall": "pnpm dlx prisma@6.9.0 generate"
   },
   "dependencies": {
-    "@auth/core": "^0.37.4",
+    "@auth/core": "^0.41.3",
     "@auth/prisma-adapter": "^2.11.2",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",

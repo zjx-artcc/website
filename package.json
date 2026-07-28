@@ -56,7 +56,7 @@
     "next-auth": "^4.24.14",
     "nodemailer": "^6.10.1",
     "nodemailer-trap-plugin": "^4.0.0",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.18",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-google-recaptcha-v3": "^1.11.0",

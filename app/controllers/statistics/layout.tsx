@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardContent, Container, Grid2, Stack, Typography} from "@mui/material";
+import {Box, Card, CardContent, Container, Grid2, Stack, Typography} from "@mui/material";
 import {getAllTimeHours} from "@/lib/hours";
 import StatisticsTimeSelector from "@/components/Statistics/StatisticsTimeSelector";
 import {Metadata} from "next";

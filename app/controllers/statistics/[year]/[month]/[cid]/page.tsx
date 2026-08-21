@@ -7,6 +7,14 @@ import StatisticsTable from "@/components/Statistics/StatisticsTable";
 import {getMonthLog, getTotalHours} from "@/lib/hours";
 import {notFound} from "next/navigation";
 import ControllingSessionsTable from "@/components/Statistics/ControllingSessionsTable";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    robots: {
+        index: false,
+        follow: false,
+    },
+};
 
 export default async function Page(props: { params: Promise<{ year: string, month: string, cid: string, }> }) {
     const params = await props.params;

@@ -5,6 +5,8 @@ import StatisticsTimeSelector from "@/components/Statistics/StatisticsTimeSelect
 import {Metadata} from "next";
 import prisma from "@/lib/db";
 import {User} from "next-auth";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/auth/auth";
 
 export const metadata: Metadata = {
     title: 'Statistics | vZJX',
@@ -12,6 +14,23 @@ export const metadata: Metadata = {
 };
 
 export default async function Layout({children}: { children: React.ReactNode }) {
+
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+            return (
+                <Typography textAlign="center" variant="h5">You must login to view this page.</Typography>
+            );
+        }
+    
+    if (session.user.roles.length === 0) {
+        return (
+            <Box>
+                <Typography textAlign="center" variant="h5">You must be a controller to access this
+                    page.</Typography>
+            </Box>
+        );
+    }
 
     const allTimeHours = await getAllTimeHours();
     const controllers = await prisma.user.findMany({
@@ -31,6 +50,8 @@ export default async function Layout({children}: { children: React.ReactNode }) 
             ],
         },
     });
+
+    
 
     return (
         (<Container maxWidth="lg">

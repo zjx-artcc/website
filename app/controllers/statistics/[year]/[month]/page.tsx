@@ -7,6 +7,14 @@ import {StackedLineChart} from "@mui/icons-material";
 import {getRating} from "@/lib/vatsim";
 import StatisticsTable from "@/components/Statistics/StatisticsTable";
 import {getControllerLog, getTop3Controllers, getTotalHours} from "@/lib/hours";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    robots: {
+        index: false,
+        follow: false,
+    },
+};
 
 export default async function Page(props: { params: Promise<{ year: string, month: string }> }) {
     const params = await props.params;

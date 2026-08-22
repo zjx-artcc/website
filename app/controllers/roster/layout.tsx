@@ -30,6 +30,7 @@ export default async function Layout({children}: { children: React.ReactNode }) 
                     page.</Typography>
             </Box>
         );
+    }
 
     return (
         <Container maxWidth="lg">
@@ -50,5 +51,4 @@ export default async function Layout({children}: { children: React.ReactNode }) 
             </Stack>
         </Container>
     );
-}
 }

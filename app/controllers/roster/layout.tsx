@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     description: 'vZJX roster page',
 };
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export default async function Layout({children}: { children: React.ReactNode }) {
 
@@ -23,7 +23,7 @@ export default async function Layout({children}: { children: React.ReactNode }) 
             );
         }
     
-    if (session.user.roles.length === 0) {
+    if (!session.user.roles || session.user.roles.length === 0) {
         return (
             <Box>
                 <Typography textAlign="center" variant="h5">You must be a controller to access this
